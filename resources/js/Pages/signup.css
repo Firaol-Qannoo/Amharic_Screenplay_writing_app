@@ -1,0 +1,96 @@
+/* General Styles */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f7fc;
+    margin: 0;
+    padding: 0;
+}
+
+/* Container Styles */
+.signup-container {
+    max-width: 400px;
+    margin: 50px auto;
+    padding: 20px;
+    background-color: white;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+}
+
+.signup-heading {
+    text-align: center;
+    font-size: 24px;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+/* Form Styles */
+.signup-form {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Input Field Styles */
+.form-group {
+    margin-bottom: 15px;
+}
+
+label {
+    font-size: 14px;
+    font-weight: bold;
+    color: #333;
+}
+
+.form-input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 14px;
+    margin-top: 5px;
+    box-sizing: border-box;
+}
+
+.form-input:focus {
+    border-color: #5b9bd5;
+    outline: none;
+}
+
+/* Button Styles */
+.signup-button {
+    background-color: #5b9bd5;
+    color: white;
+    padding: 12px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    margin-top: 20px;
+}
+
+.signup-button:hover {
+    background-color: #4a8abf;
+}
+
+/* Error Message Styles */
+.error {
+    color: red;
+    font-size: 12px;
+    margin-top: 5px;
+}
+
+
+/* Styling the redirect link */
+.redirect-link {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 14px;
+}
+
+.link {
+    color: #5b9bd5;
+    text-decoration: none;
+}
+
+.link:hover {
+    text-decoration: underline;
+}
