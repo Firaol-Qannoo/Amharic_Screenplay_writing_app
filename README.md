@@ -24,5 +24,5 @@ Before you begin, ensure you have the following installed on your system:
 
 ## 🔥 Clone the Repository
 ```sh
-git clone https://github.com/your-username/your-repo.git
-cd your-repo
+git clone https://github.com/Firaol-Qannoo/Amharic_Screenplay_writing_app.git
+cd Amharic_Screenplay_writing_app
