@@ -22,4 +22,10 @@ class User extends Model implements Authenticatable
     protected $hidden = [
         'password',
     ];
+
+
+    public function scripts()
+{
+    return $this->hasMany(Script::class, 'author', '_id');
+}
 }

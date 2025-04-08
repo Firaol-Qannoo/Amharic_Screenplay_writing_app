@@ -1,0 +1,18 @@
+import film1pr from './film1.jpg'
+import film2pr from './film2.jpg'
+import film3pr from './film3.jpg'
+import film4pr from './film4.jpg'
+import film5pr from './film5.jpg'
+import film6pr from './film6.jpg'
+import film7pr from './film7.jpg'
+import film8pr from './film8.jpg'
+import film9pr from './film9.jpg'
+import film10pr from './film10.jpg'
+import film11pr from './film11.jpg'
+import film12pr from './film12.jpg'
+import theatre1pr from './theatre1.jpg'
+import theatre2pr from './theatre2.jpg'
+import theatre3pr from './theatre3.jpg'
+import theatre4pr from './theatre4.jpg'
+
+export { film1pr, film2pr, film3pr, film4pr, film5pr, film6pr, film7pr, film8pr, film9pr, film10pr, film11pr, film12pr, theatre1pr, theatre2pr, theatre3pr, theatre4pr }

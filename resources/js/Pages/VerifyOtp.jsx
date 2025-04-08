@@ -1,0 +1,56 @@
+import React, { useState } from "react";
+import { useForm } from "@inertiajs/react";
+import "./VerifyOtp.css";
+import { Link } from "@inertiajs/react"; // Changed from react-router-dom
+
+const VerifyOtp = () => {
+    const queryParams = new URLSearchParams(window.location.search);
+    const email = queryParams.get("email"); // Get email from URL
+
+    const { data, setData, post, errors } = useForm({ email: email, otp: "" });
+    const [message, setMessage] = useState("");
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        post("/verify-otp", {
+            onSuccess: () => {
+                setMessage("OTP verified successfully!");
+                setTimeout(() => {
+                    window.location.href = `/reset-password?email=${email}`; // Redirect to reset password
+                }, 2000);
+            },
+        });
+    };
+
+    return (
+        <div className="verify-otp-container">
+            <h2>Verify OTP</h2>
+            <p>Enter the OTP sent to your email: <strong>{email}</strong></p>
+            {message && <p className="success">{message}</p>}
+            <form onSubmit={handleSubmit}>
+                <label>OTP</label>
+                <input
+                    type="text"
+                    name="otp"
+                    value={data.otp}
+                    onChange={(e) => setData("otp", e.target.value)}
+                />
+                {errors.otp && <p className="error">{errors.otp}</p>}
+                <button type="submit">Verify OTP</button>
+            </form>
+            <div className="text-center text-sm">
+            Didn&apos;t receive a code?{" "}
+            <button type="button" className="font-medium text-primary hover:text-primary/90">
+              Resend
+            </button>
+          </div>
+          <div className="text-center text-sm">
+            <Link to={'/login'} className="font-medium text-primary hover:text-primary/90">
+              Back to login
+            </Link>
+          </div>
+        </div>
+    );
+};
+
+export default VerifyOtp;
