@@ -16,11 +16,14 @@ class DashboardController extends Controller
         $userId = Auth::id();
     
         // Scripts created by the user
+
+        $user = Auth::user();  // Get the currently authenticated user
+        // dd($user);
        
 
         $myScripts = Script::where('user_id', $userId)->get()->map(function ($script) {
             return [
-                '_id' => $script->_id,
+                'id' => $script->_id,
                 'title' => $script->title,
                 'description' => $script->description,
                 'genre' => $script->genre,
@@ -42,6 +45,7 @@ class DashboardController extends Controller
         return Inertia::render('writers/Dashboard/DashboardPage', [
             'myScripts' => $myScripts,
             'invitedScripts' => $invitedScripts,
+            'user' =>  $user
             // 'success' => 'Login successfully.',
             ]);
         }  

@@ -1,4 +1,5 @@
 import { useState } from "react"
+import { router } from "@inertiajs/react"
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
@@ -15,8 +16,15 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Switch } from "@/components/ui/switch"
 import { Settings } from "lucide-react"
 
-export function SettingsDialog() {
+export function SettingsDialog({ user }) {
   const [open, setOpen] = useState(false)
+  const [first_name, setName] = useState(user?.first_name || "")
+  const [email, setEmail] = useState(user?.email || "")
+
+  const handleSave = () => {
+    router.post("/settings/update", { first_name, email })
+    setOpen(false)
+  }
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -28,7 +36,9 @@ export function SettingsDialog() {
       <DialogContent className="sm:max-w-[500px]">
         <DialogHeader>
           <DialogTitle>Settings</DialogTitle>
-          <DialogDescription>Customize your screenplay writing experience</DialogDescription>
+          <DialogDescription>
+            Customize your screenplay writing experience
+          </DialogDescription>
         </DialogHeader>
         <Tabs defaultValue="general">
           <TabsList className="grid w-full grid-cols-3">
@@ -36,12 +46,14 @@ export function SettingsDialog() {
             <TabsTrigger value="editor">Editor</TabsTrigger>
             <TabsTrigger value="account">Account</TabsTrigger>
           </TabsList>
+
+          {/* General Tab */}
           <TabsContent value="general" className="space-y-4 py-4">
             <div className="space-y-2">
               <Label htmlFor="language">Interface Language</Label>
               <select
                 id="language"
-                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
               >
                 <option value="amharic">አማርኛ (Amharic)</option>
                 <option value="english">English</option>
@@ -50,24 +62,30 @@ export function SettingsDialog() {
             <div className="flex items-center justify-between">
               <div className="space-y-0.5">
                 <Label htmlFor="auto-save">Auto Save</Label>
-                <div className="text-sm text-muted-foreground">Automatically save your work every few minutes</div>
+                <div className="text-sm text-muted-foreground">
+                  Automatically save your work every few minutes
+                </div>
               </div>
               <Switch id="auto-save" defaultChecked />
             </div>
             <div className="flex items-center justify-between">
               <div className="space-y-0.5">
                 <Label htmlFor="notifications">Notifications</Label>
-                <div className="text-sm text-muted-foreground">Receive notifications for comments and updates</div>
+                <div className="text-sm text-muted-foreground">
+                  Receive notifications for comments and updates
+                </div>
               </div>
               <Switch id="notifications" defaultChecked />
             </div>
           </TabsContent>
+
+          {/* Editor Tab */}
           <TabsContent value="editor" className="space-y-4 py-4">
             <div className="space-y-2">
               <Label htmlFor="font-size">Font Size</Label>
               <select
                 id="font-size"
-                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
               >
                 <option value="small">Small</option>
                 <option value="medium" selected>
@@ -80,32 +98,40 @@ export function SettingsDialog() {
               <Label htmlFor="font-family">Font Family</Label>
               <select
                 id="font-family"
-                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
               >
                 <option value="nyala">Nyala</option>
                 <option value="abyssinica">Abyssinica SIL</option>
                 <option value="courier">Courier New</option>
               </select>
             </div>
-            
           </TabsContent>
+
+          {/* Account Tab */}
           <TabsContent value="account" className="space-y-4 py-4">
             <div className="space-y-2">
               <Label htmlFor="name">Display Name</Label>
-              <Input id="name" defaultValue="Abebe Kebede" />
+              <Input
+                id="first_name"
+                value={first_name}
+                onChange={(e) => setName(e.target.value)}
+              />
             </div>
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
-              <Input id="email" defaultValue="abebe@example.com" type="email" />
+              <Input
+                id="email"
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
             </div>
-           
           </TabsContent>
         </Tabs>
         <DialogFooter>
-          <Button onClick={() => setOpen(false)}>Save changes</Button>
+          <Button onClick={handleSave}>Save changes</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
   )
 }
-

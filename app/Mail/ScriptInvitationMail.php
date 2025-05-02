@@ -16,7 +16,7 @@ class ScriptInvitationMail extends Mailable
 
     public function build()
     {
-        $url = url("/invitations/accept/{$this->invitation->token}");
+        $url = route('invitation.accept', ['token' => $this->invitation->token]);
 
         return $this->subject('You have been invited to collaborate on a script')
                     ->view('emails.script-invitation')
