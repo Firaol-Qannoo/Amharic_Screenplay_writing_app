@@ -10,6 +10,7 @@ use App\Http\Controllers\Auth\SocialAuthController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ScriptsController;
 use App\Http\Controllers\EditorController;
+use App\Http\Controllers\ProductionScheduleController;
 use App\Http\Controllers\SceneController;
 use App\Http\Controllers\ScriptInvitationController;
 
@@ -79,6 +80,8 @@ use App\Http\Controllers\ScriptInvitationController;
     Route::get('/editor/{id}', [EditorController::class, 'edit'])->name('editor.edit');
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::delete('/delete/{id}', [ScriptsController::class, 'destroy'])->name('delete.destroy');
+    Route::resource('production-schedule', ProductionScheduleController::class)
+    ->names('production-schedule');
 
 
     Route::middleware(['auth'])->group(function () {
