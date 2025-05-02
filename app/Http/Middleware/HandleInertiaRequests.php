@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use Illuminate\Http\Request;
 use Inertia\Middleware;
+use Flasher\Laravel\Facade\Flasher;
 
 class HandleInertiaRequests extends Middleware
 {
@@ -36,7 +37,15 @@ class HandleInertiaRequests extends Middleware
     public function share(Request $request): array
     {
         return array_merge(parent::share($request), [
-            //
+            // Add flash messages to Inertia shared data
+            'flash' => fn () => [
+            'messages' => Flasher::all(), // For PHP-Flasher
+        ],
+
+            // You can include other shared data here
+            // 'auth' => [
+            //     'user' => $request->user(),
+            // ],
         ]);
     }
 }

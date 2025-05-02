@@ -8,11 +8,13 @@
     "require": {
         "php": "^8.2",
         "inertiajs/inertia-laravel": "^2.0",
+        "jenssegers/mongodb": "*",
         "laravel/framework": "^12.0",
         "laravel/socialite": "^5.18",
         "laravel/tinker": "^2.10.1",
         "mongodb/laravel-mongodb": "^5.2",
-        "mongodb/mongodb": "^1.21"
+        "mongodb/mongodb": "^1.21",
+        "php-flasher/flasher-laravel": "^2.1"
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",

@@ -11,32 +11,37 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { FilePlus } from "lucide-react";
+import flasher from '@flasher/flasher'
 
 export function CreateDialog() {
   const [open, setOpen] = useState(false);
-  const [category, setCategory] = useState("film"); // this is the Film/Theatre toggle
 
   const { data, setData, post, processing, errors } = useForm({
     title: "",
     description: "",
     genre: "",
-    // category, optionally send this to backend if/when needed
+    thumbnail: null,
+    type: "film", // ✅ default type is "film"
   });
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    console.log('Category selected:', category);
+    const formData = new FormData();
+    formData.append("title", data.title);
+    formData.append("description", data.description);
+    formData.append("genre", data.genre);
+    formData.append("type", data.type);
+    if (data.thumbnail) formData.append("thumbnail", data.thumbnail);
+
     post("/scripts", {
-      data: {
-        ...data,
-        type: category, // this is the correct field to store film/theatre
-      },
+      data: formData,
+      forceFormData: true,
       onSuccess: () => {
         setOpen(false);
         window.location.href = "/editor";
+        flasher.success('Post created from the frontend!');
       },
     });
   };
@@ -54,15 +59,36 @@ export function CreateDialog() {
           <DialogTitle>Create Empty Script</DialogTitle>
         </DialogHeader>
 
-        {/* Tabs for selecting Film or Theatre */}
-        <Tabs defaultValue="film" onValueChange={setCategory}>
-          <TabsList className="grid w-full grid-cols-2 mb-4">
-            <TabsTrigger value="film">Film</TabsTrigger>
-            <TabsTrigger value="theatre">Theatre</TabsTrigger>
-          </TabsList>
-        </Tabs>
+        {/* Type Selector (Film / Theatre) */}
+        <div className="space-y-2">
+          <Label>Type</Label>
+          <div className="flex items-center space-x-4">
+            <div>
+              <input
+                type="radio"
+                id="film"
+                name="type"
+                value="film"
+                checked={data.type === "film"}
+                onChange={() => setData("type", "film")}
+              />
+              <Label htmlFor="film" className="ml-2">Film</Label>
+            </div>
+            <div>
+              <input
+                type="radio"
+                id="theatre"
+                name="type"
+                value="theatre"
+                checked={data.type === "theatre"}
+                onChange={() => setData("type", "theatre")}
+              />
+              <Label htmlFor="theatre" className="ml-2">Theatre</Label>
+            </div>
+          </div>
+        </div>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-4 mt-4">
           <div className="space-y-2">
             <Label htmlFor="title">Title</Label>
             <Input
@@ -89,6 +115,20 @@ export function CreateDialog() {
               value={data.genre}
               onChange={(e) => setData("genre", e.target.value)}
             />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="thumbnail">Thumbnail</Label>
+            <Input
+              id="thumbnail"
+              type="file"
+              accept="image/*"
+              onChange={(e) => {
+                const file = e.target.files[0];
+                if (file) setData("thumbnail", file);
+              }}
+            />
+            {errors.thumbnail && <p className="text-red-500 text-sm">{errors.thumbnail}</p>}
           </div>
 
           <DialogFooter>

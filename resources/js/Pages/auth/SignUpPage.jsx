@@ -1,4 +1,4 @@
-import { Link, useForm } from "@inertiajs/react"; // Inertia hooks
+import { Link, useForm, usePage } from "@inertiajs/react"; // Inertia hooks
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -7,6 +7,8 @@ import { Upload } from "lucide-react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { signupSchema } from "../../utils/validation/signup";
 import { useForm as useReactHookForm } from "react-hook-form";
+import { useState, useEffect } from "react";
+import flasher from '@flasher/flasher';
 
 export default function SignupPage() {
   const { data, setData, post, processing, errors } = useForm({
@@ -29,9 +31,29 @@ export default function SignupPage() {
     mode: "onChange",
   });
 
+  const [showError, setShowError] = useState(false); // State to control visibility of the error popup
+
   const signupHandler = () => {
     post("/register");
   };
+
+  // // Show error popup for 3 seconds if errors exist
+  // useEffect(() => {
+  //   if (errors && Object.keys(errors).length > 0) {
+  //     setShowError(true);
+  //     setTimeout(() => {
+  //       setShowError(false);
+  //     }, 3000); // Hide after 3 seconds
+  //   }
+  // }, [errors]);
+
+   const { messages } = usePage().props;
+    
+            useEffect(() => {
+            if (messages) {
+                flasher.render(messages);
+            }
+            }, [messages]);
 
   return (
     <div className="flex min-h-screen items-center justify-center w-[100vw] bg-gray-50 px-4 py-12 sm:px-6 lg:px-8">
@@ -50,6 +72,14 @@ export default function SignupPage() {
             </Link>
           </p>
         </div>
+
+        {/* Error message popup */}
+        {showError && errors && Object.keys(errors).length > 0 && (
+          <div className="absolute top-4 left-1/2 transform -translate-x-1/2 p-4 bg-red-600 text-white rounded-lg shadow-lg">
+            <p>{errors.fullname || errors.email || errors.password || errors.confirmPassword}</p>
+          </div>
+        )}
+
         <form className="mt-8 space-y-6" onSubmit={handleSubmit(signupHandler)}>
           <div className="space-y-4">
             <div className="flex flex-col items-center justify-center">
@@ -117,7 +147,7 @@ export default function SignupPage() {
                 placeholder="Email address"
               />
               <p className="text-red-600 text-sm">
-                {formState.errors.email?.message || errors.email}
+                {formState.errors.email?.message}
               </p>
             </div>
 

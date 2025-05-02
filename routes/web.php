@@ -7,12 +7,27 @@ use Laravel\Socialite\Facades\Socialite;
 use App\Models\User;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\SocialAuthController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ScriptsController;
 use App\Http\Controllers\EditorController;
+use App\Http\Controllers\SceneController;
+use App\Http\Controllers\ScriptInvitationController;
+
 
   // Route::get('/', function () {
     //     return view('welcome');
     // });
+
+   
+
+   
+        Route::post('/invitations', [ScriptInvitationController::class, 'store']); // Invite user
+   
+    
+    Route::get('/invitations/accept/{token}', [ScriptInvitationController::class, 'accept']);
+
+    Route::post('/scenes', [SceneController::class, 'store']);
+    Route::get('/scenes/{id}', [SceneController::class, 'show']);
 
     Route::get('/auth/google', [SocialAuthController::class, 'redirectToGoogle'])->name('google.login');
     Route::get('/auth/google/callback', [SocialAuthController::class, 'handleGoogleCallback']);
@@ -24,6 +39,10 @@ use App\Http\Controllers\EditorController;
     });
 
     Route::get('/signup', function () {
+        return Inertia::render('auth/SignUpPage');
+    })->name('signup');
+
+    Route::get('/register', function () {
         return Inertia::render('auth/SignUpPage');
     });
 
@@ -43,10 +62,10 @@ use App\Http\Controllers\EditorController;
         return Inertia::render('auth/LoginPage');
     })->name('login');
 
-    Route::post('/register', [RegisterController::class, 'store']);
+    Route::post('/register', [RegisterController::class, 'store'])->name('register');
 
         // Handle Login Form Submission
-    Route::post('/login', [RegisterController::class, 'login']);
+    Route::post('/login', [RegisterController::class, 'login'])->name('login');
 
    
 
@@ -55,15 +74,22 @@ use App\Http\Controllers\EditorController;
     // })->name('editor');
 
     Route::get('/editor', [EditorController::class, 'index'])->name('editor');
+    Route::get('/editor/{id}', [EditorController::class, 'edit'])->name('editor.edit');
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::delete('/delete/{id}', [ScriptsController::class, 'destroy'])->name('delete.destroy');
+
 
     Route::middleware(['auth'])->group(function () {
-        Route::get('/dashboard', function () {
-            return Inertia::render('writers/Dashboard/DashboardPage', [
-                'user' => Auth::user(),
-                'success' => 'Login successfully.',
-            ]);
-        })->name('dashboard');
-        
+        // Route::get('/dashboard', function () {
+        //     return Inertia::render('writers/Dashboard/DashboardPage', [
+        //         'user' => Auth::user(),
+        //         'success' => 'Login successfully.',
+        //     ]);
+        // })->name('dashboard');
+
+        Route::get('/editor', [EditorController::class, 'index'])->name('editor');
+        Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+
         Route::post('/logout', [RegisterController::class, 'logout'])->name('logout');
     });
 
@@ -72,4 +98,12 @@ use App\Http\Controllers\EditorController;
     Route::post('/verify-otp', [RegisterController::class, 'verifyOtp']);
 
     Route::post('/scripts', [ScriptsController::class, 'store'])->name('scripts');
+
+
+
+     Route::post('/verify-signup-otp', [RegisterController::class, 'verifySignupOtp'])->name('verify-signup-otp');
+
+     Route::get('/verify-otp-signup', function () {
+        return Inertia::render('verify_otp_signup'); // Make sure this is the correct Inertia component
+    })->name('verify-otp-signup');
     

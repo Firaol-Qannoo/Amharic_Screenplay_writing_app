@@ -22,6 +22,19 @@ const VerifyOtp = () => {
         });
     };
 
+
+    const handleResend = (e) => {
+        e.preventDefault();
+        post("/forgot-password", {
+            onSuccess: () => {
+                setMessage("OTP has been sent to your email.");
+                setTimeout(() => {
+                    window.location.href = `/verify-otp?email=${data.email}`;
+                }, 2000);
+            },
+        });
+    };
+
     return (
         <div className="verify-otp-container">
             <h2>Verify OTP</h2>
@@ -40,7 +53,8 @@ const VerifyOtp = () => {
             </form>
             <div className="text-center text-sm">
             Didn&apos;t receive a code?{" "}
-            <button type="button" className="font-medium text-primary hover:text-primary/90">
+            <button  onClick={handleResend}
+            type="button" className="font-medium text-primary hover:text-primary/90">
               Resend
             </button>
           </div>

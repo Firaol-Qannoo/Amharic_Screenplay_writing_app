@@ -23,9 +23,9 @@ class SocialAuthController extends Controller {
     /**
      * Handle Google callback and login the user.
      */
-    public function handleGoogleCallback()
-{
-    try {
+    public function handleGoogleCallback()  {
+        
+      try {
         Log::info('Google OAuth callback triggered.');
 
         $googleUser = Socialite::driver('google')->stateless()
@@ -62,13 +62,23 @@ class SocialAuthController extends Controller {
         Log::info('User logged in successfully.', ['user_id' => $user->id]);
 
         // return redirect()->route('dashboard')->with('success', 'Logged in with Google!');
-        return Inertia::render('dashboard', [
-            'success' => 'Logged in with Google!',
-        ]);
+        // return Inertia::render('dashboard', [
+        //     'success' => 'Logged in with Google!',
+        // ]);
+
+        flash()->success(
+            'Logged in with Google!!'
+        );
+        return Inertia::location(route('dashboard'));
+        
     } catch (\Exception $e) {
         Log::error('Google OAuth error: ' . $e->getMessage(), ['trace' => $e->getTraceAsString()]);
         
-        return redirect()->route('login')->with('error', 'Something went wrong. Check logs for details.');
+        // return redirect()->route('login')->with('error', 'Something went wrong. Check logs for details.');
+        flash()->error(
+            'Something went wrong. Please retry later.'
+        );
+        return Inertia::location(route('login'));
     }
  }
  }

@@ -18,8 +18,25 @@ class EditorController extends Controller
         // $script = Script::find($request->session()->get('script_id'));
 
         // Pass the script data to the Inertia page
+       
+
         return Inertia::render('writers/EditorPage', [
             'script' => $script,  // Pass the script to the frontend
+        ]);
+    }
+
+    public function edit($id) // Assuming you have a Script model and route model binding
+    {
+        // $script now contains the Script model instance based on the ID in the URL
+        // Or, if you don't have route model binding:
+        // $script = Script::findOrFail($request->route('script'));
+
+        $script = Script::findOrFail($id);
+        session(['script' => $script]);
+
+        return Inertia::render('writers/EditorPage', [
+            'script' => $script,
+            // Pass any other necessary data to your React/Vue component
         ]);
     }
 }

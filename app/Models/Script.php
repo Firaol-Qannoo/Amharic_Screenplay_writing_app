@@ -2,11 +2,10 @@
 
 namespace App\Models;
 
-use MongoDB\Laravel\Eloquent\Model; 
+use MongoDB\Laravel\Eloquent\Model;
 
 class Script extends Model
 {
-    //
     protected $connection = 'mongodb';
     protected $collection = 'scripts';
 
@@ -14,11 +13,22 @@ class Script extends Model
         'title',
         'description',
         'genre',
-        'type',     // film or theatre
-        // 'author',   // user ID
+        'type',
+        'user_id',
+        'thumbnail',
+        'collaborators',
     ];
 
-    public function user() {
-    return $this->belongsTo(User::class, 'author', '_id');
- }
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id', '_id');
+    }
+
+    // Optional: Get collaborator users
+    public function collaboratorUsers()
+    {
+        $ids = is_array($this->collaborators) ? $this->collaborators : [];
+    
+        return User::whereIn('_id', $ids)->get();
+    }
 }

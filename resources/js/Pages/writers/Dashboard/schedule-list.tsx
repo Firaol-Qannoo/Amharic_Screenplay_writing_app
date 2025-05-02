@@ -30,7 +30,7 @@ const scheduledScripts = [
     characters: ["Abebe", "Almaz"],
     notes: "Use natural lighting, shoot during golden hour if possible.",
   },
-  {
+  {          
     id: "s3",
     title: "ጉዞ ወደ ዋልድያ",
     sceneNumber: "Scene 8",

@@ -7,12 +7,35 @@ import { Button } from "@/components/ui/button"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { SettingsDialog } from "@/components/settings-dialog"
 import { ArrowLeft, User } from "lucide-react"
-import { Link } from '@inertiajs/react'
-import { useState } from "react"
+import { Link, usePage } from '@inertiajs/react' // Import usePage hook
+import { useState, useEffect } from "react" // Import useEffect
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 
-export default function EditorPage({ script }) {
+export default function EditorPage() {
   const [showNetworkView, setShowNetworkView] = useState(false)
+  // Use the usePage hook to access the current page data, including the 'script' prop
+  const { props } = usePage();
+  const { script } = props;
+
+  // You might want to set up an initial state for your editor content
+  const [editorContent, setEditorContent] = useState("");
+
+  // useEffect to update editor content when the script prop changes
+  useEffect(() => {
+    if (script && script.content) {
+      setEditorContent(script.content);
+    } else {
+      setEditorContent(""); // Or some default content
+    }
+  }, [script]);
+
+  // Function to handle changes in the editor content (you'll need to implement this
+  // based on your AmharicEditor component)
+  const handleEditorChange = (newContent) => {
+    setEditorContent(newContent);
+    // You might want to implement autosaving or a "Save" button here
+    // and send the updated content to your backend.
+  };
 
   return (
     <div className="flex w-[100vw] px-8 min-h-screen">
@@ -26,8 +49,8 @@ export default function EditorPage({ script }) {
                 </Button>
               </Link>
               <div className="flex items-center gap-2">
-                {/* Display the script title here */}
-                <span className="font-medium">{script.title || "No title available"}</span>
+                {/* Display the script title dynamically */}
+                <span className="font-medium">{script?.title || "No title available"}</span>
               </div>
             </div>
             <div className="flex items-center gap-2">
@@ -60,7 +83,8 @@ export default function EditorPage({ script }) {
                 </CardContent>
               </Card>
             ) : (
-              <AmharicEditor />
+              // Pass the dynamic content to your editor component
+              <AmharicEditor value={editorContent} onChange={handleEditorChange} />
             )}
           </div>
           <AiAssistant />
