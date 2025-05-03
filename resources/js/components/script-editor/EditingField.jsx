@@ -39,7 +39,7 @@ const onElementChange = (value)=>{
   setselectedElement(value)
 
 }
-
+const [importedScript, setimportedScript] = useState(null)
 const characters = useSelector(selectCharacterRelationship)
 const [content,setcontent] = useState()
 const activeScriptState = useSelector(selectActiveScript)
@@ -47,6 +47,7 @@ const newSceneIndex = activeScriptState.scenes.length;
 // save script
 const saveScript = () =>{
   console.log(activeScriptState)
+  console.log(JSON.stringify(activeScriptState))
 }
 
 // word suggestion
@@ -96,6 +97,7 @@ useEffect(() => {
 
 const [line, setline] = useState(null)
 // element format
+const [sceneId, setsceneId] = useState(null)
 const [emptyScript, setemptyScript] = useState(true)
 useEffect(() => {
  
@@ -111,39 +113,45 @@ useEffect(() => {
     description: null,
     relationships: [],
   }));
-setline({...line,character: lastTextArea?.value})
+  let character= {id: nanoid(),text: lastTextArea?.value}
+setline({...line,character})
  }
  if(lastTextArea?.getAttribute("data-type")=="character_emotion"){
-  setline({...line,emotion: lastTextArea?.value})
+  let emotion= {id: nanoid(),text: lastTextArea?.value}
+  setline({...line,emotion})
  }
 
  if(lastTextArea?.getAttribute("data-type")=="dialogue"){
-  let fullLine = {...line,dialogue: lastTextArea?.value}
+  let dialogue= {id: nanoid(),text: lastTextArea?.value}
+  let fullLine = {...line, dialogue}
   setline(fullLine)
-  dispatch(addLine({ index: newSceneIndex - 1, ...fullLine }))
+  dispatch(addLine({ sceneId, line: {lineId: nanoid(), ...fullLine} }))
   setline({})
 
 
  }
  if(lastTextArea?.getAttribute("data-type")=="scene_heading"){
+  let sceneID= nanoid()
+  setsceneId(sceneID)
+ 
   setemptyScript(false)
-  dispatch(addScene())
-  
-
-  dispatch(editSceneMeta({index: newSceneIndex, sceneHead: lastTextArea?.value}))
-
-
+  let sceneHead= {id: nanoid(),text: lastTextArea?.value}
+  console.log({id: sceneID, sceneHead, sceneDesc: null})
+  dispatch(addScene({id: sceneID, sceneHead, sceneDesc: null}))
+  console.log(activeScriptState)
  }
  if(lastTextArea?.getAttribute("data-type")=="action"){
  
+  let action= {id: nanoid(),text: lastTextArea?.value}
 
-  dispatch(addLine({index: newSceneIndex-1, action: lastTextArea?.value}))
+  dispatch(addLine({sceneId, line: {lineId: nanoid(), action}}))
 
 
  }
  if(lastTextArea?.getAttribute("data-type")=="scene_description"){
   setemptyScript(false)
-  dispatch(editSceneMeta({index: newSceneIndex-1, sceneDesc: lastTextArea?.value}))
+  let sceneDesc= {id: nanoid(),text: lastTextArea?.value}
+  dispatch(editSceneMeta({sceneId, sceneDesc}))
 
  }
  
@@ -163,6 +171,9 @@ setline({...line,character: lastTextArea?.value})
   setcontent(document.querySelector('.board').innerHTML)
 
 // spell chk
+
+
+
 
 ele.addEventListener("input", async (e) => {
   const value = e.target.value.trim();
@@ -194,10 +205,179 @@ ele.addEventListener("input", async (e) => {
 
 
 
+useEffect(()=>{
+  let tempScript = {
+    "scenes": [
+        {
+            "id": "ghQi_UREjqIRQP65VpVz0",
+            "sceneHead": {
+                "id": "OzvQihiZiYw1iUvHGPmgk",
+                "text": "ውጪ-አውቶቢስ ተራ መስቀለኛ ዋናው መንገድ-ንጋት"
+            },
+            "sceneDesc": {
+                "id": "B_24bDwfk9CYhlauNG8p9",
+                "text": "ከጎጃም በረንዳ አውቶብስ ተራ፣ ከመሳለሚያ አውቶቢስ ተራ፣ ከሚካኤል አውቶቢስ ተራ፣ ከሰባተኛ አውቶቢስ ተራ የሚያመሩት \nልክ አውቶቢስ ተራ ፊት ለፊት በመስቀለኛ የሚገናኙት መንገዶች ፍፁም ጭር ብለው ይታያሉ። ሱቆች ሁሉ ተዘግተዋል። \nበያንዳዶቹ መንገዶች ፎርግራውንድ በርቀት ወይም በቅርበት የሚነበቡ የተቃውሞ መፈክሮች ይታያሉ። መፈክሮቹ በወረቀት \nየተፃፉ፣ ቤየ ግድግዳው የተለጠፉ፣ በየ መስኮቱና በየ ቆሮቆሮው የተቸከቸኩ ሲሆኑ፣ አፃፃአፋቸውም የተለያየ የቀለም ቅይጥና \nየአጣጣል ቄንጥ ያላቸው ናቸው።አብዬታዊነት በፅኑው ይስተዋልባቸዋል።"
+            },
+            "lines": [
+                {
+                    "lineId": "PPxxb3XIceKhbCjlAwacE",
+                    "character": {
+                        "id": "mPoHdE9Cio3I7G6-tINzM",
+                        "text": "ስፖርተኛ"
+                    },
+                    "dialogue": {
+                        "id": "nKQZ8wJz1MB5wkI7LrSpe",
+                        "text": "ይቅርታ!!ሻምበል ይነበብ በላይ እርሶ ኖት"
+                    }
+                },
+                {
+                    "lineId": "fGxMRUK0gi9zAot1cn4x4",
+                    "character": {
+                        "id": "V4IVqJNj19dDDR5GlE3we",
+                        "text": "ሻምበል"
+                    },
+                    "emotion": {
+                        "id": "XyxjR_AHSXB3ggXSafMZ6",
+                        "text": "በንቀት እና በቁጣ"
+                    },
+                    "dialogue": {
+                        "id": "6wozrStpY7TiFmK8B81cc",
+                        "text": "አዎ ነኝ!! ምንድነው!!"
+                    }
+                },
+                {
+                    "lineId": "hDAjGYhMO-sg_vncpK1MI",
+                    "character": {
+                        "id": "b7LZKihYFH28-Ts4otDGU",
+                        "text": "ስፖርተኛ"
+                    },
+                    "dialogue": {
+                        "id": "FxH8JEbgvp89t8_fmZd3N",
+                        "text": "ይህ የተፈረደቦት ፍርድ ነው!!"
+                    }
+                }
+            ]
+        },
+        {
+            "id": "M4d8xfMO2BECGVWu1dQvc",
+            "sceneHead": {
+                "id": "ej512IG9OpN80qSvIXUz3",
+                "text": "ውጪ -የመንደር ስፖርት ሜዳ -ንጋት"
+            },
+            "sceneDesc": {
+                "id": "v5yFF71iWoXY3btdz4a11",
+                "text": null
+            },
+            "lines": [
+                {
+                    "lineId": "M3R69pwKo76hjxE1QI9FL",
+                    "character": {
+                        "id": "RsXA__9IPqKQ-gK-szImV",
+                        "text": "ቤቢ"
+                    },
+                    "dialogue": {
+                        "id": "tNA659UM1euIQbYNONsUe",
+                        "text": "ኳስ በመሬት እናንት ሰዎች …/ለራሱ / ዘንድሮ መሬት የያዘ፣መውደቂያውን\nያሳምራል! …አማርኛ አይደለም እንዴ ምናገረው? …/ለራሱ / ምን አይነት\nጉድ ነው ዘንድሮ የመጣብን? አንድ ቛንቛ እየተነጋገረ እንዴት መግባባት\nይሳነዋል ሰው? ….ነው ገልብጣችሁ ነው የምትሰሙት?!(ለራሱ) አዳሜ\nእየገለበጥክ ስትሰሚ፣ ምን አገባኝ ትገለበጫታለሽ ከነሱ አልፈው እኔን\nሳያስገለብጡኝ ይቀራሉ ዘንድሮ?..."
+                    }
+                },
+                {
+                    "lineId": "8gZpkXtqCjbnt_U-_FnxX",
+                    "action": {
+                        "id": "ebnashcOuV75WhoaaS1vd",
+                        "text": "ጆኒ የተባለው ጆሊው ተጫዋች ኳሷን እያሽሞነሞነ ቄንጥ ይሰራባታል"
+                    }
+                },
+               
+                {
+                    "lineId": "wi6egFsci8nsCRXX5YHjY",
+                    "character": {
+                        "id": "ff_0uYkXmPfgDOBg7insE",
+                        "text": "ሰዋሰው"
+                    },
+                    "dialogue": {
+                        "id": "NBfwnHBtDOIH1X1SBbo_2",
+                        "text": "እንዴ"
+                    }
+                }
+            ]
+        }
+    ]
+}
+
+if(importedScript){
+  
+  importedscript.scenes.map((scence)=>{
+    if(scence.sceneHead.text){
+      let element = elements["scene_heading"];
+      let ele = document.createElement(element?.tag);
+      ele.innerText = scence.sceneHead.text
+      ele.setAttribute("class", element?.style);
+      ele.setAttribute("data-type", "scene_heading");
+      ele.setAttribute("id", new Date().getTime());
+      document.querySelector('.board').appendChild(ele);
+    }
+    if(scence.sceneDesc.text){
+      let element = elements["scene_description"];
+      let ele = document.createElement(element?.tag);
+      ele.innerText = scence.sceneDesc.text
+      ele.setAttribute("class", element?.style);
+      ele.setAttribute("data-type", "scene_description");
+      ele.setAttribute("id", new Date().getTime());
+      document.querySelector('.board').appendChild(ele);
+    }
+    
+    scence.lines.map(line=>{
+      for (let key in line) { 
+        if(key == "action"){
+          let element = elements["action"];
+          let ele = document.createElement(element?.tag);
+          ele.innerText = line[key].text
+          ele.setAttribute("class", element?.style);
+          ele.setAttribute("data-type", "action");
+          ele.setAttribute("id", new Date().getTime());
+          document.querySelector('.board').appendChild(ele);
+        }
+        else {
+            if(key =="character"){
+              let element = elements["character"];
+              let ele = document.createElement(element?.tag);
+              ele.innerText = line[key].text
+              ele.setAttribute("class", element?.style);
+              ele.setAttribute("data-type", "character");
+              ele.setAttribute("id", new Date().getTime());
+              document.querySelector('.board').appendChild(ele);
+            }
+            else if(key =="dialogue"){
+              let element = elements["dialogue"];
+              let ele = document.createElement(element?.tag);
+              ele.innerText = line[key].text
+              ele.setAttribute("class", element?.style);
+              ele.setAttribute("data-type", "dialogue");
+              ele.setAttribute("id", new Date().getTime());
+              document.querySelector('.board').appendChild(ele);
+            }
+            else if(key =="emotion"){
+              let element = elements["character_emotion"];
+              let ele = document.createElement(element?.tag);
+              ele.innerText = line[key].text
+              ele.setAttribute("class", element?.style);
+              ele.setAttribute("data-type", "character_emotion");
+              ele.setAttribute("id", new Date().getTime());
+              document.querySelector('.board').appendChild(ele);
+            }
+        }
+      }
+    })
+    
+    
+    })
+}
+},[])
+
 
   return (
-    <div className="flex h-full flex-col border rounded-md">
-      <div className="flex flex-wrap items-center gap-1 border-b p-1">
+    <div className="flex fixed  w-[70vw] h-full flex-col border rounded-md">
+      <div className=" flex flex-wrap items-center gap-1 border-b p-1">
       <div className="flex items-center mr-2">
         <Select  defaultValue={selectedElement}
           onValueChange={(value)=>onElementChange(value)}>
@@ -368,7 +548,7 @@ ele.addEventListener("input", async (e) => {
         <div id="suggestions-box" className="absolute bg-white border rounded-md shadow-md z-50 max-h-40 overflow-auto hidden">
 </div>
 
-          <div className="board h-[100vh] py-5 px-10">
+          <div className="board h-[70vh] overflow-y-scroll  py-5 px-70">
         </div>
         <div
   id="suggestion-box"

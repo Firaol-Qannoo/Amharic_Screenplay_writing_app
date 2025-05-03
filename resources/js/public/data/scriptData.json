@@ -1,0 +1,103 @@
+{
+    "scenes": [
+        {
+            "id": "ghQi_UREjqIRQP65VpVz0",
+            "sceneHead": {
+                "id": "OzvQihiZiYw1iUvHGPmgk",
+                "text": "1-ውጪ-አውቶቢስ ተራ መስቀለኛ ዋናው መንገድ-ንጋት"
+            },
+            "sceneDesc": {
+                "id": "B_24bDwfk9CYhlauNG8p9",
+                "text": "ከጎጃም በረንዳ አውቶብስ ተራ፣ ከመሳለሚያ አውቶቢስ ተራ፣ ከሚካኤል አውቶቢስ ተራ፣ ከሰባተኛ አውቶቢስ ተራ የሚያመሩት \nልክ አውቶቢስ ተራ ፊት ለፊት በመስቀለኛ የሚገናኙት መንገዶች ፍፁም ጭር ብለው ይታያሉ። ሱቆች ሁሉ ተዘግተዋል። \nበያንዳዶቹ መንገዶች ፎርግራውንድ በርቀት ወይም በቅርበት የሚነበቡ የተቃውሞ መፈክሮች ይታያሉ። መፈክሮቹ በወረቀት \nየተፃፉ፣ ቤየ ግድግዳው የተለጠፉ፣ በየ መስኮቱና በየ ቆሮቆሮው የተቸከቸኩ ሲሆኑ፣ አፃፃአፋቸውም የተለያየ የቀለም ቅይጥና \nየአጣጣል ቄንጥ ያላቸው ናቸው።አብዬታዊነት በፅኑው ይስተዋልባቸዋል።"
+            },
+            "lines": [
+                {
+                    "lineId": "PPxxb3XIceKhbCjlAwacE",
+                    "character": {
+                        "id": "mPoHdE9Cio3I7G6-tINzM",
+                        "text": "ስፖርተኛ"
+                    },
+                    "dialogue": {
+                        "id": "nKQZ8wJz1MB5wkI7LrSpe",
+                        "text": "ይቅርታ!!ሻምበል ይነበብ በላይ እርሶ ኖት"
+                    }
+                },
+                {
+                    "lineId": "fGxMRUK0gi9zAot1cn4x4",
+                    "character": {
+                        "id": "V4IVqJNj19dDDR5GlE3we",
+                        "text": "ሻምበል"
+                    },
+                    "emotion": {
+                        "id": "XyxjR_AHSXB3ggXSafMZ6",
+                        "text": "በንቀት እና በቁጣ"
+                    },
+                    "dialogue": {
+                        "id": "6wozrStpY7TiFmK8B81cc",
+                        "text": "አዎ ነኝ!! ምንድነው!!"
+                    }
+                },
+                {
+                    "lineId": "hDAjGYhMO-sg_vncpK1MI",
+                    "character": {
+                        "id": "b7LZKihYFH28-Ts4otDGU",
+                        "text": "ስፖርተኛ"
+                    },
+                    "dialogue": {
+                        "id": "FxH8JEbgvp89t8_fmZd3N",
+                        "text": "ይህ የተፈረደቦት ፍርድ ነው!!"
+                    }
+                }
+            ]
+        },
+        {
+            "id": "M4d8xfMO2BECGVWu1dQvc",
+            "sceneHead": {
+                "id": "ej512IG9OpN80qSvIXUz3",
+                "text": "3-ውጪ -የመንደር ስፖርት ሜዳ -ንጋት"
+            },
+            "sceneDesc": {
+                "id": "v5yFF71iWoXY3btdz4a11",
+                "text": null
+            },
+            "lines": [
+                {
+                    "lineId": "M3R69pwKo76hjxE1QI9FL",
+                    "character": {
+                        "id": "RsXA__9IPqKQ-gK-szImV",
+                        "text": ""
+                    },
+                    "dialogue": {
+                        "id": "tNA659UM1euIQbYNONsUe",
+                        "text": "ኳስ በመሬት እናንት ሰዎች …/ለራሱ / ዘንድሮ መሬት የያዘ፣መውደቂያውን\nያሳምራል! …አማርኛ አይደለም እንዴ ምናገረው? …/ለራሱ / ምን አይነት\nጉድ ነው ዘንድሮ የመጣብን? አንድ ቛንቛ እየተነጋገረ እንዴት መግባባት\nይሳነዋል ሰው? ….ነው ገልብጣችሁ ነው የምትሰሙት?!(ለራሱ) አዳሜ\nእየገለበጥክ ስትሰሚ፣ ምን አገባኝ ትገለበጫታለሽ ከነሱ አልፈው እኔን\nሳያስገለብጡኝ ይቀራሉ ዘንድሮ?..."
+                    }
+                },
+                {
+                    "lineId": "8gZpkXtqCjbnt_U-_FnxX",
+                    "action": {
+                        "id": "ebnashcOuV75WhoaaS1vd",
+                        "text": "ጆኒ የተባለው ጆሊው ተጫዋች ኳሷን እያሽሞነሞነ ቄንጥ ይሰራባታል"
+                    }
+                },
+                {
+                    "lineId": "bLrNWPxml3lOY9NrCoqNS",
+                    "action": {
+                        "id": "R-2JyZFfiRTcGvNqyGaN6",
+                        "text": ""
+                    }
+                },
+                {
+                    "lineId": "wi6egFsci8nsCRXX5YHjY",
+                    "character": {
+                        "id": "ff_0uYkXmPfgDOBg7insE",
+                        "text": "ሰዋሰው"
+                    },
+                    "dialogue": {
+                        "id": "NBfwnHBtDOIH1X1SBbo_2",
+                        "text": "እንዴ"
+                    }
+                }
+            ]
+        }
+    ]
+}
