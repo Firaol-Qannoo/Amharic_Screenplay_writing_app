@@ -1,6 +1,4 @@
-"use client"
 
-import { AmharicEditor } from "@/components/script-editor/amharic-editor"
 import { CharacterNetwork } from "@/components/script-editor/character-network"
 import { AiAssistant } from "@/components/script-editor/ai-assistant"
 import { Button } from "@/components/ui/button"
@@ -10,6 +8,7 @@ import { ArrowLeft, User } from "lucide-react"
 import { Link, usePage } from '@inertiajs/react' // Import usePage hook
 import { useState, useEffect } from "react" // Import useEffect
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { EditorField } from "../../components/script-editor/EditingField"
 
 export default function EditorPage() {
   const [showNetworkView, setShowNetworkView] = useState(false)
@@ -84,7 +83,7 @@ export default function EditorPage() {
               </Card>
             ) : (
               // Pass the dynamic content to your editor component
-              <AmharicEditor value={editorContent} onChange={handleEditorChange} />
+              <EditorField value={editorContent} onChange={handleEditorChange} />
             )}
           </div>
           <AiAssistant />
