@@ -117,5 +117,4 @@ class ScriptInvitationController extends Controller
             return Inertia::location(route('dashboard'));
         }
     }
-    
 }
