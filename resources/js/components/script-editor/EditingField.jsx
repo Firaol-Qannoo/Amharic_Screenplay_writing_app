@@ -50,6 +50,7 @@ import {
     updateCharacter,
 } from "../../features/Characters";
 import { elements } from "../../../../public/data/elements";
+import { initScript } from "../../features/activeScriptSlice";
 
 export function EditorField() {
     const dispatch = useDispatch();
@@ -250,7 +251,9 @@ export function EditorField() {
             }
         });
     }, [selectedElement]);
-
+const onchange = (e) =>{
+   console.log(e.target.id, e.target.value)
+}
     useEffect(() => {
         let importedScript = {
             meta: {
@@ -472,78 +475,84 @@ export function EditorField() {
             ],
         };
 
-        if (importedScript.false) {
+        if (importedScript) {
             importedScript?.characters &&
                 dispatch(initCharacter(importedScript.characters));
-            importedScript?.scenes?.map((scence) => {
-                if (scence.sceneHead.text) {
-                    let element = elements["scene_heading"];
-                    let ele = document.createElement(element?.tag);
-                    ele.innerText = scence.sceneHead.text;
-                    ele.setAttribute("class", element?.style);
-                    ele.setAttribute("data-type", "scene_heading");
-                    ele.setAttribute("id", new Date().getTime());
-                    document.querySelector(".board").appendChild(ele);
-                }
-                if (scence.sceneDesc.text) {
-                    let element = elements["scene_description"];
-                    let ele = document.createElement(element?.tag);
-                    ele.innerText = scence.sceneDesc.text;
-                    ele.setAttribute("class", element?.style);
-                    ele.setAttribute("data-type", "scene_description");
-                    ele.setAttribute("id", new Date().getTime());
-                    document.querySelector(".board").appendChild(ele);
-                }
-
-                scence.lines.map((line) => {
-                    for (let key in line) {
-                        if (key == "action") {
-                            let element = elements["action"];
-                            let ele = document.createElement(element?.tag);
-                            ele.innerText = line[key].text;
-                            ele.setAttribute("class", element?.style);
-                            ele.setAttribute("data-type", "action");
-                            ele.setAttribute("id", new Date().getTime());
-                            document.querySelector(".board").appendChild(ele);
-                        } else {
-                            if (key == "character") {
-                                let element = elements["character"];
+                importedScript?.scenes && dispatch(initScript({scenes: importedScript.scenes})); importedScript?.scenes?.map((scence) => {
+                    if (scence.sceneHead.text) {
+                        let element = elements["scene_heading"];
+                        let ele = document.createElement(element?.tag);
+                        ele.innerText = scence.sceneHead.text;
+                        ele.setAttribute("class", element?.style);
+                        ele.addEventListener("change",onchange)
+                        ele.setAttribute("data-type", "scene_heading");
+                        ele.setAttribute("id", scence.sceneHead.id);
+                        document.querySelector(".board").appendChild(ele);
+                    }
+                    if (scence.sceneDesc.text) {
+                        let element = elements["scene_description"];
+                        let ele = document.createElement(element?.tag);
+                        ele.innerText = scence.sceneDesc.text;
+                        ele.setAttribute("class", element?.style);
+                        ele.addEventListener("change",onchange)
+                        ele.setAttribute("data-type", "scene_description");
+                        ele.setAttribute("id", scence.sceneDesc.id);
+                        document.querySelector(".board").appendChild(ele);
+                    }
+    
+                    scence.lines.map((line) => {
+                        for (let key in line) {
+                            if (key == "action") {
+                                let element = elements["action"];
                                 let ele = document.createElement(element?.tag);
                                 ele.innerText = line[key].text;
                                 ele.setAttribute("class", element?.style);
-                                ele.setAttribute("data-type", "character");
-                                ele.setAttribute("id", new Date().getTime());
-                                document
-                                    .querySelector(".board")
-                                    .appendChild(ele);
-                            } else if (key == "dialogue") {
-                                let element = elements["dialogue"];
-                                let ele = document.createElement(element?.tag);
-                                ele.innerText = line[key].text;
-                                ele.setAttribute("class", element?.style);
-                                ele.setAttribute("data-type", "dialogue");
-                                ele.setAttribute("id", new Date().getTime());
-                                document
-                                    .querySelector(".board")
-                                    .appendChild(ele);
-                            } else if (key == "emotion") {
-                                let element = elements["character_emotion"];
-                                let ele = document.createElement(element?.tag);
-                                ele.innerText = line[key].text;
-                                ele.setAttribute("class", element?.style);
-                                ele.setAttribute(
-                                    "data-type",
-                                    "character_emotion"
-                                );
-                                ele.setAttribute("id", new Date().getTime());
-                                document
-                                    .querySelector(".board")
-                                    .appendChild(ele);
+                                ele.addEventListener("change",onchange)
+                                ele.setAttribute("data-type", "action");
+                                ele.setAttribute("id", line[key].id);
+                                document.querySelector(".board").appendChild(ele);
+                            } else {
+                                if (key == "character") {
+                                    let element = elements["character"];
+                                    let ele = document.createElement(element?.tag);
+                                    ele.innerText = line[key].text;
+                                    ele.setAttribute("class", element?.style);
+                                    ele.addEventListener("change",onchange)
+                                    ele.setAttribute("data-type", "character");
+                                    ele.setAttribute("id", line[key].id);
+                                    document
+                                        .querySelector(".board")
+                                        .appendChild(ele);
+                                } else if (key == "dialogue") {
+                                    let element = elements["dialogue"];
+                                    let ele = document.createElement(element?.tag);
+                                    ele.innerText = line[key].text;
+                                    ele.setAttribute("class", element?.style);
+                                    ele.addEventListener("change",onchange)
+                                    ele.setAttribute("data-type", "dialogue");
+                                    ele.setAttribute("id", line[key].id);
+                                    document
+                                        .querySelector(".board")
+                                        .appendChild(ele);
+                                } else if (key == "emotion") {
+                                    let element = elements["character_emotion"];
+                                    let ele = document.createElement(element?.tag);
+                                    ele.innerText = line[key].text;
+                                    ele.setAttribute("class", element?.style);
+                                    ele.addEventListener("change",onchange)
+                                    ele.setAttribute(
+                                        "data-type",
+                                        "character_emotion"
+                                    );
+                                    ele.setAttribute("id", line[key].id);
+                                    document
+                                        .querySelector(".board")
+                                        .appendChild(ele);
+                                }
                             }
                         }
-                    }
+                    });
                 });
-            });
         }
     }, []);
 

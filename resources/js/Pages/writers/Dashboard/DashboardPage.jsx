@@ -522,9 +522,9 @@ export default function Dashboard({ myScripts, invitedScripts}) {
                                     </TabsContent>
                                 </Tabs>
                             </div>
-                            <div className="md:col-span-1">
+                            {/* <div className="md:col-span-1">
                                 <ScheduleList />
-                            </div>
+                            </div> */}
                         </div>
                     </div>
                 </div>
