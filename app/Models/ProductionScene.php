@@ -10,6 +10,7 @@ class ProductionScene extends Model
     protected $collection = 'production_scenes';
 
     protected $fillable = [
+        'json_id',
         'scene_num',
         'location_type',
         'location',
