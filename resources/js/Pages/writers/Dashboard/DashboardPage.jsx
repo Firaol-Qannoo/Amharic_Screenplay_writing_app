@@ -78,7 +78,7 @@ const templateCategories = [
     },
 ];
 
-export default function Dashboard({ myScripts, invitedScripts}) {
+export default function Dashboard({ myScripts, invitedScripts, user}) {
     const [searchQuery, setSearchQuery] = useState("");
     const [selectedTab, setSelectedTab] = useState("recent");
     const [successMessage, setSuccessMessage] = useState('');
@@ -158,7 +158,7 @@ export default function Dashboard({ myScripts, invitedScripts}) {
                                 />
                             </div>
                             <ThemeToggle />
-                            <SettingsDialog />
+                            <SettingsDialog user={user} />
                             <DropdownMenu>
                                 <DropdownMenuTrigger asChild>
                                     <Button variant="ghost" size="icon" className="rounded-full">

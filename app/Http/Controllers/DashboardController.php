@@ -14,11 +14,8 @@ class DashboardController extends Controller
     public function index()
     {
         $userId = Auth::id();
-    
-        // Scripts created by the user
-
-        $user = Auth::user();  // Get the currently authenticated user
-        // dd($user);
+        
+        $user = Auth::user();  
        
 
         $myScripts = Script::where('user_id', $userId)->get()->map(function ($script) {

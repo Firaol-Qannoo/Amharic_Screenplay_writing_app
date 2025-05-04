@@ -9,7 +9,7 @@ import { useState, useEffect } from "react" // Import useEffect
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { EditorField } from "../../components/script-editor/EditingField"
 
-export default function EditorPage({script}) {
+export default function EditorPage({script, user}) {
   const [showNetworkView, setShowNetworkView] = useState(false)
   // Use the usePage hook to access the current page data, including the 'script' prop
   const { props } = usePage();
@@ -61,7 +61,7 @@ export default function EditorPage({script}) {
                 {showNetworkView ? "ስክሪፕት አሳይ" : "ግንኙነት ኔትወርክ አሳይ"}
               </Button>
               <ThemeToggle />
-              <SettingsDialog />
+              <SettingsDialog  user={user}/>
               <Button variant="ghost" size="icon" className="rounded-full">
                 <User className="h-5 w-5" />
               </Button>
