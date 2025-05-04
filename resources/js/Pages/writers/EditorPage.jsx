@@ -9,11 +9,10 @@ import { useState, useEffect } from "react" // Import useEffect
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { EditorField } from "../../components/script-editor/EditingField"
 
-export default function EditorPage() {
+export default function EditorPage({script}) {
   const [showNetworkView, setShowNetworkView] = useState(false)
   // Use the usePage hook to access the current page data, including the 'script' prop
   const { props } = usePage();
-  const { script } = props;
 
   // You might want to set up an initial state for your editor content
   const [editorContent, setEditorContent] = useState("");

@@ -27,6 +27,8 @@ class EditorController extends Controller
 
     public function edit($id) {
         $script = Script::with('scenes')->findOrFail($id);
+        // dd( $script);
         return Inertia::render('writers/EditorPage', ['script' => $script]);
+        
     }
 }
