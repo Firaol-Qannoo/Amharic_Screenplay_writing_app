@@ -21,12 +21,10 @@ use App\Http\Controllers\ScriptInvitationController;
    
 
    
-    Route::post('/invitations', [ScriptInvitationController::class, 'store']); // Invite user
+        Route::post('/invitations', [ScriptInvitationController::class, 'store']); // Invite user
    
     
-    Route::middleware([])->group(function () {
-        Route::get('/invitation/accept/{token}', [ScriptInvitationController::class, 'accept'])->name('invitation.accept');
-    });
+    Route::get('/invitations/accept/{token}', [ScriptInvitationController::class, 'accept']);
 
     Route::post('/scenes', [SceneController::class, 'store']);
     Route::get('/scenes/{id}', [SceneController::class, 'show']);
@@ -110,4 +108,4 @@ use App\Http\Controllers\ScriptInvitationController;
     })->name('verify-otp-signup');
     
 
-    Route::post('/settings/update', [RegisterController::class, 'update'])->middleware('auth');
+    Route::post('/scripts/{scriptID}/scenes', [SceneController::class, 'store'])->name('scenes.store');
