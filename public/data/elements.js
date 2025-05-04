@@ -1,34 +1,36 @@
+let mainStyle ="field-sizing-content resize-none border-none focus:border-none text-md  outline-none focus:outline-none"
 export const elements =
 {
 
     scene_heading: {
         tag: "textarea",
-        style: "text-xl px-5 underline outline-none block focus:outline-none mb-4 field-sizing-content resize-none border-none focus:border-none  font-bold",
+        style: `${mainStyle} px-5 text-xl mb-3 font-bold underline  block`,
         value: "Scene Heading"
     },
     scene_description: {
         tag: "textarea",
-        style: "text-md px-5 outline-none italic block focus:outline-none mb-4 field-sizing-content resize-none border-none focus:border-none  font-light",
+        style: `${mainStyle} px-5 text-md mb-4 font-bold italic block`,
         value: "Scene Heading"
     },
     action: {
         tag: "textarea",
-        style: "text-md px-5 outline-none italic block focus:outline-none mb-4 field-sizing-content resize-none border-none focus:border-none  font-light",
+        style: `${mainStyle} px-5 text-md mb-3 font-semibold italic block`,
         value: "Action"
     },
     character: {
         tag: "textarea",
-        style: "text-md px-5 font-bold outline-none inline text-blue-800 char  px-2 focus:outline-none mb-4 field-sizing-content resize-none  focus:border-none",
+        style: `${mainStyle} pl-5 text-md mb-2 font-bold inline text-blue-800 char`,
         value: "Scene Heading"
+    },
+    
+    character_emotion: {
+        tag: "textarea",
+        style: `${mainStyle} px-2 text-md mb-2 text-blue-600 font-light inline`,
+        value: "Scene Description"
     },
     dialogue: {
         tag: "textarea",
-        style: "text-md px-5 outline-none block focus:outline-none mb-4 field-sizing-content resize-none border-none focus:border-none  font-light",
+        style: `${mainStyle} px-5 text-md mb-3 font-light block`,
         value: "Scene Heading"
-    },
-    character_emotion: {
-        tag: "textarea",
-        style: "text-md px-5 outline-none inline focus:outline-none mb-4 field-sizing-content resize-none border-none focus:border-none  font-light",
-        value: "Scene Description"
     }
 }

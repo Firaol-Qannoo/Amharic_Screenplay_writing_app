@@ -1,13 +1,16 @@
 import { createSlice } from '@reduxjs/toolkit'
 import {nanoid} from 'nanoid'
 
-let initialState = []
-export const characterRelationshipSlice = createSlice({
-  name: "characterRelationship",
+let initialState =  []
+export const charactersSlice = createSlice({
+  name: "characters",
   initialState,
   reducers: {
+    initCharacter: (state,action) => {
+      return action.payload
+    },
     addCharacter: (state, action) => {
-      state.push({...action.payload, id: nanoid()})
+      state.push({...action.payload})
     },
     updateCharacter: (state, action) => {
       const { id, updates } = action.payload
@@ -48,17 +51,18 @@ export const characterRelationshipSlice = createSlice({
   }
 })
 
-export const selectCharacterRelationship = state => state.characterRelationship
-export const selectCharacterById = (state, name) =>
-  state.characterRelationship.find(character => character.name === name)
+export const selectcharacters = state => state.characters
+export const selectCharacterByName = (state, name) =>
+  state.characters.find(character => character.name === name)
 
 export const {
+  initCharacter,
   addCharacter,
   updateCharacter,
   deleteCharacter,
   addRelationship,
   updateRelationship,
   removeRelationship
-} = characterRelationshipSlice.actions
+} = charactersSlice.actions
 
-export default characterRelationshipSlice.reducer
+export default charactersSlice.reducer
