@@ -199,10 +199,6 @@ export function EditorField({ script }) { // Receive script as a prop
     });
 
   }, [selectedElement]);
-
-
-
-
   return (
     <div className="flex h-full flex-col border rounded-md">
       <div className="flex flex-wrap items-center gap-1 border-b p-1">

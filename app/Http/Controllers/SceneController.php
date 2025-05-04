@@ -30,17 +30,31 @@ class SceneController extends Controller
         if ($validator->fails()) {
             return back()->withErrors($validator)->withInput(); 
         }
-
         foreach ($request->input('scenes') as $sceneData) {
+            $cleanedLines = [];
+        
+            if (!empty($sceneData['lines']) && is_array($sceneData['lines'])) {
+                foreach ($sceneData['lines'] as $line) {
+                    if (is_array($line)) {
+                        $cleanedLines[] = [
+                            'character' => $line['character'] ?? null,
+                            'emotion' => $line['emotion'] ?? null,
+                            'dialogue' => $line['dialogue'] ?? null,
+                            'action' => $line['action'] ?? null,
+                        ];
+                    }
+                }
+            }
+        
             Scene::create([
                 'scriptID' => $scriptID,
                 'scene_num' => $sceneData['scene_num'] ?? null,
                 'sceneHead' => $sceneData['sceneHead'] ?? null,
                 'sceneDesc' => $sceneData['sceneDesc'] ?? null,
-                'lines' => $sceneData['lines'] ?? [],
+                'lines' => $cleanedLines,
             ]);
         }
-
+        
         flash()->success(
             'Scenes Saved successfully!'
         );
