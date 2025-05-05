@@ -10,6 +10,7 @@ use App\Http\Controllers\Auth\SocialAuthController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ScriptsController;
 use App\Http\Controllers\EditorController;
+use App\Http\Controllers\ProductionScheduleController;
 use App\Http\Controllers\SceneController;
 use App\Http\Controllers\ScriptInvitationController;
 
@@ -96,6 +97,8 @@ use App\Http\Controllers\ScriptInvitationController;
     Route::post('/verify-otp', [RegisterController::class, 'verifyOtp']);
 
     Route::post('/scripts', [ScriptsController::class, 'store'])->name('scripts');
+// routes/web.php
+Route::post('/production-schedule', [ProductionScheduleController::class, 'showWithStaticData']);
 
 
 
