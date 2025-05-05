@@ -22,15 +22,13 @@ use App\Http\Controllers\ScriptInvitationController;
 
    
         Route::post('/invitations', [ScriptInvitationController::class, 'store']); // Invite user
-   
-    
-    Route::get('/invitations/accept/{token}', [ScriptInvitationController::class, 'accept']);
+        Route::get('/invitation/accept/{token}', [ScriptInvitationController::class, 'accept'])->name('invitation.accept');
 
-    Route::post('/scenes', [SceneController::class, 'store']);
-    Route::get('/scenes/{id}', [SceneController::class, 'show']);
+        Route::post('/scenes', [SceneController::class, 'store']);
+        Route::get('/scenes/{id}', [SceneController::class, 'show']);
 
-    Route::get('/auth/google', [SocialAuthController::class, 'redirectToGoogle'])->name('google.login');
-    Route::get('/auth/google/callback', [SocialAuthController::class, 'handleGoogleCallback']);
+        Route::get('/auth/google', [SocialAuthController::class, 'redirectToGoogle'])->name('google.login');
+        Route::get('/auth/google/callback', [SocialAuthController::class, 'handleGoogleCallback']);
   
 
     Route::get('/', function () {
@@ -107,3 +105,7 @@ use App\Http\Controllers\ScriptInvitationController;
         return Inertia::render('verify_otp_signup'); // Make sure this is the correct Inertia component
     })->name('verify-otp-signup');
     
+
+    Route::post('/scripts/{scriptID}/scenes', [SceneController::class, 'store'])->name('scenes.store');
+
+    Route::post('/settings/update', [RegisterController::class, 'update'])->name('settings.update');

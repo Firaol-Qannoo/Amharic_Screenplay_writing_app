@@ -180,7 +180,6 @@ class RegisterController extends Controller
     
 
     public function login(Request $request) {
-        // Validate email and password
         $validated = $request->validate([
             'email' => 'required|email',
             'password' => 'required',
@@ -189,7 +188,13 @@ class RegisterController extends Controller
         if (Auth::attempt(['email' => $validated['email'], 'password' => $validated['password']])) {
             $user = Auth::user();
     
-            // Check if this user was invited
+            // 🟡 Handle deferred invitation via token stored in session (priority)
+            if ($token = session('invitation_token')) {
+                session()->forget('invitation_token');
+                return redirect()->route('invitation.accept', ['token' => $token]);
+            }
+    
+            // 🔵 Handle implicit invitation by matching email
             $invitation = ScriptInvitation::where('invitee_email', $user->email)
                 ->where('accepted', false)
                 ->first();
@@ -210,39 +215,20 @@ class RegisterController extends Controller
                 }
             }
     
-            $scripts = Script::where('user_id', $user->_id)->get();
-            session(['script' => $scripts]);
-
-            flash()->success(
-                'Log in successfully!!'
-            );
-    
+            flash()->success('Logged in successfully!');
             return Inertia::location(route('dashboard'));
         } else {
             $user = User::where('email', $validated['email'])->first();
     
             if (!$user) {
-                // return Inertia::render('Auth/LoginPage', [
-                //     'errors' => ['email' => 'No account found with this email.']
-                // ]);
-                
-            flash()->error(
-                'No account found with this email.'
-            );
-    
-            return Inertia::location(route('login'));
+                flash()->error('No account found with this email.');
+                return Inertia::location(route('login'));
             }
     
-            // return Inertia::render('Auth/LoginPage', [
-            //     'errors' => ['email' => 'Invalid credentials. Please check your email and password.']
-            // ]);
-            flash()->error(
-                'Invalid credentials. Please check your email and password.'
-            );
-    
+            flash()->error('Invalid credentials. Please check your email and password.');
             return Inertia::location(route('login'));
-            }
         }
+    }    
     
     
 
@@ -298,4 +284,17 @@ class RegisterController extends Controller
         );
         return Inertia::location(route('login'));
     }
+
+    public function update(Request $request) {
+    $request->validate([
+        'first_name' => 'required|string|max:255',
+        'email' => 'required|email|max:255|unique:users,email,' . auth()->id(),
+    ]);
+
+    auth()->user()->update($request->only('first_name', 'email'));
+
+    flash()->success('Account Updated successfully!');
+       return Inertia::location(route('dashboard'));
+ }
+
 }

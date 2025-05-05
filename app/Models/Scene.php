@@ -12,14 +12,12 @@ class Scene extends Model
     protected $fillable = [
         'scriptID',
         'scene_num',
-        'location',
-        'time_of_day',
-        'time',
-        'blocks'
+        'sceneHead',
+        'sceneDesc',
+        'lines',
     ];
 
     protected $casts = [
-        'time' => 'datetime',
-        'blocks' => 'array'
+        'lines' => 'array', // Automatically cast the 'lines' attribute to an array
     ];
 }

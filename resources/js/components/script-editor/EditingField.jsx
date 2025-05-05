@@ -51,8 +51,9 @@ import {
 } from "../../features/Characters";
 import { elements } from "../../../../public/data/elements";
 import { initScript } from "../../features/activeScriptSlice";
+import { router } from "@inertiajs/react";
 
-export function EditorField() {
+export function EditorField({script,scenes}) {
     const dispatch = useDispatch();
     const [selectedElement, setselectedElement] = useState("scene_heading");
 
@@ -66,9 +67,20 @@ export function EditorField() {
 
     // save script
     const saveScript = () => {
-        console.log({ activeScriptState, characters });
-        console.log(JSON.stringify({ activeScriptState, characters }));
-    };
+        console.log(JSON.stringify({ scenes: activeScriptState.scenes }))
+        console.log(JSON.stringify())
+
+        router.post(`/scripts/${script.id}/scenes`, { scenes: activeScriptState.scenes }, {
+          onSuccess: () => {
+            console.log('Scenes saved successfully!');
+            // Optionally, provide user feedback (e.g., a toast notification)
+          },
+          onError: (errors) => {
+            console.error('Failed to save scenes:', errors);
+            // Optionally, display error messages to the user
+          },
+        });
+      }
 
     // word suggestion
 
@@ -255,226 +267,227 @@ const onchange = (e) =>{
    console.log(e.target.id, e.target.value)
 }
     useEffect(() => {
-        let importedScript = {
-            meta: {
-                title: "የአማርኛ የተወሰነ የታሪክ ድራማ",
-                author: {
-                    name: "ዮሴፍ አርበኛ",
-                    username: "yosef2m",
-                },
-                genre: "የታሪክ ድራማ",
-                createdAt: "2023-10-01",
-                updatedAt: "2023-10-01",
-                contributors: [
-                    {
-                        name: "ዮሴፍ አርበኛ",
-                        role: "ዋነኛ የጽሁፍ ባለሙያ",
-                        username: "yosef2m",
-                    },
-                    {
-                        name: "ዮሴፍ አርበኛ",
-                        role: "ዋነኛ የጽሁፍ ባለሙያ",
-                        username: "yosef2m",
-                    },
-                ]
-            },
-            scenes: [
-                {
-                    id: "cw6IuRI99LcW9LLRXmWbh",
-                    sceneHead: {
-                        id: "J-hqyvURXdIxF-aKdDFVH",
-                        text: "ውጪ-አውቶቢስ ተራ መስቀለኛ ዋናው መንገድ-ንጋት",
-                    },
-                    sceneDesc: {
-                        id: "HgeDzGtHBl8GvvA9mdazM",
-                        text: "ከጎጃም በረንዳ አውቶብስ ተራ፣ ከመሳለሚያ አውቶቢስ ተራ፣ ከሚካኤል አውቶቢስ ተራ፣ ከሰባተኛ አውቶቢስ ተራ የሚያመሩት \nልክ አውቶቢስ ተራ ፊት ለፊት በመስቀለኛ የሚገናኙት መንገዶች ፍፁም ጭር ብለው ይታያሉ። ሱቆች ሁሉ ተዘግተዋል። \nበያንዳዶቹ መንገዶች ፎርግራውንድ በርቀት ወይም በቅርበት የሚነበቡ የተቃውሞ መፈክሮች ይታያሉ። መፈክሮቹ በወረቀት \nየተፃፉ፣ ቤየ ግድግዳው የተለጠፉ፣ በየ መስኮቱና በየ ቆሮቆሮው የተቸከቸኩ ሲሆኑ፣ አፃፃአፋቸውም የተለያየ የቀለም ቅይጥና \nየአጣጣል ቄንጥ ያላቸው ናቸው።አብዬታዊነት በፅኑው ይስተዋልባቸዋል።",
-                    },
-                    lines: [
-                        {
-                            lineId: "hqyyWjFewnU13l2F7Ka2k",
-                            character: {
-                                id: "JGPRY-sSnRS6Q8FPCuR6y",
-                                text: "ስፖርተኛ",
-                            },
-                            dialogue: {
-                                id: "ZE46WB2HghEAAX4zcBFyY",
-                                text: "ይቅርታ!!ሻምበል ይነበብ በላይ እርሶ ኖት",
-                            },
-                        },
-                        {
-                            lineId: "vagD1w91TODFk4_m63YE-",
-                            character: {
-                                id: "Oe_EdQQDBO_3XTyMFG2wl",
-                                text: "ሻምበል",
-                            },
-                            emotion: {
-                                id: "n2uhSr7AlH8_DC7ajyeDF",
-                                text: "በንቀት እና በቁጣ",
-                            },
-                            dialogue: {
-                                id: "knnwa7JpIIm61KOOymz8J",
-                                text: "አዎ ነኝ!! ምንድነው!!",
-                            },
-                        },
-                        {
-                            lineId: "BNne2EZV9z68oHIEVqv61",
-                            character: {
-                                id: "JGPRY-sSnRS6Q8FPCuR6y",
-                                text: "ስፖርተኛ",
-                            },
-                            dialogue: {
-                                id: "a9L0nXC8cjK1JVJ6drE77",
-                                text: "ይህ የተፈረደቦት ፍርድ ነው!!",
-                            },
-                        },
-                        {
-                            lineId: "ensJM3KZPyf-i-3BBDNy-",
-                            character: {
-                                id: "Oe_EdQQDBO_3XTyMFG2wl",
-                                text: "ሻምበል",
-                            },
-                            dialogue: {
-                                id: "vNZz1ZIBBrcvmnxbepAgD",
-                                text: "ምን!!",
-                            },
-                        },
-                        {
-                            lineId: "5L7brcFI9K3z2IYEhndfF",
-                            action: {
-                                id: "tAxVkzCuvo_Wrhp1tGud7",
-                                text: "በዚህች ቅፅበት ከስፖርተኛው እጅ የወጣች የዘመኑ ትንሽ ሽጉጥ የሹፌሩ ጭንቅላት ላይ ተነጣጥራ ስትተኩስ ፀጥታው በተኩስ \nድምፅ ሲደበላለቅ፤የሹፌሩ ጭንቅላት የበረጠቀችው ጥይት ደሙን ካጠገቡ የተቀመጠችው ሚስቱ ፊት ላይ ይረጫል፡፡ከፍተኛ \nድንጋጤዋ በቅጡ ያልጨረሰችው ሚስት የባልዋን ደም ፊቷ ላይ እንደተረጨ ስትገነዘብ ለጆሮ የሚሰቀጥጥ ጨኸቷን ትለቀዋለች፡፡ \nከሷ ጀርባ ስፖርተኛው ስራውን ሰርቶ እግሬ አውጪኝ ብሎ ሲፈረጥጥ ይታያል፡፡",
-                            },
-                        },
-                    ],
-                },
-                {
-                    id: "pz-9yEziHKoVDTnf-8Ms6",
-                    sceneHead: {
-                        id: "WLOvGNEevQBYauT-6odGz",
-                        text: "ውጪ -የመንደር ስፖርት ሜዳ -ንጋት",
-                    },
-                    sceneDesc: {
-                        id: "r4_pToqf0mJw33in2fwno",
-                        text: "በአየር ላይ የምናያት ኳስ በቀስታ እንቅስቃሴ አየር ላይ ለፋታ ካየናት በኋላ እውነተኛ ሰአት ተወርውራ መሬት ስታርፍ በርካታ \nበቁጥር ሃያ(20) የሚሆኑ እግር ካስ ተጫዋቾች ሲረባረቡባት አንድ ይሆናል፡፡ አሰልጣኛቸውን አዱኛ(35) በንዴት እየደነፋ \nወዲያና ወዲህ እያለ ተጫዋቾቹ ላይ ይጮሃል፡፡ልጆቹ ኳሷ መሬት እንዳትነካ በአየር ላይ ይቀባበሏታል።",
-                    },
-                    lines: [
-                        {
-                            lineId: "8d6-XPRIK2P4odZNx3kWC",
-                            character: {
-                                id: "-7Ykjon_mlFncqfxP7YPi",
-                                text: "አዱኛ",
-                            },
-                            dialogue: {
-                                id: "UxjXmwgjOi-ztpDe0dJQZ",
-                                text: "ኳስ በመሬት እናንት ሰዎች …/ለራሱ / ዘንድሮ መሬት የያዘ፣መውደቂያውን\nያሳምራል! …አማርኛ አይደለም እንዴ ምናገረው? …/ለራሱ / ምን አይነት\nጉድ ነው ዘንድሮ የመጣብን? አንድ ቛንቛ እየተነጋገረ እንዴት መግባባት\nይሳነዋል ሰው? ….ነው ገልብጣችሁ ነው የምትሰሙት?!(ለራሱ) አዳሜ\nእየገለበጥክ ስትሰሚ፣ ምን አገባኝ ትገለበጫታለሽ ከነሱ አልፈው እኔን\nሳያስገለብጡኝ ይቀራሉ ዘንድሮ?...",
-                            },
-                        },
-                        {
-                            lineId: "jVckvAd_ewQZdZta1sT_p",
-                            action: {
-                                id: "usfphAF1Uk84Ij6to8ggq",
-                                text: "ጆኒ የተባለው ጆሊው ተጫዋች ኳሷን እያሽሞነሞነ ቄንጥ ይሰራባታል",
-                            },
-                        },
-                        {
-                            lineId: "ol63Uz8WXyoVcS7sX1rRj",
-                            character: {
-                                id: "-7Ykjon_mlFncqfxP7YPi",
-                                text: "አዱኛ",
-                            },
-                            dialogue: {
-                                id: "ibFb_Ov-2KgytKUFdCbJ1",
-                                text: "ሰዋሰው ሃያ ፑሽ አፐ…እኔ ነኝ ጥፋተኛ አንተን ተጫዋች ብዩ ማሰልጠኔ",
-                            },
-                        },
-                        {
-                            lineId: "YxiXhmSxPaQ5UFKmS7ExF",
-                            character: {
-                                id: "35qp8mktnQCzMH0mN0V56",
-                                text: "ሰዋሰው",
-                            },
-                            dialogue: {
-                                id: "B2vkG97DVptBKotxl0c3v",
-                                text: "እንዴ",
-                            },
-                        },
-                        {
-                            lineId: "fLas_RV8f-lyQNWJKM42i",
-                            character: {
-                                id: "-7Ykjon_mlFncqfxP7YPi",
-                                text: "አዱኛ",
-                            },
-                            dialogue: {
-                                id: "0fLRmGaw1Zo7aIa3tgy7_",
-                                text: "ስላቃተህ!!! ልፍስፍስ!!! እንደዚህ ተጫውቶብህ ያልፍሃል!",
-                            },
-                        },
-                    ],
-                },
-            ],
-            characters: [
-                {
-                    id: "JGPRY-sSnRS6Q8FPCuR6y",
-                    name: "ስፖርተኛ",
-                    role: null,
-                    description: null,
-                    relationships: [
-                        {
-                            to: "Oe_EdQQDBO_3XTyMFG2wl",
-                            type: "ጓዳኛ",
-                            description: "ቀይ",
-                        },
-                        {
-                            to: "35qp8mktnQCzMH0mN0V56",
-                            type: "ባል",
-                            description: "በጣም ሚወዳእትው",
-                        },
-                    ],
-                    inScene: [{ cw6IuRI99LcW9LLRXmWbh: 2 }],
-                },
-                {
-                    id: "Oe_EdQQDBO_3XTyMFG2wl",
-                    name: "ሻምበል",
-                    role: null,
-                    description: null,
-                    relationships: [
-                        {
-                            to: "35qp8mktnQCzMH0mN0V56",
-                            type: "አጎት",
-                            description: "ቀይ",
-                        },
-                    ],
-                    inScene: [{ cw6IuRI99LcW9LLRXmWbh: 2 }],
-                },
-                {
-                    id: "-7Ykjon_mlFncqfxP7YPi",
-                    name: "አዱኛ",
-                    role: null,
-                    description: null,
-                    relationships: [
-                        {
-                            to: "35qp8mktnQCzMH0mN0V56",
-                            type: "ወንድም",
-                            description: "አኩራፊ",
-                        },
-                    ],
-                    inScene: [{ "pz-9yEziHKoVDTnf-8Ms6": 3 }],
-                },
-                {
-                    id: "35qp8mktnQCzMH0mN0V56",
-                    name: "ሰዋሰው",
-                    role: null,
-                    description: null,
-                    relationships: [ {
-                        to: "Oe_EdQQDBO_3XTyMFG2wl",
-                        type: "የወንድም ልጅ",
-                        description: "ቀይ",
-                    },],
-                    inScene: [{ "pz-9yEziHKoVDTnf-8Ms6": 1 }],
-                },
-            ],
-        };
-
+        console.log("okay",scenes)
+        // let importedScript = {
+        //     meta: {
+        //         title: "የአማርኛ የተወሰነ የታሪክ ድራማ",
+        //         author: {
+        //             name: "ዮሴፍ አርበኛ",
+        //             username: "yosef2m",
+        //         },
+        //         genre: "የታሪክ ድራማ",
+        //         createdAt: "2023-10-01",
+        //         updatedAt: "2023-10-01",
+        //         contributors: [
+        //             {
+        //                 name: "ዮሴፍ አርበኛ",
+        //                 role: "ዋነኛ የጽሁፍ ባለሙያ",
+        //                 username: "yosef2m",
+        //             },
+        //             {
+        //                 name: "ዮሴፍ አርበኛ",
+        //                 role: "ዋነኛ የጽሁፍ ባለሙያ",
+        //                 username: "yosef2m",
+        //             },
+        //         ]
+        //     },
+        //     scenes: [
+        //         {
+        //             id: "cw6IuRI99LcW9LLRXmWbh",
+        //             sceneHead: {
+        //                 id: "J-hqyvURXdIxF-aKdDFVH",
+        //                 text: "ውጪ-አውቶቢስ ተራ መስቀለኛ ዋናው መንገድ-ንጋት",
+        //             },
+        //             sceneDesc: {
+        //                 id: "HgeDzGtHBl8GvvA9mdazM",
+        //                 text: "ከጎጃም በረንዳ አውቶብስ ተራ፣ ከመሳለሚያ አውቶቢስ ተራ፣ ከሚካኤል አውቶቢስ ተራ፣ ከሰባተኛ አውቶቢስ ተራ የሚያመሩት \nልክ አውቶቢስ ተራ ፊት ለፊት በመስቀለኛ የሚገናኙት መንገዶች ፍፁም ጭር ብለው ይታያሉ። ሱቆች ሁሉ ተዘግተዋል። \nበያንዳዶቹ መንገዶች ፎርግራውንድ በርቀት ወይም በቅርበት የሚነበቡ የተቃውሞ መፈክሮች ይታያሉ። መፈክሮቹ በወረቀት \nየተፃፉ፣ ቤየ ግድግዳው የተለጠፉ፣ በየ መስኮቱና በየ ቆሮቆሮው የተቸከቸኩ ሲሆኑ፣ አፃፃአፋቸውም የተለያየ የቀለም ቅይጥና \nየአጣጣል ቄንጥ ያላቸው ናቸው።አብዬታዊነት በፅኑው ይስተዋልባቸዋል።",
+        //             },
+        //             lines: [
+        //                 {
+        //                     lineId: "hqyyWjFewnU13l2F7Ka2k",
+        //                     character: {
+        //                         id: "JGPRY-sSnRS6Q8FPCuR6y",
+        //                         text: "ስፖርተኛ",
+        //                     },
+        //                     dialogue: {
+        //                         id: "ZE46WB2HghEAAX4zcBFyY",
+        //                         text: "ይቅርታ!!ሻምበል ይነበብ በላይ እርሶ ኖት",
+        //                     },
+        //                 },
+        //                 {
+        //                     lineId: "vagD1w91TODFk4_m63YE-",
+        //                     character: {
+        //                         id: "Oe_EdQQDBO_3XTyMFG2wl",
+        //                         text: "ሻምበል",
+        //                     },
+        //                     emotion: {
+        //                         id: "n2uhSr7AlH8_DC7ajyeDF",
+        //                         text: "በንቀት እና በቁጣ",
+        //                     },
+        //                     dialogue: {
+        //                         id: "knnwa7JpIIm61KOOymz8J",
+        //                         text: "አዎ ነኝ!! ምንድነው!!",
+        //                     },
+        //                 },
+        //                 {
+        //                     lineId: "BNne2EZV9z68oHIEVqv61",
+        //                     character: {
+        //                         id: "JGPRY-sSnRS6Q8FPCuR6y",
+        //                         text: "ስፖርተኛ",
+        //                     },
+        //                     dialogue: {
+        //                         id: "a9L0nXC8cjK1JVJ6drE77",
+        //                         text: "ይህ የተፈረደቦት ፍርድ ነው!!",
+        //                     },
+        //                 },
+        //                 {
+        //                     lineId: "ensJM3KZPyf-i-3BBDNy-",
+        //                     character: {
+        //                         id: "Oe_EdQQDBO_3XTyMFG2wl",
+        //                         text: "ሻምበል",
+        //                     },
+        //                     dialogue: {
+        //                         id: "vNZz1ZIBBrcvmnxbepAgD",
+        //                         text: "ምን!!",
+        //                     },
+        //                 },
+        //                 {
+        //                     lineId: "5L7brcFI9K3z2IYEhndfF",
+        //                     action: {
+        //                         id: "tAxVkzCuvo_Wrhp1tGud7",
+        //                         text: "በዚህች ቅፅበት ከስፖርተኛው እጅ የወጣች የዘመኑ ትንሽ ሽጉጥ የሹፌሩ ጭንቅላት ላይ ተነጣጥራ ስትተኩስ ፀጥታው በተኩስ \nድምፅ ሲደበላለቅ፤የሹፌሩ ጭንቅላት የበረጠቀችው ጥይት ደሙን ካጠገቡ የተቀመጠችው ሚስቱ ፊት ላይ ይረጫል፡፡ከፍተኛ \nድንጋጤዋ በቅጡ ያልጨረሰችው ሚስት የባልዋን ደም ፊቷ ላይ እንደተረጨ ስትገነዘብ ለጆሮ የሚሰቀጥጥ ጨኸቷን ትለቀዋለች፡፡ \nከሷ ጀርባ ስፖርተኛው ስራውን ሰርቶ እግሬ አውጪኝ ብሎ ሲፈረጥጥ ይታያል፡፡",
+        //                     },
+        //                 },
+        //             ],
+        //         },
+        //         {
+        //             id: "pz-9yEziHKoVDTnf-8Ms6",
+        //             sceneHead: {
+        //                 id: "WLOvGNEevQBYauT-6odGz",
+        //                 text: "ውጪ -የመንደር ስፖርት ሜዳ -ንጋት",
+        //             },
+        //             sceneDesc: {
+        //                 id: "r4_pToqf0mJw33in2fwno",
+        //                 text: "በአየር ላይ የምናያት ኳስ በቀስታ እንቅስቃሴ አየር ላይ ለፋታ ካየናት በኋላ እውነተኛ ሰአት ተወርውራ መሬት ስታርፍ በርካታ \nበቁጥር ሃያ(20) የሚሆኑ እግር ካስ ተጫዋቾች ሲረባረቡባት አንድ ይሆናል፡፡ አሰልጣኛቸውን አዱኛ(35) በንዴት እየደነፋ \nወዲያና ወዲህ እያለ ተጫዋቾቹ ላይ ይጮሃል፡፡ልጆቹ ኳሷ መሬት እንዳትነካ በአየር ላይ ይቀባበሏታል።",
+        //             },
+        //             lines: [
+        //                 {
+        //                     lineId: "8d6-XPRIK2P4odZNx3kWC",
+        //                     character: {
+        //                         id: "-7Ykjon_mlFncqfxP7YPi",
+        //                         text: "አዱኛ",
+        //                     },
+        //                     dialogue: {
+        //                         id: "UxjXmwgjOi-ztpDe0dJQZ",
+        //                         text: "ኳስ በመሬት እናንት ሰዎች …/ለራሱ / ዘንድሮ መሬት የያዘ፣መውደቂያውን\nያሳምራል! …አማርኛ አይደለም እንዴ ምናገረው? …/ለራሱ / ምን አይነት\nጉድ ነው ዘንድሮ የመጣብን? አንድ ቛንቛ እየተነጋገረ እንዴት መግባባት\nይሳነዋል ሰው? ….ነው ገልብጣችሁ ነው የምትሰሙት?!(ለራሱ) አዳሜ\nእየገለበጥክ ስትሰሚ፣ ምን አገባኝ ትገለበጫታለሽ ከነሱ አልፈው እኔን\nሳያስገለብጡኝ ይቀራሉ ዘንድሮ?...",
+        //                     },
+        //                 },
+        //                 {
+        //                     lineId: "jVckvAd_ewQZdZta1sT_p",
+        //                     action: {
+        //                         id: "usfphAF1Uk84Ij6to8ggq",
+        //                         text: "ጆኒ የተባለው ጆሊው ተጫዋች ኳሷን እያሽሞነሞነ ቄንጥ ይሰራባታል",
+        //                     },
+        //                 },
+        //                 {
+        //                     lineId: "ol63Uz8WXyoVcS7sX1rRj",
+        //                     character: {
+        //                         id: "-7Ykjon_mlFncqfxP7YPi",
+        //                         text: "አዱኛ",
+        //                     },
+        //                     dialogue: {
+        //                         id: "ibFb_Ov-2KgytKUFdCbJ1",
+        //                         text: "ሰዋሰው ሃያ ፑሽ አፐ…እኔ ነኝ ጥፋተኛ አንተን ተጫዋች ብዩ ማሰልጠኔ",
+        //                     },
+        //                 },
+        //                 {
+        //                     lineId: "YxiXhmSxPaQ5UFKmS7ExF",
+        //                     character: {
+        //                         id: "35qp8mktnQCzMH0mN0V56",
+        //                         text: "ሰዋሰው",
+        //                     },
+        //                     dialogue: {
+        //                         id: "B2vkG97DVptBKotxl0c3v",
+        //                         text: "እንዴ",
+        //                     },
+        //                 },
+        //                 {
+        //                     lineId: "fLas_RV8f-lyQNWJKM42i",
+        //                     character: {
+        //                         id: "-7Ykjon_mlFncqfxP7YPi",
+        //                         text: "አዱኛ",
+        //                     },
+        //                     dialogue: {
+        //                         id: "0fLRmGaw1Zo7aIa3tgy7_",
+        //                         text: "ስላቃተህ!!! ልፍስፍስ!!! እንደዚህ ተጫውቶብህ ያልፍሃል!",
+        //                     },
+        //                 },
+        //             ],
+        //         },
+        //     ],
+        //     characters: [
+        //         {
+        //             id: "JGPRY-sSnRS6Q8FPCuR6y",
+        //             name: "ስፖርተኛ",
+        //             role: null,
+        //             description: null,
+        //             relationships: [
+        //                 {
+        //                     to: "Oe_EdQQDBO_3XTyMFG2wl",
+        //                     type: "ጓዳኛ",
+        //                     description: "ቀይ",
+        //                 },
+        //                 {
+        //                     to: "35qp8mktnQCzMH0mN0V56",
+        //                     type: "ባል",
+        //                     description: "በጣም ሚወዳእትው",
+        //                 },
+        //             ],
+        //             inScene: [{ cw6IuRI99LcW9LLRXmWbh: 2 }],
+        //         },
+        //         {
+        //             id: "Oe_EdQQDBO_3XTyMFG2wl",
+        //             name: "ሻምበል",
+        //             role: null,
+        //             description: null,
+        //             relationships: [
+        //                 {
+        //                     to: "35qp8mktnQCzMH0mN0V56",
+        //                     type: "አጎት",
+        //                     description: "ቀይ",
+        //                 },
+        //             ],
+        //             inScene: [{ cw6IuRI99LcW9LLRXmWbh: 2 }],
+        //         },
+        //         {
+        //             id: "-7Ykjon_mlFncqfxP7YPi",
+        //             name: "አዱኛ",
+        //             role: null,
+        //             description: null,
+        //             relationships: [
+        //                 {
+        //                     to: "35qp8mktnQCzMH0mN0V56",
+        //                     type: "ወንድም",
+        //                     description: "አኩራፊ",
+        //                 },
+        //             ],
+        //             inScene: [{ "pz-9yEziHKoVDTnf-8Ms6": 3 }],
+        //         },
+        //         {
+        //             id: "35qp8mktnQCzMH0mN0V56",
+        //             name: "ሰዋሰው",
+        //             role: null,
+        //             description: null,
+        //             relationships: [ {
+        //                 to: "Oe_EdQQDBO_3XTyMFG2wl",
+        //                 type: "የወንድም ልጅ",
+        //                 description: "ቀይ",
+        //             },],
+        //             inScene: [{ "pz-9yEziHKoVDTnf-8Ms6": 1 }],
+        //         },
+        //     ],
+        // };
+        let importedScript = scenes
         if (importedScript) {
             importedScript?.characters &&
                 dispatch(initCharacter(importedScript.characters));
