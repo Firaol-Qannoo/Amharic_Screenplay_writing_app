@@ -838,7 +838,7 @@ const onchange = (e) =>{
                         className="absolute bg-white border rounded-md shadow-md z-50 max-h-40 overflow-auto hidden"
                     ></div>
 
-                    <div className="board h-[70vh] overflow-y-scroll  py-5 px-10 bg-gray-100"></div>
+                    <div className="board h-[70vh] overflow-y-scroll  py-5 px-10 bg-gray-100">{}</div>
                     <div
                         id="suggestion-box"
                         className="absolute bg-white border border-gray-300 rounded shadow-md z-50 hidden text-sm max-h-40 overflow-auto"
