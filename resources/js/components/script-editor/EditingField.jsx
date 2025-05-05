@@ -82,6 +82,11 @@ export function EditorField({script,scenes}) {
         });
       }
 
+    const scheduleHandler = () => {
+    router.post('/production-schedule', { scenes: activeScriptState.scenes });
+};
+
+
     // word suggestion
 
     const proxyUrl = "https://thingproxy.freeboard.io/fetch/";
@@ -827,6 +832,16 @@ const onchange = (e) =>{
                     </TabsList>
 
                     <div className="flex items-center gap-1">
+                        <Button
+                            variant="ghost"
+                            onClick={scheduleHandler}
+                            size="sm"
+                            className="h-8 gap-1"
+                        >
+                            <Save className="h-4 w-4" />
+                            <span className="text-xs">Production Schedule</span>
+                        </Button>
+
                         <Button
                             variant="ghost"
                             onClick={saveScript}
