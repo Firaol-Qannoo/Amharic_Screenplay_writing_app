@@ -1,3 +1,4 @@
+
 import { CharacterNetwork } from "@/components/script-editor/CharacterNetwork"
 import { AiAssistant } from "@/components/script-editor/ai-assistant"
 import { Button } from "@/components/ui/button"
@@ -12,11 +13,11 @@ import { selectcharacters } from "../../features/Characters"
 import { EditorField } from "../../components/script-editor/EditingField"
 import { CharacterRelationships } from "../../components/script-editor/CharacterRelationships"
 
+
 import { Link, usePage } from "@inertiajs/react"
 
-export default function EditorPage({script, user,scenes}) {
-  console.log("object",scenes)
-  console.log("object",script)
+export default function EditorPage({script, user}) {
+
   const [showNetworkView, setShowNetworkView] = useState(false)
   // Use the usePage hook to access the current page data, including the 'script' prop
   const { props } = usePage();
@@ -86,7 +87,7 @@ export default function EditorPage({script, user,scenes}) {
               </Card>
             ) : (
               // Pass the dynamic content to your editor component
-              <EditorField value={editorContent} scenes={scenes} onChange={handleEditorChange} script={script}/>
+              <EditorField value={editorContent} onChange={handleEditorChange} script={script}/>
             )}
           </div>
         

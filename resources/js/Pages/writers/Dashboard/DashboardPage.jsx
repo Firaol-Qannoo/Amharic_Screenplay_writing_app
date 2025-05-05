@@ -79,7 +79,6 @@ const templateCategories = [
 ];
 
 export default function Dashboard({ myScripts, invitedScripts, user}) {
- 
     const [searchQuery, setSearchQuery] = useState("");
     const [selectedTab, setSelectedTab] = useState("recent");
     const [successMessage, setSuccessMessage] = useState('');
