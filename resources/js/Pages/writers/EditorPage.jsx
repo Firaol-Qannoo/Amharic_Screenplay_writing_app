@@ -1,15 +1,23 @@
-import { CharacterNetwork } from "@/components/script-editor/character-network"
+
+import { CharacterNetwork } from "@/components/script-editor/CharacterNetwork"
 import { AiAssistant } from "@/components/script-editor/ai-assistant"
 import { Button } from "@/components/ui/button"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { SettingsDialog } from "@/components/settings-dialog"
-import { ArrowLeft, User } from "lucide-react"
-import { Link, usePage } from '@inertiajs/react' // Import usePage hook
-import { useState, useEffect } from "react" // Import useEffect
+import { ArrowLeft, Languages, User } from "lucide-react"
+
+import { useState,useEffect } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { useSelector } from "react-redux"
+import { selectcharacters } from "../../features/Characters"
 import { EditorField } from "../../components/script-editor/EditingField"
+import { CharacterRelationships } from "../../components/script-editor/CharacterRelationships"
+
+
+import { Link, usePage } from "@inertiajs/react"
 
 export default function EditorPage({script, user}) {
+
   const [showNetworkView, setShowNetworkView] = useState(false)
   // Use the usePage hook to access the current page data, including the 'script' prop
   const { props } = usePage();
@@ -34,22 +42,19 @@ export default function EditorPage({script, user}) {
     // and send the updated content to your backend.
   };
 
+  const characters = useSelector(selectcharacters)
   return (
     <div className="flex w-[100vw] px-8 min-h-screen">
-      <section className="flex px-8 flex-9 flex-col">
-        <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-          <div className="container flex h-14 items-center justify-between">
-            <div className="flex items-center gap-4">
-              <Link href={"/dashboard"}>
-                <Button variant="ghost" size="icon" className="h-8 w-8">
-                  <ArrowLeft className="h-4 w-4" />
-                </Button>
-              </Link>
-              <div className="flex items-center gap-2">
-                {/* Display the script title dynamically */}
-                <span className="font-medium">{script?.title || "No title available"}</span>
-              </div>
-            </div>
+      {characters.length>0 && <CharacterRelationships />}  
+    <section className="flex px-8 flex-9 flex-col">
+    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+        <div className="container flex h-14 items-center justify-between">
+          <div className="flex items-center gap-4">
+            <Link href={"/dashboard"}>
+              <Button variant="ghost" size="icon" className="h-8 w-8">
+                <ArrowLeft className="h-4 w-4" />
+              </Button>
+            </Link>
             <div className="flex items-center gap-2">
               <Button
                 variant="outline"
@@ -66,6 +71,7 @@ export default function EditorPage({script, user}) {
                 <User className="h-5 w-5" />
               </Button>
             </div>
+          </div>
           </div>
         </header>
         <main className="flex-1 py-6">
@@ -84,9 +90,12 @@ export default function EditorPage({script, user}) {
               <EditorField value={editorContent} onChange={handleEditorChange} script={script}/>
             )}
           </div>
-          <AiAssistant />
+        
         </main>
+
       </section>
+    
     </div>
   )
 }
+

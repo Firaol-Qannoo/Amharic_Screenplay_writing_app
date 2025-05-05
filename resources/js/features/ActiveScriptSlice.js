@@ -8,8 +8,11 @@ export const activeScript = createSlice({
   name: 'activeScript',
   initialState,
   reducers: {
-  
-    addScene: (state) => {
+    initScript: (state,action) => {
+      return action.payload
+    },
+    addScene: (state, action) => {
+      const { id, sceneHead, sceneDesc } = action.payload;
       state.scenes.push({
         sceneHead: '',
         id: nanoid(),
@@ -63,6 +66,7 @@ export const selectActiveScript = state => state.activeScript;
 export default activeScript.reducer;
 
 export const {
+  initScript,
   addScene,
   editSceneMeta,
   addLine,

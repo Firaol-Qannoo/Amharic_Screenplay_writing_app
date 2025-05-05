@@ -4,7 +4,7 @@
             "id": "ghQi_UREjqIRQP65VpVz0",
             "sceneHead": {
                 "id": "OzvQihiZiYw1iUvHGPmgk",
-                "text": "1-ውጪ-አውቶቢስ ተራ መስቀለኛ ዋናው መንገድ-ንጋት"
+                "text": "ውጪ-አውቶቢስ ተራ መስቀለኛ ዋናው መንገድ-ንጋት"
             },
             "sceneDesc": {
                 "id": "B_24bDwfk9CYhlauNG8p9",
@@ -54,7 +54,7 @@
             "id": "M4d8xfMO2BECGVWu1dQvc",
             "sceneHead": {
                 "id": "ej512IG9OpN80qSvIXUz3",
-                "text": "3-ውጪ -የመንደር ስፖርት ሜዳ -ንጋት"
+                "text": "ውጪ -የመንደር ስፖርት ሜዳ -ንጋት"
             },
             "sceneDesc": {
                 "id": "v5yFF71iWoXY3btdz4a11",
@@ -65,7 +65,7 @@
                     "lineId": "M3R69pwKo76hjxE1QI9FL",
                     "character": {
                         "id": "RsXA__9IPqKQ-gK-szImV",
-                        "text": ""
+                        "text": "ቤቢ"
                     },
                     "dialogue": {
                         "id": "tNA659UM1euIQbYNONsUe",
@@ -77,13 +77,6 @@
                     "action": {
                         "id": "ebnashcOuV75WhoaaS1vd",
                         "text": "ጆኒ የተባለው ጆሊው ተጫዋች ኳሷን እያሽሞነሞነ ቄንጥ ይሰራባታል"
-                    }
-                },
-                {
-                    "lineId": "bLrNWPxml3lOY9NrCoqNS",
-                    "action": {
-                        "id": "R-2JyZFfiRTcGvNqyGaN6",
-                        "text": ""
                     }
                 },
                 {

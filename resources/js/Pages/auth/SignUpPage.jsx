@@ -168,22 +168,25 @@ export default function SignupPage() {
                   {formState.errors.username?.message}
                 </p>
               </div>
-
               <div>
-                <Label htmlFor="role">Role (optional)</Label>
-                <Input
-                  id="role"
-                  {...register("role")}
-                  value={data.role}
-                  onChange={(e) => {
-                    setData("role", e.target.value);
-                  }}
-                  placeholder="Role"
-                />
-                <p className="text-red-600 text-sm">
-                  {formState.errors.role?.message}
+                <Label
+                  htmlFor="role"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Role ( *optional)
+                </Label>
+                <select className="border-2 border-black/10 rounded-xl px-1 py-2"  {...register("role")} name="role" id="role">
+                  <option disabled value=""> - select -</option>
+                  <option value="writer">Writer</option>
+                  <option value="writer">Director</option>
+                  <option value="writer">Storyboard Designer</option>
+                </select>
+               
+                <p className="text-red-600 self-start  text-sm">
+                  {formState.errors.role && formState.errors.role.message}
                 </p>
               </div>
+             
             </div>
 
             {/* Password */}
