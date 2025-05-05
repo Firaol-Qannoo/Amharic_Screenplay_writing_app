@@ -15,7 +15,7 @@ export const activeScript = createSlice({
       const { id, sceneHead, sceneDesc } = action.payload;
       state.scenes.push({
         id,
-        sceneHead: { id: sceneHead?.id  || null, text: sceneHead?.text || null },
+        sceneHead: { id: sceneHead?.id || null, text: sceneHead?.text || null },
         sceneDesc: { id: sceneDesc?.id|| null, text: sceneDesc?.text|| null },
         lines: []
       });
@@ -25,7 +25,7 @@ export const activeScript = createSlice({
       const { sceneId, sceneHead, sceneDesc } = action.payload;
       const scene = state.scenes.find(s => s.id === sceneId);
       if (scene) {
-        if (sceneHead) scene.sceneHead = { id: sceneHead?.id || null, text: sceneHead?.text || null };
+        if (sceneHead) scene.sceneHead = { id: sceneHead?.id || null, text: sceneHead?.text|| null };
         if (sceneDesc) scene.sceneDesc = { id: sceneDesc?.id|| null, text: sceneDesc?.text|| null };
       }
     },

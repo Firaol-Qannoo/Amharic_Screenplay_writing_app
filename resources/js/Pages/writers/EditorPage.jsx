@@ -17,6 +17,7 @@ import { CharacterRelationships } from "../../components/script-editor/Character
 import { Link, usePage } from "@inertiajs/react"
 
 export default function EditorPage({script, user}) {
+  console.log(script);
 
   const [showNetworkView, setShowNetworkView] = useState(false)
   // Use the usePage hook to access the current page data, including the 'script' prop
@@ -59,7 +60,7 @@ export default function EditorPage({script, user}) {
               <Button
                 variant="outline"
                 size="sm"
-                disabled
+              
                 className="text-xs"
                 onClick={() => setShowNetworkView(!showNetworkView)}
               >
