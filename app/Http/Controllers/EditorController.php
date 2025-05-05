@@ -7,6 +7,7 @@ use Inertia\Inertia;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Character;
+use App\Models\Scene;
 
 class EditorController extends Controller
 {
@@ -21,15 +22,17 @@ class EditorController extends Controller
     }
 
     public function edit($id) {
-
         $user = Auth::user();  
+        // $script = Script::with('scenes')->findOrFail($id);
+        $scenes = Scene::where('scriptID', $id)->get();
+        $scenecharacters = Character::where('sceneID', $id)->get();
         $script = Script::with('scenes')->findOrFail($id);
-        $characters = Character::where('sceneID', $id)->get();
-        // dd( $characters);
+        //  dd( $scenes);
         return Inertia::render('writers/EditorPage', [
         'script' => $script,
+        'scenes' => $scenes,
         'user' => $user,
-        'characters' => $characters
+        'scenecharacters' => $scenecharacters,
     ]);
     }
 }
