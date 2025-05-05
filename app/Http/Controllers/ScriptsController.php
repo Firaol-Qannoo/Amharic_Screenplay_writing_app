@@ -13,10 +13,7 @@ class ScriptsController extends Controller
     public function store(Request $request)
     {
 
-        // dd(Auth::id()); 
-        // dd($request->type);
        
-    //   $userId = new ObjectId(Auth::id());
 
         // $validated = $request->validate([
         //     'title' => 'required|string|max:255',
@@ -47,7 +44,7 @@ class ScriptsController extends Controller
         
             $thumbnailName = time() . '_' . $file->getClientOriginalName();
         
-            $file->move(public_path('thumbnails'), $thumbnailName); // moves to public/thumbnails
+            $file->move(public_path('thumbnails'), $thumbnailName); 
         
             $script->thumbnail = 'thumbnails/' . $thumbnailName;
         }
@@ -55,30 +52,50 @@ class ScriptsController extends Controller
     
         session(['script' => $script]);
 
-       flash()->success('Welcome to our application! Your script has been created.');
-       return Inertia::location(route('editor'));
-        // return redirect()->route('editor');
+       flash()->success('Your script has been created.');
+       return Inertia::location(route('dashboard'));
     }
 
 
+    public function update(Request $request, $id)
+{
+    $script = Script::findOrFail($id);
+
+    // Update text fields
+    $script->update($request->only(['title', 'description', 'genre']));
+
+    // Handle new thumbnail upload
+    if ($request->hasFile('thumbnail')) {
+        // Delete old thumbnail if it exists
+        if ($script->thumbnail && file_exists(public_path($script->thumbnail))) {
+            unlink(public_path($script->thumbnail));
+        }
+
+        $file = $request->file('thumbnail');
+        $thumbnailName = time() . '_' . $file->getClientOriginalName();
+        $file->move(public_path('thumbnails'), $thumbnailName);
+
+        $script->thumbnail = 'thumbnails/' . $thumbnailName;
+        $script->save();
+    }
+
+    flash()->success('Your script has been updated successfully.');
+    return Inertia::location(route('dashboard'));
+}
+
+
+
     public function destroy($id) {
-        // The $script variable here will automatically be resolved
-        // by route model binding if  it set up.
-        // Otherwise,  can fetch it manually:
-        // $script = Script::findOrFail($request->route('script'));
-
-        $script = Script::findOrFail($id); // Find script or fail with 404
-        $script->delete(); // Delete the script
-
-        $scripts = Script::latest()->get();
-
-        // Re-render the Dashboard component with the updated data
-        // return Inertia::render('writers/Dashboard/DashboardPage', [
-        //     'scripts' => $scripts,
-        //     'success' => 'Script deleted successfully.', // Optional success message
-        // ]);
-        
+        $script = Script::findOrFail($id); 
+    
+        // Delete thumbnail file if it exists
+        if ($script->thumbnail && file_exists(public_path($script->thumbnail))) {
+            unlink(public_path($script->thumbnail));
+        }
+    
+        $script->delete(); 
+    
         flash()->success('Script deleted successfully!');
-       return Inertia::location(route('dashboard'));
+        return Inertia::location(route('dashboard'));
     }
 }

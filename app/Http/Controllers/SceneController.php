@@ -58,6 +58,16 @@ class SceneController extends Controller
         if ($validator->fails()) {
             return back()->withErrors($validator)->withInput(); 
         }
+
+
+
+        // Fetch scenes and characters
+            $scenes = Scene::where('scriptID', $scriptID)->get();
+            $sceneCharacters = Character::where('sceneID', $scriptID)->get();
+
+            // Delete them
+            $scenes->each->delete();
+            $sceneCharacters->each->delete();
     
         // Save the scenes
         foreach ($request->input('scenes') as $sceneData) {
@@ -118,9 +128,7 @@ class SceneController extends Controller
             }
         }
     
-        flash()->success('Scenes and Characters Saved successfully!');
-    
-        $script = Script::with('scenes')->findOrFail($scriptID);
-        return Inertia::render('writers/EditorPage', ['script' => $script]);
+        flash()->success('Scenes and Characters saved successfully!');
+        return Inertia::location(url()->previous());
     }
 }

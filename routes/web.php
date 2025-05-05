@@ -110,5 +110,5 @@ Route::post('/production-schedule', [ProductionScheduleController::class, 'showW
     
 
     Route::post('/scripts/{scriptID}/scenes', [SceneController::class, 'store'])->name('scenes.store');
-
     Route::post('/settings/update', [RegisterController::class, 'update'])->name('settings.update');
+    Route::put('/scripts/{id}', [ScriptsController::class, 'update'])->name('scripts.update');
