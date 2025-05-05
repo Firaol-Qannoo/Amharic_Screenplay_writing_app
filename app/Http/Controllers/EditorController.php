@@ -6,6 +6,7 @@ use App\Models\Script;
 use Inertia\Inertia;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Models\Character;
 
 class EditorController extends Controller
 {
@@ -23,9 +24,12 @@ class EditorController extends Controller
 
         $user = Auth::user();  
         $script = Script::with('scenes')->findOrFail($id);
-        // dd( $script);
-        return Inertia::render('writers/EditorPage', ['script' => $script,
-        'user' => $user]);
-        
+        $characters = Character::where('sceneID', $id)->get();
+        // dd( $characters);
+        return Inertia::render('writers/EditorPage', [
+        'script' => $script,
+        'user' => $user,
+        'characters' => $characters
+    ]);
     }
 }
