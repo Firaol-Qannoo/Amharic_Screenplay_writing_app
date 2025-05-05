@@ -39,8 +39,9 @@ import relativeTime from 'dayjs/plugin/relativeTime';
 import { InviteCollaboratorDialog } from "@/components/invite-collaborator-dialog";
 import { ScriptDetailsDialog } from "@/components/script-detail-dialog";
 import { CollaboratorsListDialog } from "@/components/collaborators-list.jsx";
-import { Button } from "@/components/ui/button"; // Ensure Button is imported  CollaboratorsListDialog
+import { Button } from "@/components/ui/button"; // Ensure Button is imported  CollaboratorsListDialog 
 import flasher from '@flasher/flasher'
+import { UpdateScript } from "@/components/update-script";
 
 dayjs.extend(relativeTime);
 
@@ -258,7 +259,7 @@ export default function Dashboard({ myScripts, invitedScripts, user}) {
                                                             <DropdownMenuItem
                                                                 onClick={() => {
                                                                 if (window.confirm('Are you sure you want to delete this script?')) {
-                                                                    router.delete(`/delete/${script._id}`)
+                                                                    router.delete(`/delete/${script.id}`)
                                                                     .then(() => {
                                                                         console.log('Script deleted successfully');
                                                                         router.visit(window.location.pathname, {
@@ -275,7 +276,10 @@ export default function Dashboard({ myScripts, invitedScripts, user}) {
                                                                 <Trash2 className="mr-2 h-4 w-4" />
                                                                 <span>Delete</span>
                                                             </DropdownMenuItem>
+                                                            
                                                             <CollaboratorsListDialog collaborators={script.collaborators} />
+                                                            
+                                                            <UpdateScript script={script}/>
                                                             </DropdownMenuContent>
                                                         </DropdownMenu>
                                                         </div>
