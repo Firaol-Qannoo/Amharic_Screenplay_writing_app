@@ -16,7 +16,7 @@ import { CharacterRelationships } from "../../components/script-editor/Character
 
 import { Link, usePage } from "@inertiajs/react"
 
-export default function EditorPage({script, user}) {
+export default function EditorPage({script, user, scenecharacters, scenes}) {
   console.log(script);
 
   const [showNetworkView, setShowNetworkView] = useState(false)
@@ -88,12 +88,11 @@ export default function EditorPage({script, user}) {
               </Card>
             ) : (
               // Pass the dynamic content to your editor component
-              <EditorField value={editorContent} onChange={handleEditorChange} script={script}/>
+              <EditorField value={editorContent} onChange={handleEditorChange} script={script} scenecharacters={scenecharacters} scenes={scenes}/>
             )}
           </div>
-        
+          <AiAssistant/>
         </main>
-
       </section>
     
     </div>

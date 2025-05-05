@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { FileDown, Save } from "lucide-react";
 import { useSelector } from "react-redux";
+import { useMemo } from 'react';
 
 import {
     Tooltip,
@@ -53,7 +54,7 @@ import { elements } from "../../../../public/data/elements";
 import { initScript } from "../../features/activeScriptSlice";
 import { router } from "@inertiajs/react";
 
-export function EditorField({script,scenes}) {
+export function EditorField({script ,scenes, scenecharacters}) {
     const dispatch = useDispatch();
     const [selectedElement, setselectedElement] = useState("scene_heading");
 
@@ -85,6 +86,88 @@ export function EditorField({script,scenes}) {
     const scheduleHandler = () => {
     router.post('/production-schedule', { scenes: activeScriptState.scenes });
 };
+
+
+// const structuredData = useMemo(() => {
+//   const sceneMap = {};
+
+//   // Step 1: Group scenes and build structure
+//   scenes.forEach(scene => {
+//     sceneMap[scene.id] = {
+//       id: scene.id,
+//       sceneHead: {
+//         id: scene.scene_head_id,
+//         text: scene.scene_head_text,
+//       },
+//       sceneDesc: {
+//         id: scene.scene_desc_id,
+//         text: scene.scene_desc_text,
+//       },
+//       lines: [],
+//     };
+//   });
+// console.log("scene", scenes)
+//   // Step 2: Fill lines
+//   scenes.forEach(scene => {
+//     if (scene.lines && Array.isArray(scene.lines)) {
+//       scene.lines.forEach(line => {
+//         const structuredLine = {
+//           lineId: line.id,
+//         };
+
+//         if (line.character) {
+//           structuredLine.character = {
+//             id: line.character.id,
+//             text: line.character.name,
+//           };
+//         }
+
+//         if (line.dialogue) {
+//           structuredLine.dialogue = {
+//             id: line.dialogue.id,
+//             text: line.dialogue.text,
+//           };
+//         }
+
+//         if (line.emotion) {
+//           structuredLine.emotion = {
+//             id: line.emotion.id,
+//             text: line.emotion.text,
+//           };
+//         }
+
+//         if (line.action) {
+//           structuredLine.action = {
+//             id: line.action.id,
+//             text: line.action.text,
+//           };
+//         }
+
+//         sceneMap[scene.id].lines.push(structuredLine);
+//       });
+//     }
+//   });
+
+//   const structuredCharacters = scenecharacters.map(character => ({
+//     id: character.id,
+//     name: character.name,
+//     role: character.role || null,
+//     description: character.description || null,
+//     relationships: character.relationships || [],
+//     inScene: character.inScene || [],
+//   }));
+
+//   return {
+//     scenes: Object.values(sceneMap),
+//     characters: structuredCharacters,
+//   };
+// }, [scenes, characters]);
+
+// const Scripts = {
+//   scenes: structuredData.scenes,
+//   characters: structuredData.characters,
+// };
+
 
 
     // word suggestion
@@ -493,10 +576,10 @@ const onchange = (e) =>{
         //     ],
         // };
    
-        if (importedScript) {
-            importedScript?.characters &&
-                dispatch(initCharacter(importedScript.characters));
-                importedScript?.scenes && dispatch(initScript({scenes: importedScript.scenes})); importedScript?.scenes?.map((scence) => {
+        if (scenes) {
+          scenecharacters &&
+                dispatch(initCharacter(scenecharacters));
+                scenes && dispatch(initScript({scenes: scenes})); scenes?.map((scence) => {
                     if (scence.sceneHead.text) {
                         let element = elements["scene_heading"];
                         let ele = document.createElement(element?.tag);
