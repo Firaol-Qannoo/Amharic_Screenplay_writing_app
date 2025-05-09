@@ -59,8 +59,6 @@ class SceneController extends Controller
             return back()->withErrors($validator)->withInput(); 
         }
 
-
-
         // Fetch scenes and characters
             $scenes = Scene::where('scriptID', $scriptID)->get();
             $sceneCharacters = Character::where('sceneID', $scriptID)->get();

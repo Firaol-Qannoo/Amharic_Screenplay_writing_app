@@ -97,8 +97,8 @@ use App\Http\Controllers\ScriptInvitationController;
     Route::post('/verify-otp', [RegisterController::class, 'verifyOtp']);
 
     Route::post('/scripts', [ScriptsController::class, 'store'])->name('scripts');
-// routes/web.php
-Route::post('/production-schedule', [ProductionScheduleController::class, 'showWithStaticData']);
+    // routes/web.php
+    Route::post('/production-schedule', [ProductionScheduleController::class, 'showWithStaticData']);
 
 
 

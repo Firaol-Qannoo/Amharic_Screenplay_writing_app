@@ -277,7 +277,7 @@ export default function Dashboard({ myScripts, invitedScripts, user}) {
                                                                 <span>Delete</span>
                                                             </DropdownMenuItem>
                                                             
-                                                            <CollaboratorsListDialog collaborators={script.collaborators} />
+                                                            <CollaboratorsListDialog collaborators={script.collaborators_full} />
                                                             
                                                             <UpdateScript script={script}/>
                                                             </DropdownMenuContent>

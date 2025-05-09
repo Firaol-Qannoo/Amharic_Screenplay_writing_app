@@ -64,10 +64,6 @@ class RegisterController extends Controller
         return Inertia::location(route('signup'));
     }
 
-   
-    
-
-    // Generate OTP
     try {
         $otp = rand(100000, 999999);
 
@@ -100,138 +96,133 @@ class RegisterController extends Controller
 
 
 
-    public function verifySignupOtp(Request $request)
-    {
-        $request->validate([
-            'email' => 'required|email',
-            'otp' => 'required|numeric',
-        ]);
-    
-        // Retrieve the stored OTP from cache
-        $data = Cache::get('otp_' . $request->email);
-    
-        if (!$data) {
-            // OTP expired or invalid
-            return Inertia::render('verify_otp_signup', [
-                'email' => $request->email,
-                'errors' => ['otp' => 'OTP expired or invalid.']
-            ]);
-        }
-    
-        // If OTP does not match
-        if ($data['otp'] != $request->otp) {
-            return Inertia::render('verify_otp_signup', [
-                'email' => $request->email,
-                'errors' => ['otp' => 'Incorrect OTP entered. Please try again.']
-            ]);
-        }
-    
-        // Create the user
-        $user = User::create([
-            'first_name' => $data['fullname'],
-            'email' => $data['email'],
-            'password' => $data['password'],
-        ]);
-        
-        $userId = $user->_id;
+public function verifySignupOtp(Request $request) {
+    // Validate the incoming request
+    $request->validate([
+        'email' => 'required|email',  // Ensure email is valid
+        'otp' => 'required|numeric',  // Ensure OTP is numeric
+    ]);
 
-         // Check if the user was invited to a script
+    // Retrieve the OTP data stored in cache for this email
+    $data = Cache::get('otp_' . $request->email);
+
+    // If no data is found in cache, it means OTP is expired or invalid
+    if (!$data) {
+        return Inertia::render('verify_otp_signup', [
+            'email' => $request->email,
+            'errors' => ['otp' => 'OTP expired or invalid.']
+        ]);
+    }
+
+    // If the OTP entered doesn't match the stored OTP
+    if ($data['otp'] != $request->otp) {
+        return Inertia::render('verify_otp_signup', [
+            'email' => $request->email,
+            'errors' => ['otp' => 'Incorrect OTP entered. Please try again.']
+        ]);
+    }
+
+    // Create the user after successful OTP verification
+    $user = User::create([
+        'first_name' => $data['fullname'],
+        'email' => $data['email'],
+        'password' => $data['password'],  // Password should be hashed (bcrypt) in model
+    ]);
+
+    // Get the user's unique ID
+    $userId = $user->_id;
+
+    // Check if this user was invited to any script
     $invitation = ScriptInvitation::where('invitee_email', $data['email'])->first();
 
-    
-
+    // If an invitation exists, update the invitation but do not add to collaborators
     if ($invitation) {
-        // dd($invitation);
-        
-        // If the user was invited, proceed with adding them to the collaborators list of the script
+        // Retrieve the associated script for the invitation
         $script = Script::findOrFail($invitation->script_id);
-    
-        // Add the user to the collaborators array if not already there
-        $script->collaborators = array_unique(
-            array_merge($script->collaborators ?? [], [$userId]),
-            SORT_REGULAR
-        );
-        $script->save();
-    
-        // Mark the invitation as accepted
+
+        $script->collaborators()->syncWithoutDetaching([$userId]);
+
+        // Mark the invitation as accepted and assign the invitee_id (user ID)
         $invitation->accepted = true;
+        $invitation->invitee_id = $userId;
         $invitation->save();
-    
-        // Log the collaborator addition (optional)
-        Log::info("User added to collaborators via invitation", [
-            'user_id' => Auth::id(),
+
+        // Log that the user has been added to the script
+        Log::info("User accepted invitation for script", [
+            'user_id' => $userId,
             'script_id' => $script->_id
         ]);
     }
 
+    // Save the new user record
+    $user->save();
 
-        $user->save();
-    
-        // Clear the OTP data from cache
-        Cache::forget('otp_' . $request->email);
-    
-        // return redirect()->route('login')->with('success', 'Account verified. You may now log in.');
-        flash()->success(
-            'Account verified. You may now log in.'
-        );
+    // Remove the OTP from the cache now that the user has been verified
+    Cache::forget('otp_' . $request->email);
 
-        return Inertia::location(route('login'));
-    }
+    // Flash success message and redirect to the login page
+    flash()->success('Account verified. You may now log in.');
+    return Inertia::location(route('login'));
+}
+
+
     
 
-    public function login(Request $request) {
-        $validated = $request->validate([
-            'email' => 'required|email',
-            'password' => 'required',
-        ]);
-    
-        if (Auth::attempt(['email' => $validated['email'], 'password' => $validated['password']])) {
-            $user = Auth::user();
-    
-            // 🟡 Handle deferred invitation via token stored in session (priority)
-            if ($token = session('invitation_token')) {
-                session()->forget('invitation_token');
-                return redirect()->route('invitation.accept', ['token' => $token]);
+
+
+
+   public function login(Request $request) {
+    $validated = $request->validate([
+        'email' => 'required|email',
+        'password' => 'required',
+    ]);
+
+    if (Auth::attempt(['email' => $validated['email'], 'password' => $validated['password']])) {
+        $user = Auth::user();
+
+        if ($token = session('invitation_token')) {
+            session()->forget('invitation_token');
+            return redirect()->route('invitation.accept', ['token' => $token]);
+        }
+
+        $invitation = ScriptInvitation::where('invitee_email', $user->email)
+            ->where('accepted', false)
+            ->first();
+        $userId = $user->_id;
+
+        if ($invitation) {
+            $script = Script::find($invitation->script_id);
+            if ($script) {
+                $script->collaborators()->syncWithoutDetaching([$userId]);
+
+                $invitation->accepted = true;
+                $invitation->invitee_id = $userId;
+                $invitation->save();
+
+                Log::info("User added to collaborators on login", [
+                    'user_id' => (string) $userId,
+                    'script_id' => $script->_id
+                ]);
             }
-    
-            // 🔵 Handle implicit invitation by matching email
-            $invitation = ScriptInvitation::where('invitee_email', $user->email)
-                ->where('accepted', false)
-                ->first();
-    
-            if ($invitation) {
-                $script = Script::find($invitation->script_id);
-                if ($script) {
-                    $script->collaborators = array_unique(array_merge($script->collaborators ?? [], [(string) $user->_id]));
-                    $script->save();
-    
-                    $invitation->accepted = true;
-                    $invitation->save();
-    
-                    Log::info("User added to collaborators on login", [
-                        'user_id' => (string) $user->_id,
-                        'script_id' => $script->_id
-                    ]);
-                }
-            }
-    
-            flash()->success('Logged in successfully!');
-            return Inertia::location(route('dashboard'));
-        } else {
-            $user = User::where('email', $validated['email'])->first();
-    
-            if (!$user) {
-                flash()->error('No account found with this email.');
-                return Inertia::location(route('login'));
-            }
-    
-            flash()->error('Invalid credentials. Please check your email and password.');
+        }
+
+        flash()->success('Logged in successfully!');
+        return Inertia::location(route('dashboard'));
+    } else {
+        $user = User::where('email', $validated['email'])->first();
+
+        if (!$user) {
+            flash()->error('No account found with this email.');
             return Inertia::location(route('login'));
         }
-    }    
-    
-    
 
+        flash()->error('Invalid credentials. Please check your email and password.');
+        return Inertia::location(route('login'));
+    }
+}
+
+    
+    
       public function logout() {
         Auth::logout();
         flash()->success(

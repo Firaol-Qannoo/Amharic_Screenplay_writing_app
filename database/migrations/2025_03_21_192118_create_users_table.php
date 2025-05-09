@@ -10,16 +10,15 @@ return new class extends Migration {
     {
         // Create the 'users' collection in MongoDB
         Schema::connection('mongodb')->create('users', function (Blueprint $table) {
-            $table->id(); // Auto-increment primary key  
+            $table->id(); 
             $table->string('first_name');
-            $table->string('last_name');
             $table->string('email')->unique();
             $table->string('password');
-            $table->string('avatar')->nullable();
+            $table->string('avatar');
+            $table->string('role')->default('Owner');
             $table->string('google_id')->nullable(); // google_id as nullable
-            $table->string('lang_Pref'); 
-            $table->string('role');    
-            $table->timestamps(); // Created_at & updated_at
+            $table->string('lang_pref'); 
+            $table->timestamps(); 
         });
 
         // MongoDB Index: unique index on google_id where it exists and is not null
