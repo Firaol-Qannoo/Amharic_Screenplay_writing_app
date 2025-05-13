@@ -1,24 +1,47 @@
-"use client"
 
-
-import { CharacterRelationshipBoard } from "@/components/script-editor/character-relationship-board"
+import { CharacterNetwork } from "@/components/script-editor/CharacterNetwork"
 import { AiAssistant } from "@/components/script-editor/ai-assistant"
 import { Button } from "@/components/ui/button"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { SettingsDialog } from "@/components/settings-dialog"
 import { ArrowLeft, Languages, User } from "lucide-react"
 
-import { useState } from "react"
+import { useState,useEffect } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { useSelector } from "react-redux"
 import { selectcharacters } from "../../features/Characters"
 import { EditorField } from "../../components/script-editor/EditingField"
 import { CharacterRelationships } from "../../components/script-editor/CharacterRelationships"
-import { CharacterNetwork } from "../../components/script-editor/CharacterNetwork"
-import { Link } from "@inertiajs/react"
 
-export default function EditorPage() {
+
+import { Link, usePage } from "@inertiajs/react"
+
+export default function EditorPage({script, user, scenecharacters, scenes}) {
+  console.log(script);
+
   const [showNetworkView, setShowNetworkView] = useState(false)
+  // Use the usePage hook to access the current page data, including the 'script' prop
+  const { props } = usePage();
+
+  // You might want to set up an initial state for your editor content
+  const [editorContent, setEditorContent] = useState("");
+
+  // useEffect to update editor content when the script prop changes
+  useEffect(() => {
+    if (script && script.content) {
+      setEditorContent(script.content);
+    } else {
+      setEditorContent(""); // Or some default content
+    }
+  }, [script]);
+
+  // Function to handle changes in the editor content (you'll need to implement this
+  // based on your AmharicEditor component)
+  const handleEditorChange = (newContent) => {
+    setEditorContent(newContent);
+    // You might want to implement autosaving or a "Save" button here
+    // and send the updated content to your backend.
+  };
 
   const characters = useSelector(selectcharacters)
   return (
@@ -34,48 +57,43 @@ export default function EditorPage() {
               </Button>
             </Link>
             <div className="flex items-center gap-2">
-             
-              <span className="font-medium">የሰማይ ልጆች</span>
+              <Button
+                variant="outline"
+                size="sm"
+              
+                className="text-xs"
+                onClick={() => setShowNetworkView(!showNetworkView)}
+              >
+                {showNetworkView ? "ስክሪፕት አሳይ" : "ግንኙነት ኔትወርክ አሳይ"}
+              </Button>
+              <ThemeToggle />
+              <SettingsDialog  user={user}/>
+              <Button variant="ghost" size="icon" className="rounded-full">
+                <User className="h-5 w-5" />
+              </Button>
             </div>
           </div>
-          <div className="flex items-center gap-2">
-            <Button
-              variant="outline"
-              size="sm"
-            
-              className="text-xs"
-              onClick={() => setShowNetworkView(!showNetworkView)}
-            >
-              {showNetworkView ? "ስክሪፕት አሳይ" : "ግንኙነት ኔትወርክ አሳይ"}
-            </Button>
-            <ThemeToggle />
-            <SettingsDialog />
-            <Button variant="ghost" size="icon" className="rounded-full">
-              <User className="h-5 w-5" />
-            </Button>
           </div>
-        </div>
-      </header>
-      <main className="flex-1 py-6">
-        <div className="container max-w-6xl">
-          {showNetworkView ? (
-            <Card className="h-[600px]">
-              <CardHeader className="pb-2">
-                <CardTitle className="text-lg">የገጸ ባህሪዎች ግንኙነት ኔትወርክ</CardTitle>
-              </CardHeader>
-              <CardContent className="h-[540px]">
-                <CharacterNetwork />
-              </CardContent>
-            </Card>
-          ) : (
-            <EditorField />
-          )}
-        </div>
-        <AiAssistant />
-       
-        
-      </main>
-    </section>
+        </header>
+        <main className="flex-1 py-6">
+          <div className="container max-w-6xl">
+            {showNetworkView ? (
+              <Card className="h-[600px]">
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-lg">የገጸ ባህሪዎች ግንኙነት ኔትወርክ</CardTitle>
+                </CardHeader>
+                <CardContent className="h-[540px]">
+                  <CharacterNetwork />
+                </CardContent>
+              </Card>
+            ) : (
+              // Pass the dynamic content to your editor component
+              <EditorField value={editorContent} onChange={handleEditorChange} script={script} scenecharacters={scenecharacters} scenes={scenes}/>
+            )}
+          </div>
+          <AiAssistant/>
+        </main>
+      </section>
     
     </div>
   )

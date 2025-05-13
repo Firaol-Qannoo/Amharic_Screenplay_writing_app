@@ -39,8 +39,9 @@ import relativeTime from 'dayjs/plugin/relativeTime';
 import { InviteCollaboratorDialog } from "@/components/invite-collaborator-dialog";
 import { ScriptDetailsDialog } from "@/components/script-detail-dialog";
 import { CollaboratorsListDialog } from "@/components/collaborators-list.jsx";
-import { Button } from "@/components/ui/button"; // Ensure Button is imported  CollaboratorsListDialog
+import { Button } from "@/components/ui/button"; // Ensure Button is imported  CollaboratorsListDialog 
 import flasher from '@flasher/flasher'
+import { UpdateScript } from "@/components/update-script";
 
 dayjs.extend(relativeTime);
 
@@ -78,7 +79,7 @@ const templateCategories = [
     },
 ];
 
-export default function Dashboard({ myScripts, invitedScripts}) {
+export default function Dashboard({ myScripts, invitedScripts, user}) {
     const [searchQuery, setSearchQuery] = useState("");
     const [selectedTab, setSelectedTab] = useState("recent");
     const [successMessage, setSuccessMessage] = useState('');
@@ -158,7 +159,7 @@ export default function Dashboard({ myScripts, invitedScripts}) {
                                 />
                             </div>
                             <ThemeToggle />
-                            <SettingsDialog />
+                            <SettingsDialog user={user} />
                             <DropdownMenu>
                                 <DropdownMenuTrigger asChild>
                                     <Button variant="ghost" size="icon" className="rounded-full">
@@ -210,284 +211,238 @@ export default function Dashboard({ myScripts, invitedScripts}) {
                                 <div className="md:col-span-2">
                                     <Tabs defaultValue="recent" value={selectedTab} onValueChange={setSelectedTab}>
                                         <div className="flex items-center justify-between">
-                                            <TabsList>
-                                                <TabsTrigger value="recent">Recent</TabsTrigger>
-                                                <TabsTrigger value="all">All Scripts</TabsTrigger>
-                                                <TabsTrigger value="templates">Templates</TabsTrigger>
+                                        <TabsList>
+                                            <TabsTrigger value="recent">Recent</TabsTrigger>
+                                            <TabsTrigger value="all">All Scripts</TabsTrigger>
+                                            <TabsTrigger value="templates">Templates</TabsTrigger>
+                                            <TabsTrigger value="invite">Invited</TabsTrigger>
                                             </TabsList>
-                                        </div>
-                                        <TabsContent value="recent" className="mt-6">
-                                        <div className="mt-2 py-4 border-b border-muted">
-                                                    <h2 className="text-xl font-semibold tracking-tight text-foreground">
-                                                       My Scripts
-                                                    </h2>
-                                                    </div>
+                                            </div>
+
+                                            {/* RECENT TAB: My Scripts Only */}
+                                            <TabsContent value="recent" className="mt-6">
+                                            {/* <div className="mt-2 py-4 border-b border-muted">
+                                                <h2 className="text-xl font-semibold tracking-tight text-foreground">My Scripts</h2>
+                                            </div> */}
+
                                             {filteredMyScripts?.length === 0 ? (
                                                 <div className="flex h-[200px] flex-col items-center justify-center rounded-lg border border-dashed">
-                                                    <FileText className="h-10 w-10 text-muted-foreground" />
-                                                    <h3 className="mt-4 text-lg font-medium">No scripts found</h3>
-                                                    <p className="mt-2 text-sm text-muted-foreground">
-                                                        {searchQuery ? "Try a different search term" : "Create a new script to get started"}
-                                                    </p>
-                                                    <div className="mt-4">
-                                                        <CreateDialog />
-                                                    </div>
+                                                <FileText className="h-10 w-10 text-muted-foreground" />
+                                                <h3 className="mt-4 text-lg font-medium">No scripts found</h3>
+                                                <p className="mt-2 text-sm text-muted-foreground">
+                                                    {searchQuery ? "Try a different search term" : "Create a new script to get started"}
+                                                </p>
+                                                <div className="mt-4">
+                                                    <CreateDialog />
+                                                </div>
                                                 </div>
                                             ) : (
                                                 <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-                                                    {filteredMyScripts?.map((script) => (
-                                                        <Card key={script.id} className="overflow-hidden">
-                                                            <div className="aspect-video relative">
-                                                                <img
-                                                                    src={`/${script.thumbnail}`}
-                                                                    alt={script.title}
-                                                                    fill
-                                                                    className="object-cover object-center h-60 w-full"
-                                                                />
-                                                                <div className="absolute top-2 right-2">
-                                                                    <DropdownMenu>
-                                                                        <DropdownMenuTrigger asChild>
-                                                                            <Button variant="ghost" size="icon" className="h-8 w-8 bg-black/20 backdrop-blur-sm hover:bg-black/30">
-                                                                                <MoreVertical className="h-4 w-4 text-white" />
-                                                                            </Button>
-                                                                        </DropdownMenuTrigger>
-                                                                        <DropdownMenuContent align="end">
-                                                                            <InviteCollaboratorDialog scriptId={script.id} />
-                                                                            <DropdownMenuItem
-                                                                                onClick={() => {
-                                                                                    if (window.confirm('Are you sure you want to delete this script?')) {
-                                                                                        router.delete(`/delete/${script.id}`)
-                                                                                            .then(() => {
-                                                                                                console.log('Script deleted successfully');
-                                                                                                router.visit(window.location.pathname, {
-                                                                                                    preserveScroll: true,
-                                                                                                    replace: true,
-                                                                                                });
-                                                                                            })
-                                                                                            .catch((error) => {
-                                                                                                console.error('Error deleting script:', error);
-                                                                                            });
-                                                                                    }
-                                                                                }}
-                                                                            >
-                                                                                <Trash2 className="mr-2 h-4 w-4" />
-                                                                                <span>Delete</span>
-                                                                            </DropdownMenuItem>
-                                                                            <CollaboratorsListDialog collaborators={script.collaborators}/>
-                                                                        </DropdownMenuContent>
-                                                                    </DropdownMenu>
-                                                                </div>
-                                                            </div>
-                                                            <CardHeader className="p-4">
-                                                                <CardTitle
-                                                                    className="line-clamp-1 cursor-pointer"
-                                                                    onClick={() => (window.location.href = `/editor/${script.id}`)}
-                                                                >
-                                                                    {script.title}
-                                                                </CardTitle>
-                                                                <CardDescription className="line-clamp-2">
-                                                                    {script.description}
-                                                                </CardDescription>
-                                                            </CardHeader>
-                                                            <CardFooter className="p-4 pt-0 flex justify-between text-sm text-muted-foreground">
-                                                                <div className="flex items-center">
-                                                                    <Calendar className="mr-1 h-3 w-3" />
-                                                                    <span>{getRelativeDate(script.created_at)}</span>
-                                                                </div>
-                                                                <div className="flex items-center">
-                                                                    <BookOpen className="mr-1 h-3 w-3" />
-                                                                    <span>{script.pages || '23 Pages'} pages</span>
-                                                                </div>
-                                                            </CardFooter>
-                                                        </Card>
-                                                    ))}
-                                                </div>
-                                            )}
-
-                                      <div className="border-b border-gray-300 my-4"></div>
-
-                                            {filteredInvitedScripts?.length > 0 && (
-                                                <>
-                                                    <div className="mt-8 py-4 border-b border-muted">
-                                                    <h2 className="text-xl font-semibold tracking-tight text-foreground">
-                                                        Scripts I'm Invited To
-                                                    </h2>
+                                                {filteredMyScripts.map((script) => (
+                                                    <Card key={script.id} className="overflow-hidden">
+                                                    <div className="aspect-video relative">
+                                                        <img
+                                                        src={`/${script.thumbnail}`}
+                                                        alt={script.title}
+                                                        fill
+                                                        className="object-cover object-center h-60 w-full"
+                                                        />
+                                                        <div className="absolute top-2 right-2">
+                                                        <DropdownMenu>
+                                                            <DropdownMenuTrigger asChild>
+                                                            <Button variant="ghost" size="icon" className="h-8 w-8 bg-black/20 backdrop-blur-sm hover:bg-black/30">
+                                                                <MoreVertical className="h-4 w-4 text-white" />
+                                                            </Button>
+                                                            </DropdownMenuTrigger>
+                                                            <DropdownMenuContent align="end">
+                                                            <InviteCollaboratorDialog scriptId={script.id} />
+                                                            <DropdownMenuItem
+                                                                onClick={() => {
+                                                                if (window.confirm('Are you sure you want to delete this script?')) {
+                                                                    router.delete(`/delete/${script.id}`)
+                                                                    .then(() => {
+                                                                        console.log('Script deleted successfully');
+                                                                        router.visit(window.location.pathname, {
+                                                                        preserveScroll: true,
+                                                                        replace: true,
+                                                                        });
+                                                                    })
+                                                                    .catch((error) => {
+                                                                        console.error('Error deleting script:', error);
+                                                                    });
+                                                                }
+                                                                }}
+                                                            >
+                                                                <Trash2 className="mr-2 h-4 w-4" />
+                                                                <span>Delete</span>
+                                                            </DropdownMenuItem>
+                                                            
+                                                            <CollaboratorsListDialog collaborators={script.collaborators_full} />
+                                                            
+                                                            <UpdateScript script={script}/>
+                                                            </DropdownMenuContent>
+                                                        </DropdownMenu>
+                                                        </div>
                                                     </div>
-                                                  <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-                                                    {invitedScripts?.map((script) => (
-                                                        <Card key={script.id} className="overflow-hidden">
-                                                            <div className="aspect-video relative">
-                                                                <img
-                                                                    src={`/${script.thumbnail}`}
-                                                                    alt={script.title}
-                                                                    fill
-                                                                    className="object-cover object-center h-60 w-full"
-                                                                />
-                                                                <div className="absolute top-2 right-2">
-                                                                <ScriptDetailsDialog script = {script} />
-                                                                </div>
-                                                            </div>
-                                                            <CardHeader className="p-4">
-                                                                <CardTitle
-                                                                    className="line-clamp-1 cursor-pointer"
-                                                                    onClick={() => (window.location.href = `/editor/${script.id}`)}
-                                                                >
-                                                                    {script.title}
-                                                                </CardTitle>
-                                                                <CardDescription className="line-clamp-2">
-                                                                    {script.description}
-                                                                </CardDescription>
-                                                            </CardHeader>
-                                                            <CardFooter className="p-4 pt-0 flex justify-between text-sm text-muted-foreground">
-                                                                <div className="flex items-center">
-                                                                    <Calendar className="mr-1 h-3 w-3" />
-                                                                    <span>{getRelativeDate(script.created_at)}</span>
-                                                                </div>
-                                                                <div className="flex items-center">
-                                                                    <BookOpen className="mr-1 h-3 w-3" />
-                                                                    <span>{script.pages || '23 Pages'} pages</span>
-                                                                </div>
-                                                            </CardFooter>
-                                                        </Card>
-                                                    ))}
+                                                    <CardHeader className="p-4">
+                                                        <CardTitle
+                                                        className="line-clamp-1 cursor-pointer"
+                                                        onClick={() => (window.location.href = `/editor/${script.id}`)}
+                                                        >
+                                                        {script.title}
+                                                        </CardTitle>
+                                                        <CardDescription className="line-clamp-2">{script.description}</CardDescription>
+                                                    </CardHeader>
+                                                    <CardFooter className="p-4 pt-0 flex justify-between text-sm text-muted-foreground">
+                                                        <div className="flex items-center">
+                                                        <Calendar className="mr-1 h-3 w-3" />
+                                                        <span>{getRelativeDate(script.created_at)}</span>
+                                                        </div>
+                                                        <div className="flex items-center">
+                                                        <BookOpen className="mr-1 h-3 w-3" />
+                                                        <span>{script.pages || '23 Pages'} pages</span>
+                                                        </div>
+                                                    </CardFooter>
+                                                    </Card>
+                                                ))}
                                                 </div>
-                                                </>
                                             )}
-                                        </TabsContent>
+                                            </TabsContent>
+
+                                            {/* INVITED TAB */}
+                                            <TabsContent value="invite" className="mt-6">
+                                            {/* <div className="mt-2 py-4 border-b border-muted">
+                                                <h2 className="text-xl font-semibold tracking-tight text-foreground">Scripts I'm Invited To</h2>
+                                            </div> */}
+
+                                            {invitedScripts?.length === 0 ? (
+                                                <p className="text-muted-foreground mt-4">You haven’t been invited to any scripts yet.</p>
+                                            ) : (
+                                                <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                                                {invitedScripts.map((script) => (
+                                                    <Card key={script.id} className="overflow-hidden">
+                                                    <div className="aspect-video relative">
+                                                        <img
+                                                        src={`/${script.thumbnail}`}
+                                                        alt={script.title}
+                                                        fill
+                                                        className="object-cover object-center h-60 w-full"
+                                                        />
+                                                        <div className="absolute top-2 right-2">
+                                                        <ScriptDetailsDialog script={script} />
+                                                        </div>
+                                                    </div>
+                                                    <CardHeader className="p-4">
+                                                        <CardTitle
+                                                        className="line-clamp-1 cursor-pointer"
+                                                        onClick={() => (window.location.href = `/editor/${script.id}`)}
+                                                        >
+                                                        {script.title}
+                                                        </CardTitle>
+                                                        <CardDescription className="line-clamp-2">{script.description}</CardDescription>
+                                                    </CardHeader>
+                                                    <CardFooter className="p-4 pt-0 flex justify-between text-sm text-muted-foreground">
+                                                        <div className="flex items-center">
+                                                        <Calendar className="mr-1 h-3 w-3" />
+                                                        <span>{getRelativeDate(script.created_at)}</span>
+                                                        </div>
+                                                        <div className="flex items-center">
+                                                        <BookOpen className="mr-1 h-3 w-3" />
+                                                        <span>{script.pages || '23 Pages'} pages</span>
+                                                        </div>
+                                                    </CardFooter>
+                                                    </Card>
+                                                ))}
+                                                </div>
+                                            )}
+                                            </TabsContent>
+
                                         <TabsContent value="all" className="mt-6">
-                                        <div className="mt-2 py-4 border-b border-muted">
-                                                    <h2 className="text-xl font-semibold tracking-tight text-foreground">
-                                                      All My Scripts
-                                                    </h2>
-                                                    </div>
-                                            {filteredMyScripts?.length === 0 && myScripts?.length === 0 ? (
-                                                <div className="flex h-[200px] flex-col items-center justify-center rounded-lg border border-dashed">
-                                                    <FileText className="h-10 w-10 text-muted-foreground" />
-                                                    <h3 className="mt-4 text-lg font-medium">No scripts found</h3>
-                                                    <p className="mt-2 text-sm text-muted-foreground">
-                                                        {searchQuery ? "Try a different search term" : "Create a new script to get started"}
-                                                    </p>
-                                                </div>
-                                            ) : (
-                                                <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-                                                    {filteredMyScripts?.map((script) => (
-                                                        <Card key={script.id} className="overflow-hidden">
-                                                            <div className="aspect-video relative">
-                                                                <img
-                                                                    src={`/${script.thumbnail}`}
-                                                                    alt={script.title}
-                                                                    fill
-                                                                    className="object-cover object-center h-60 w-full"
-                                                                />
-                                                                <div className="absolute top-2 right-2">
-                                                                    <DropdownMenu>
-                                                                        <DropdownMenuTrigger asChild>
-                                                                            <Button variant="ghost" size="icon" className="h-8 w-8 bg-black/20 backdrop-blur-sm hover:bg-black/30">
-                                                                                <MoreVertical className="h-4 w-4 text-white" />
-                                                                            </Button>
-                                                                        </DropdownMenuTrigger>
-                                                                        <DropdownMenuContent align="end">
-                                                                            <InviteCollaboratorDialog scriptId={script.id} />
-                                                                            <DropdownMenuItem
-                                                                                onClick={() => {
-                                                                                    if (window.confirm('Are you sure you want to delete this script?')) {
-                                                                                        router.delete(`/delete/${script.id}`)
-                                                                                            .then(() => {
-                                                                                                console.log('Script deleted successfully');
-                                                                                                router.visit(window.location.pathname, {
-                                                                                                    preserveScroll: true,
-                                                                                                    replace: true,
-                                                                                                });
-                                                                                            })
-                                                                                            .catch((error) => {
-                                                                                                console.error('Error deleting script:', error);
-                                                                                            });
-                                                                                    }
-                                                                                }}
-                                                                            >
-                                                                                <Trash2 className="mr-2 h-4 w-4" />
-                                                                                <span>Delete</span>
-                                                                            </DropdownMenuItem>
-                                                                        </DropdownMenuContent>
-                                                                    </DropdownMenu>
-                                                                </div>
-                                                            </div>
-                                                            <CardHeader className="p-4">
-                                                                <CardTitle
-                                                                    className="line-clamp-1 cursor-pointer"
-                                                                    onClick={() => (window.location.href = `/editor/${script.id}`)}
-                                                                >
-                                                                    {script.title}
-                                                                </CardTitle>
-                                                                <CardDescription className="line-clamp-2">
-                                                                    {script.description}
-                                                                </CardDescription>
-                                                            </CardHeader>
-                                                            <CardFooter className="p-4 pt-0 flex justify-between text-sm text-muted-foreground">
-                                                                <div className="flex items-center">
-                                                                    <Calendar className="mr-1 h-3 w-3" />
-                                                                    <span>{getRelativeDate(script.created_at)}</span>
-                                                                </div>
-                                                                <div className="flex items-center">
-                                                                    <BookOpen className="mr-1 h-3 w-3" />
-                                                                    <span>{script.pages || '23 Pages'} pages</span>
-                                                                </div>
-                                                            </CardFooter>
-                                                        </Card>
-                                                    ))}
-                                                </div>
-                                            )}
-                                             <div className="border-b border-gray-300 my-4"></div>
+                                        {/* <div className="mt-2 py-4 border-b border-muted">
+                                        <h2 className="text-xl font-semibold tracking-tight text-foreground">My Scripts</h2>
+                                    </div> */}
 
-                        {invitedScripts?.length > 0 && (
-                                                <>
-                                           <div className="mt-8 py-4 border-b border-muted">
-                                                    <h2 className="text-xl font-semibold tracking-tight text-foreground">
-                                                        Scripts I'm Invited To
-                                                    </h2>
-                                                    </div>
-                                     <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-                                                    {invitedScripts?.map((script) => (
-                                                        <Card key={script.id} className="overflow-hidden">
-                                                            <div className="aspect-video relative">
-                                                                <img
-                                                                    src={`/${script.thumbnail}`}
-                                                                    alt={script.title}
-                                                                    fill
-                                                                    className="object-cover object-center h-60 w-full"
-                                                                />
-                                                                <div className="absolute top-2 right-2">
-                                                                <ScriptDetailsDialog script = {script} />
-                                                                </div>
-                                                            </div>
-                                                            <CardHeader className="p-4">
-                                                                <CardTitle
-                                                                    className="line-clamp-1 cursor-pointer"
-                                                                    onClick={() => (window.location.href = `/editor/${script.id}`)}
-                                                                >
-                                                                    {script.title}
-                                                                </CardTitle>
-                                                                <CardDescription className="line-clamp-2">
-                                                                    {script.description}
-                                                                </CardDescription>
-                                                            </CardHeader>
-                                                            <CardFooter className="p-4 pt-0 flex justify-between text-sm text-muted-foreground">
-                                                                <div className="flex items-center">
-                                                                    <Calendar className="mr-1 h-3 w-3" />
-                                                                    <span>{getRelativeDate(script.created_at)}</span>
-                                                                </div>
-                                                                <div className="flex items-center">
-                                                                    <BookOpen className="mr-1 h-3 w-3" />
-                                                                    <span>{script.pages || '23 Pages'} pages</span>
-                                                                </div>
-                                                            </CardFooter>
-                                                        </Card>
-                                                    ))}
+                                    {filteredMyScripts?.length === 0 ? (
+                                        <div className="flex h-[200px] flex-col items-center justify-center rounded-lg border border-dashed">
+                                        <FileText className="h-10 w-10 text-muted-foreground" />
+                                        <h3 className="mt-4 text-lg font-medium">No scripts found</h3>
+                                        <p className="mt-2 text-sm text-muted-foreground">
+                                            {searchQuery ? "Try a different search term" : "Create a new script to get started"}
+                                        </p>
+                                        <div className="mt-4">
+                                            <CreateDialog />
+                                        </div>
+                                        </div>
+                                    ) : (
+                                        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                                        {filteredMyScripts.map((script) => (
+                                            <Card key={script.id} className="overflow-hidden">
+                                            <div className="aspect-video relative">
+                                                <img
+                                                src={`/${script.thumbnail}`}
+                                                alt={script.title}
+                                                fill
+                                                className="object-cover object-center h-60 w-full"
+                                                />
+                                                <div className="absolute top-2 right-2">
+                                                <DropdownMenu>
+                                                    <DropdownMenuTrigger asChild>
+                                                    <Button variant="ghost" size="icon" className="h-8 w-8 bg-black/20 backdrop-blur-sm hover:bg-black/30">
+                                                        <MoreVertical className="h-4 w-4 text-white" />
+                                                    </Button>
+                                                    </DropdownMenuTrigger>
+                                                    <DropdownMenuContent align="end">
+                                                    <InviteCollaboratorDialog scriptId={script.id} />
+                                                    <DropdownMenuItem
+                                                        onClick={() => {
+                                                        if (window.confirm('Are you sure you want to delete this script?')) {
+                                                            router.delete(`/delete/${script._id}`)
+                                                            .then(() => {
+                                                                console.log('Script deleted successfully');
+                                                                router.visit(window.location.pathname, {
+                                                                preserveScroll: true,
+                                                                replace: true,
+                                                                });
+                                                            })
+                                                            .catch((error) => {
+                                                                console.error('Error deleting script:', error);
+                                                            });
+                                                        }
+                                                        }}
+                                                    >
+                                                        <Trash2 className="mr-2 h-4 w-4" />
+                                                        <span>Delete</span>
+                                                    </DropdownMenuItem>
+                                                    <CollaboratorsListDialog collaborators={script.collaborators} />
+                                                    </DropdownMenuContent>
+                                                </DropdownMenu>
                                                 </div>
-                        </>
-                    )}
-                </TabsContent>
-                              <TabsContent value="templates" className="mt-6">
+                                            </div>
+                                            <CardHeader className="p-4">
+                                                <CardTitle
+                                                className="line-clamp-1 cursor-pointer"
+                                                onClick={() => (window.location.href = `/editor/${script.id}`)}
+                                                >
+                                                {script.title}
+                                                </CardTitle>
+                                                <CardDescription className="line-clamp-2">{script.description}</CardDescription>
+                                            </CardHeader>
+                                            <CardFooter className="p-4 pt-0 flex justify-between text-sm text-muted-foreground">
+                                                <div className="flex items-center">
+                                                <Calendar className="mr-1 h-3 w-3" />
+                                                <span>{getRelativeDate(script.created_at)}</span>
+                                                </div>
+                                                <div className="flex items-center">
+                                                <BookOpen className="mr-1 h-3 w-3" />
+                                                <span>{script.pages || '23 Pages'} pages</span>
+                                                </div>
+                                            </CardFooter>
+                                            </Card>
+                                        ))}
+                                        </div>
+                                    )}
+                                </TabsContent>
+                                    <TabsContent value="templates" className="mt-6">
                                         <div className="space-y-8">
                                             {templateCategories.map((category) => (
                                                 <div key={category.name} className="space-y-4">

@@ -7,14 +7,15 @@ class CreateScenesCollection extends Migration
 {
     public function up()
     {
-        Schema::connection('mongodb')->create('scenes', function ($collection) {
-            // Indexes for faster searching
-            $collection->index('scriptID');
-            $collection->index('scene_num');
-            $collection->index('location');
-            $collection->index('time_of_day');
+        Schema::connection('mongodb')->create('scenes', function ($collection) { 
+            $collection->string('id');      
+            $collection->string('scriptID'); 
+            $collection->integer('scene_num')->nullable(); 
+            $collection->string('sceneHead')->nullable(); 
+            $collection->string('sceneDesc')->nullable();
 
-            // Timestamps: created_at, updated_at
+            
+            $collection->array('lines')->nullable();    
             $collection->timestamps();
         });
     }
