@@ -35,7 +35,7 @@ import {
 } from "lucide-react";
 
 import { useDispatch } from "react-redux";
-// const [activeTextFieldId, setactiveTextFieldId] = useState()
+[activeTextFieldId, setactiveTextFieldId] = useState()
 
 import { nanoid } from "nanoid";
 import {
@@ -53,6 +53,7 @@ import {
 import { elements } from "../../../../public/data/elements";
 import { initScript } from "../../features/activeScriptSlice";
 import { router } from "@inertiajs/react";
+import { pdfstyle } from "../../../../public/data/pdfstyle";
 
 export function EditorField({script ,scenes, scenecharacters, user}) {
     const dispatch = useDispatch();
@@ -67,7 +68,7 @@ export function EditorField({script ,scenes, scenecharacters, user}) {
     const [content, setcontent] = useState();
     const activeScriptState = useSelector(selectActiveScript);
 
-    // save script
+    
     const saveScript = () => {
         console.log(JSON.stringify({ scenes: activeScriptState.scenes ,characters }))
         console.log(JSON.stringify())
@@ -75,11 +76,11 @@ export function EditorField({script ,scenes, scenecharacters, user}) {
         router.post(`/scripts/${script.id}/scenes`, { scenes: activeScriptState.scenes , characters}, {
           onSuccess: () => {
             console.log('Scenes saved successfully!');
-            // Optionally, provide user feedback (e.g., a toast notification)
+           
           },
           onError: (errors) => {
             console.error('Failed to save scenes:', errors);
-            // Optionally, display error messages to the user
+          
           },
         });
       }
@@ -88,44 +89,125 @@ export function EditorField({script ,scenes, scenecharacters, user}) {
     router.post('/production-schedule', { scenes: activeScriptState.scenes });
 };
 
-    // word suggestion
+    
 
-    const proxyUrl = "https://thingproxy.freeboard.io/fetch/";
+    const proxyUrl = "https:.freeboard.io/fetch/";
     const targetUrl =
-        "https://amharic-spelling-checker-demo.onrender.com/spellcheck";
+        "https:-spelling-checker-demo.onrender.com/spellcheck";
 
     const [suggWords, setsuggWords] = useState([]);
 
-const exportScript = (htmlInput = "<div>Hello</div>") => {
-    console.log("object");
-
-    // 1. Create hidden wrapper
-    const element = document.createElement('div');
-    element.innerHTML = htmlInput;
-    element.style.position = 'absolute';
-    element.style.left = '-9999px'; // Hide it off-screen
-    document.body.appendChild(element);
-
-    // 2. Export PDF
+const exportScript = () => {
+  let boardtopdf = document.createElement("div");
+  boardtopdf.style.width = "80%"
+ 
+      activeScriptState.scenes?.map((scence) => {
+                    if (scence.sceneHead.text) {
+                        let element = pdfstyle["scene_heading"];
+                        let ele = document.createElement(element?.tag);
+                        ele.innerText = scence.sceneHead.text;
+                        ele.setAttribute("class", element?.style);
+                        ele.addEventListener("change",onchange)
+                        ele.setAttribute("data-type", "scene_heading");
+                        ele.setAttribute("id", scence.sceneHead.id);
+                        boardtopdf.appendChild(ele);
+                    }
+                    if (scence.sceneDesc.text) {
+                        let element = pdfstyle["scene_description"];
+                        let ele = document.createElement(element?.tag);
+                        ele.innerText = scence.sceneDesc.text;
+                        ele.setAttribute("class", element?.style);
+                        ele.addEventListener("change",onchange)
+                        ele.setAttribute("data-type", "scene_description");
+                        ele.setAttribute("id", scence.sceneDesc.id);
+                        boardtopdf.appendChild(ele);
+                    }
+    
+                    scence.lines.map((line) => {
+                        for (let key in line) {
+                            if (key == "action") {
+                                let element = pdfstyle["action"];
+                                let ele = document.createElement(element?.tag);
+                                ele.innerText = line[key].text;
+                                ele.setAttribute("class", element?.style);
+                                ele.addEventListener("change",onchange)
+                                ele.setAttribute("data-type", "action");
+                                ele.setAttribute("id", line[key].id);
+                                boardtopdf.appendChild(ele);
+                            } else {
+                                if (key == "character") {
+                                    let element = pdfstyle["character"];
+                                    let ele = document.createElement(element?.tag);
+                                    ele.innerText = line[key].text;
+                                    ele.setAttribute("class", element?.style);
+                                    ele.addEventListener("change",onchange)
+                                    ele.setAttribute("data-type", "character");
+                                    ele.setAttribute("id", line[key].id);
+                                    boardtopdf.appendChild(ele);
+                                } else if (key == "dialogue") {
+                                    let element = pdfstyle["dialogue"];
+                                    let ele = document.createElement(element?.tag);
+                                    ele.innerText = line[key].text;
+                                    ele.setAttribute("class", element?.style);
+                                    ele.addEventListener("change",onchange)
+                                    ele.setAttribute("data-type", "dialogue");
+                                    ele.setAttribute("id", line[key].id);
+                                    boardtopdf.appendChild(ele);
+                                } else if (key == "emotion") {
+                                    let element = pdfstyle["character_emotion"];
+                                    let ele = document.createElement(element?.tag);
+                                    ele.innerText = line[key].text;
+                                    ele.setAttribute("class", element?.style);
+                                    ele.addEventListener("change",onchange)
+                                    ele.setAttribute(
+                                        "data-type",
+                                        "character_emotion"
+                                    );
+                                    ele.setAttribute("id", line[key].id);
+                                    boardtopdf.appendChild(ele);
+                                }
+                            }
+                        }
+                    });
+                });
+   
     html2pdf()
         .set({
             margin: 10,
-            filename: "okay.pdf",
+            filename: `${script.title}.pdf`,
             image: { type: 'jpeg', quality: 0.98 },
             html2canvas: { scale: 2 },
             jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
         })
-        .from(element)
+        .from(boardtopdf)
         .save()
         .then(() => {
             console.log("PDF generated");
-            document.body.removeChild(element); // 3. Clean up
+         
         })
         .catch((err) => {
             console.error("PDF generation error:", err);
         });
 
-    console.log("object2");
+    console.log(boardtopdf);
+};
+const exportScriptAspf = () => {
+ 
+  const blob = new Blob([JSON.stringify({script ,activeScriptState, user} )], { type: 'text/plain' });
+
+ 
+  const link = document.createElement('a');
+  link.href = URL.createObjectURL(blob);
+  link.download = `${script.title}.aspf`;
+
+  
+  document.body.appendChild(link);
+  link.click();
+
+  
+  document.body.removeChild(link);
+  URL.revokeObjectURL(link.href);
+
 };
 
     useEffect(() => {
@@ -164,7 +246,7 @@ const exportScript = (htmlInput = "<div>Hello</div>") => {
     }, [suggWords]);
 
     const [line, setline] = useState(null);
-    // element format
+    
     const [sceneId, setsceneId] = useState(null);
     const [emptyScript, setemptyScript] = useState(true);
     useEffect(() => {
@@ -275,7 +357,7 @@ const exportScript = (htmlInput = "<div>Hello</div>") => {
         }, 0);
         setcontent(document.querySelector(".board").innerHTML);
 
-        // spell chk
+        
 
         ele.addEventListener("input", async (e) => {
             const value = e.target.value.trim();
@@ -305,7 +387,7 @@ const onchange = (e) =>{
    console.log(e.target.id, e.target.value)
 }
     useEffect(() => {
-        // console.log("okay",scenes)
+        
         if (scenes) {
           scenecharacters &&
                 dispatch(initCharacter(scenecharacters));
@@ -433,7 +515,7 @@ const onchange = (e) =>{
                                 Action
                             </SelectItem>
                             <SelectItem
-                                disabled={selectedElement == "character"}
+                                disabled={selectedElement == "character" ||selectedElement == "emotion"}
                                 value="character"
                             >
                                 Character
@@ -667,7 +749,7 @@ const onchange = (e) =>{
                             <span className="text-xs">Save</span>
                         </Button>
 
-                        <Button variant="ghost" size="sm" onClick={exportScript} className="h-8 gap-1">
+                        <Button variant="ghost" size="sm" onClick={exportScriptAspf} className="h-8 gap-1">
                             <FileDown className="h-4 w-4" />
                             <span className="text-xs">Export</span>
                         </Button>

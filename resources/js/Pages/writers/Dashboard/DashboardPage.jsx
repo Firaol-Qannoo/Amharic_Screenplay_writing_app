@@ -119,8 +119,24 @@ export default function Dashboard({ myScripts, invitedScripts, user}) {
         script.category?.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
-    const handleImport = () => {
-        // Implement import logic
+    const handleImport = (e) => {
+      const file = e.target.files[0]; // Get the first selected file
+  if (!file) return;
+
+  const reader = new FileReader();
+
+  reader.onload = (event) => {
+    try {
+      const json = JSON.parse(event.target.result); // Parse JSON
+      console.log('script', json);
+      // user_id
+    } catch (error) {
+      console.error('Error parsing JSON file:', error);
+    }
+  };
+
+  reader.readAsText(file); // Read file as text
+
     };
 
     const handleStoryboard = () => {
@@ -195,8 +211,8 @@ export default function Dashboard({ myScripts, invitedScripts, user}) {
                                         <LayoutTemplate className="mr-2 h-4 w-4" />
                                         Templates
                                     </Button>
-                                    <Button variant="outline" className="cursor-pointer relative" onClick={handleImport}>
-                                        <input type="file" className="absolute top-0 cursor-pointer border-0 opacity-0 z-50 w-full h-full" name="" id="" />
+                                    <Button variant="outline" className="cursor-pointer relative" >
+                                        <input type="file" onChange={handleImport} className="absolute top-0 cursor-pointer border-0 opacity-0 z-50 w-full h-full" name="" id="" />
                                         <FileUp className="mr-2 cursor-pointer  h-4 w-4" />
                                         Import
                                     </Button>
