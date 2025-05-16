@@ -1,8 +1,9 @@
+ 
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Textarea } from "@/components/ui/textarea"
-import { Sparkles, X, Zap } from "lucide-react"
+import { BotIcon, X, Zap } from "lucide-react"
 
 
 
@@ -32,7 +33,7 @@ export function AiAssistant() {
         className="fixed right-4 bottom-20 h-10 w-10 rounded-full p-0 shadow-md"
         onClick={() => setIsOpen(!isOpen)}
       >
-        <Sparkles className={`h-5 w-5 ${isOpen ? "text-primary" : ""}`} />
+        <BotIcon className={`h-5 w-5 ${isOpen ? "text-primary" : ""}`} />
       </Button>
 
       
@@ -41,7 +42,7 @@ export function AiAssistant() {
           <CardHeader className="pb-3">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <Sparkles className="h-4 w-4 text-primary" />
+                <BotIcon  className="h-4 w-4 text-primary" />
                 <CardTitle className="text-base">AI አጋዥ</CardTitle>
               </div>
               <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => setIsOpen(false)}>

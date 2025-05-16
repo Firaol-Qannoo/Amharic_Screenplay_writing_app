@@ -19,30 +19,20 @@ import {
 import { Link } from '@inertiajs/react';
 export default function Landing() {
   return (
-    <div className="flex min-h-screen flex-col px-10">
-      <header className="sticky top-0 z-50 w-full border-b backdrop-blur bg-background/60">
+    <div className="flex min-h-screen flex-col ">
+      <header className="sticky top-0 z-50 w-full border-b px-10 backdrop-blur bg-background/60">
         <div className="container flex h-16 items-center justify-between">
           <div className="flex items-center gap-2">
             <span className="text-lg font-bold">
               Amharic Screenplay Writing Tool
             </span>
           </div>
-          <div className="flex items-center gap-4">
-            <Button variant="outline" size="sm" asChild>
-              <a
-                href="https://github.com/AASTUSoftwareEngineeringDepartment/AmharicScreenwrittingApp"
-                target="_blank"
-              >
-                <Github className="mr-2 h-4 w-4" />
-                GitHub
-              </a>
-            </Button>
-          </div>
+       
         </div>
       </header>
       <main className="flex-1">
-        <section className="w-full py-12 md:py-10 lg:py-10 xl:py-20">
-          <div className="container px-4 md:px-6">
+        <section className="w-full px-10 py-12 md:py-10 lg:py-10 xl:py-20">
+          <div className="container  px-4 md:px-6">
             <div className="grid gap-6 lg:grid-cols-[1fr_400px] lg:gap-12 xl:grid-cols-[1fr_600px]">
               <div className="flex flex-col justify-center space-y-4">
                 <div className="space-y-2">
@@ -102,7 +92,7 @@ export default function Landing() {
               </div>
             </div>
             <div className="mx-auto grid max-w-5xl grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 pt-8">
-              <Card>
+              {/* <Card>
                 <CardHeader className="pb-2">
                   <p className="text-3xl">አ</p>
                   <CardTitle>Amharic Script Support</CardTitle>
@@ -117,7 +107,7 @@ export default function Landing() {
                     proper character encoding and font support.
                   </p>
                 </CardContent>
-              </Card>
+              </Card> */}
               <Card>
                 <CardHeader className="pb-2">
                   <Users className="h-6 w-6 mb-2 text-primary" />
@@ -241,7 +231,7 @@ export default function Landing() {
           </div>
         </section>
       </main>
-      <footer className="w-full border-t py-6 md:py-0">
+      <footer className="w-full  px-10 border-t py-6 md:py-0">
         <div className="container flex flex-col items-center justify-between gap-4 md:h-24 md:flex-row">
           <p className="text-sm text-muted-foreground">
             &copy; {new Date().getFullYear()} Amharic Screenplay Writing Tool.

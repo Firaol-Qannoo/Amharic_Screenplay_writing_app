@@ -5,7 +5,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { FileDown, Save } from "lucide-react";
 import { useSelector } from "react-redux";
 import { useMemo } from 'react';
-
+import html2pdf from 'html2pdf.js';
 import {
     Tooltip,
     TooltipContent,
@@ -95,6 +95,38 @@ export function EditorField({script ,scenes, scenecharacters}) {
         "https://amharic-spelling-checker-demo.onrender.com/spellcheck";
 
     const [suggWords, setsuggWords] = useState([]);
+
+const exportScript = (htmlInput = "<div>Hello</div>") => {
+    console.log("object");
+
+    // 1. Create hidden wrapper
+    const element = document.createElement('div');
+    element.innerHTML = htmlInput;
+    element.style.position = 'absolute';
+    element.style.left = '-9999px'; // Hide it off-screen
+    document.body.appendChild(element);
+
+    // 2. Export PDF
+    html2pdf()
+        .set({
+            margin: 10,
+            filename: "okay.pdf",
+            image: { type: 'jpeg', quality: 0.98 },
+            html2canvas: { scale: 2 },
+            jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+        })
+        .from(element)
+        .save()
+        .then(() => {
+            console.log("PDF generated");
+            document.body.removeChild(element); // 3. Clean up
+        })
+        .catch((err) => {
+            console.error("PDF generation error:", err);
+        });
+
+    console.log("object2");
+};
 
     useEffect(() => {
         const textarea = document.querySelector(".board textarea:last-child");
@@ -633,7 +665,7 @@ const onchange = (e) =>{
                             <span className="text-xs">Save</span>
                         </Button>
 
-                        <Button variant="ghost" size="sm" className="h-8 gap-1">
+                        <Button variant="ghost" size="sm" onClick={exportScript} className="h-8 gap-1">
                             <FileDown className="h-4 w-4" />
                             <span className="text-xs">Export</span>
                         </Button>
