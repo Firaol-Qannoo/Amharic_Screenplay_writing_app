@@ -88,7 +88,7 @@ export default function EditorPage({script, user, scenecharacters, scenes}) {
               </Card>
             ) : (
               // Pass the dynamic content to your editor component
-              <EditorField value={editorContent} onChange={handleEditorChange} script={script} scenecharacters={scenecharacters} scenes={scenes}/>
+              <EditorField value={editorContent} onChange={handleEditorChange} script={script} scenecharacters={scenecharacters} scenes={scenes} user={user}/>
             )}
           </div>
           <AiAssistant/>

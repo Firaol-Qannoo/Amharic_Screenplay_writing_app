@@ -259,7 +259,7 @@ export default function Dashboard({ myScripts, invitedScripts, user}) {
                                                             <DropdownMenuItem
                                                                 onClick={() => {
                                                                 if (window.confirm('Are you sure you want to delete this script?')) {
-                                                                    router.delete(`/delete/${script.id}`)
+                                                                    router.delete(`/delete-script/${script.id}`)
                                                                     .then(() => {
                                                                         console.log('Script deleted successfully');
                                                                         router.visit(window.location.pathname, {
@@ -277,7 +277,7 @@ export default function Dashboard({ myScripts, invitedScripts, user}) {
                                                                 <span>Delete</span>
                                                             </DropdownMenuItem>
                                                             
-                                                            <CollaboratorsListDialog collaborators={script.collaborators_full} />
+                                                            <CollaboratorsListDialog collaborators={script.collaborators_full} script={script}/>
                                                             
                                                             <UpdateScript script={script}/>
                                                             </DropdownMenuContent>

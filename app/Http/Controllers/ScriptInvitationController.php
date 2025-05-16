@@ -130,4 +130,54 @@ class ScriptInvitationController extends Controller
             return Inertia::location(route('dashboard'));
         }
     }
+
+    public function deleteCollaborator($scriptId, $userId)
+    {
+        // 1. Remove userId from invitee_id array in the Script model
+        $script = Script::findOrFail($scriptId);
+    
+        $inviteeIds = is_array($script->invitee_id)
+            ? $script->invitee_id
+            : json_decode($script->invitee_id, true);
+    
+        $updatedInvitees = array_filter($inviteeIds, fn($id) => $id !== $userId);
+        $updatedInvitees = array_values($updatedInvitees);
+    
+        $script->invitee_id = $updatedInvitees;
+        $script->save();
+    
+        // 2. Delete all ScriptInvitation records where invitee_id = $userId and script_id = $scriptId (optional filter)
+        //  // add if you want to scope[script_id] deletion to this script
+        ScriptInvitation::where('invitee_id', $userId)
+            ->where('script_id', $scriptId)
+            ->delete();
+    
+        flash()->success('Collaborator deleted successfully!');
+        return Inertia::location(route('dashboard'));
+    }
+    
+
+
+    public function updateCollaboratorRole(Request $request, $scriptId, $userId) {
+        $request->validate([
+            'role' => 'required|string|in:Writer,Artist,Director',
+        ]);
+    
+        // Find the collaborator invitation record
+        $collaborator = ScriptInvitation::where('invitee_id', $userId)
+            ->where('script_id', $scriptId)
+            ->first();
+    
+        if (!$collaborator) {
+            Flasher::addError('Collaborator not found.');
+            return response()->json(['message' => 'Collaborator not found.'], 404);
+        }
+    
+        // Update the role
+        $collaborator->role = $request->role;
+        $collaborator->save();
+    
+        flash()->success('Collaborator Role Changed successfully!');
+        return Inertia::location(route('dashboard'));
+    }
 }

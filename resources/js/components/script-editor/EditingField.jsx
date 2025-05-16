@@ -54,7 +54,7 @@ import { elements } from "../../../../public/data/elements";
 import { initScript } from "../../features/activeScriptSlice";
 import { router } from "@inertiajs/react";
 
-export function EditorField({script ,scenes, scenecharacters}) {
+export function EditorField({script ,scenes, scenecharacters, user}) {
     const dispatch = useDispatch();
     const [selectedElement, setselectedElement] = useState("scene_heading");
 
@@ -609,7 +609,8 @@ const onchange = (e) =>{
                             </TooltipContent>
                         </Tooltip>
                     </TooltipProvider>
-
+                   
+                    {!user.invitation && (
                     <TooltipProvider>
                         <Tooltip>
                             <TooltipTrigger asChild>
@@ -630,6 +631,7 @@ const onchange = (e) =>{
                             </TooltipContent>
                         </Tooltip>
                     </TooltipProvider>
+                    )}
                 </div>
             </div>
 
