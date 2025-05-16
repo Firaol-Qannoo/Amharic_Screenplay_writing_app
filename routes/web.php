@@ -75,12 +75,12 @@ use App\Http\Controllers\ScriptInvitationController;
     Route::get('/editor', [EditorController::class, 'index'])->name('editor');
     Route::get('/editor/{id}', [EditorController::class, 'edit'])->name('editor.edit');
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-    Route::delete('/delete/{id}', [ScriptsController::class, 'destroy'])->name('delete.destroy');
+    Route::delete('/delete-script/{id}', [ScriptsController::class, 'destroy'])->name('delete-script.destroy');
 
 
     Route::middleware(['auth'])->group(function () {
         // Route::get('/dashboard', function () {
-        //     return Inertia::render('writers/Dashboard/DashboardPage', [
+        //     return Inertia::render('writers/Dashboard/DashboardPage', [ delete-collab
         //         'user' => Auth::user(),
         //         'success' => 'Login successfully.',
         //     ]);
@@ -112,3 +112,7 @@ use App\Http\Controllers\ScriptInvitationController;
     Route::post('/scripts/{scriptID}/scenes', [SceneController::class, 'store'])->name('scenes.store');
     Route::post('/settings/update', [RegisterController::class, 'update'])->name('settings.update');
     Route::put('/scripts/{id}', [ScriptsController::class, 'update'])->name('scripts.update');
+
+    Route::delete('/delete-collab/{scriptID}/{userID}', [ScriptInvitationController::class, 'deleteCollaborator'])->name('delete-script.deleteCollaborator');
+    Route::put('/update-collaborator-role/{scriptId}/{userId}', [ScriptInvitationController::class, 'updateCollaboratorRole']);
+

@@ -48,15 +48,13 @@ class RegisterController extends Controller
         'fullname' => 'required|string',
         'email' => 'required|email',
         'password' => 'required|string|min:6',
+        'profilePicture' => 'nullable|image|mimes:jpg,jpeg,png|max:2048', // Optional file validation
     ]);
 
     // Check if the email already exists
     $existingUser = User::where('email', $validated['email'])->first();
     
     if ($existingUser) {
-        // return Inertia::render('auth/SignUpPage', [
-        //     'errors' => ['email' => 'An account with this email already exists. Please use a different email or log in.']
-        // ]);
         flash()->error(
             'An account with this email already exists. Please use a different email or log in.'
         );
@@ -67,6 +65,28 @@ class RegisterController extends Controller
     try {
         $otp = rand(100000, 999999);
 
+         // Handle profile picture upload
+         $profilePicturePath = null;
+
+         if ($request->hasFile('profilePicture')) {
+             $file = $request->file('profilePicture');
+         
+             // Generate unique name
+             $profilePictureName = time() . '_' . $file->getClientOriginalName();
+         
+             // Ensure the folder exists
+             $destinationPath = public_path('profile_pictures');
+             if (!file_exists($destinationPath)) {
+                 mkdir($destinationPath, 0755, true); // Create folder if it doesn't exist
+             }
+         
+             // Move file to public/profile_pictures
+             $file->move($destinationPath, $profilePictureName);
+         
+             // Store relative path to DB or use as needed
+             $profilePicturePath = 'profile_pictures/' . $profilePictureName;
+         }
+
         // Cache the OTP and user data for verification later
         $cacheKey = 'otp_' . $validated['email'];
         Cache::put($cacheKey, [
@@ -74,6 +94,7 @@ class RegisterController extends Controller
             'email' => $validated['email'],
             'password' => bcrypt($validated['password']),
             'otp' => $otp,
+            'avatar' => $profilePicturePath, // Save path to cache
         ], now()->addMinutes(10));
 
         Mail::to($validated['email'])->send(new SignupOtpMail($otp));
@@ -82,13 +103,9 @@ class RegisterController extends Controller
             'email' => $validated['email']
         ]);
     } catch (\Exception $e) {
-        // return Inertia::render('auth/SignUpPage', [
-        //     'errors' => ['email' => 'We couldn’t send the OTP right now. Please check your internet connection or try again shortly.']
-        // ]);
         flash()->error(
             'We couldn’t send the OTP right now. Please check your internet connection or try again shortly.'
         );
-
         return Inertia::location(route('signup'));
     }
 }
@@ -127,6 +144,7 @@ public function verifySignupOtp(Request $request) {
         'first_name' => $data['fullname'],
         'email' => $data['email'],
         'password' => $data['password'],  // Password should be hashed (bcrypt) in model
+        'avatar' => $data['avatar']
     ]);
 
     // Get the user's unique ID

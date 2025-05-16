@@ -34,7 +34,9 @@ export default function SignupPage() {
   const [showError, setShowError] = useState(false); // State to control visibility of the error popup
 
   const signupHandler = () => {
-    post("/register");
+    post("/register", {
+      forceFormData: true, //  Inertia to handle file uploads properly
+    });
   };
 
   // // Show error popup for 3 seconds if errors exist
