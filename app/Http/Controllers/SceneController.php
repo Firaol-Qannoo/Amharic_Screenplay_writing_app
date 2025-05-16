@@ -129,4 +129,40 @@ class SceneController extends Controller
         flash()->success('Scenes and Characters saved successfully!');
         return Inertia::location(url()->previous());
     }
+
+    public function updateCharacters(array $characters, $scriptID)
+    {
+        foreach ($characters as $characterData) {
+            if (empty($characterData['_id'])) {
+                continue; 
+            }
+    
+            $character = Character::where('id', $characterData['id'])
+                                  ->where('sceneID', $scriptID) 
+                                  ->first();
+    
+            if ($character) {
+                // Update existing character
+                $character->update([
+                    'name' => $characterData['name'] ?? $character->name,
+                    'role' => $characterData['role'] ?? $character->role,
+                    'description' => $characterData['description'] ?? $character->description,
+                    'relationships' => $characterData['relationships'] ?? $character->relationships,
+                    'inScene' => $characterData['inScene'] ?? $character->inScene,
+                ]);
+            } else {
+                // Optional: create if not found
+                // Character::create([
+                //     'id' => $characterData['id'],
+                //     'sceneID' => $scriptID,
+                //     'name' => $characterData['name'] ?? null,
+                //     'role' => $characterData['role'] ?? null,
+                //     'description' => $characterData['description'] ?? null,
+                //     'relationships' => $characterData['relationships'] ?? [],
+                //     'inScene' => $characterData['inScene'] ?? [],
+                // ]);
+            }
+        }
+    }
+    
 }
