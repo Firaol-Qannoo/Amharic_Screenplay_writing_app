@@ -22,6 +22,7 @@ class User extends Model implements Authenticatable
         'email',
         'password',
         'avatar',
+        'userColor',
         'google_id',
         'lang_pref',
         'role',

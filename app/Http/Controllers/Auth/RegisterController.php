@@ -42,6 +42,19 @@ class RegisterController extends Controller
          // Validate signup data
    }
 
+   public function generateRandomCode()
+{
+    // Characters: 1-9 and A-F
+    $characters = array_merge(range('1', '9'), range('A', 'F'));
+
+    $code = '';
+    for ($i = 0; $i < 6; $i++) {
+        $code .= $characters[array_rand($characters)];
+    }
+
+    return $code;
+}
+
    public function store(Request $request) {
     // Validate the input
     $validated = $request->validate([
@@ -87,6 +100,7 @@ class RegisterController extends Controller
              $profilePicturePath = 'profile_pictures/' . $profilePictureName;
          }
 
+         
         // Cache the OTP and user data for verification later
         $cacheKey = 'otp_' . $validated['email'];
         Cache::put($cacheKey, [
@@ -95,6 +109,7 @@ class RegisterController extends Controller
             'password' => bcrypt($validated['password']),
             'otp' => $otp,
             'avatar' => $profilePicturePath, // Save path to cache
+            'userColor' => $this->generateRandomCode(),
         ], now()->addMinutes(10));
 
         Mail::to($validated['email'])->send(new SignupOtpMail($otp));
@@ -144,7 +159,8 @@ public function verifySignupOtp(Request $request) {
         'first_name' => $data['fullname'],
         'email' => $data['email'],
         'password' => $data['password'],  // Password should be hashed (bcrypt) in model
-        'avatar' => $data['avatar']
+        'avatar' => $data['avatar'],
+        'userColor' => $data['userColor'],
     ]);
 
     // Get the user's unique ID
@@ -305,5 +321,9 @@ public function verifySignupOtp(Request $request) {
     flash()->success('Account Updated successfully!');
        return Inertia::location(route('dashboard'));
  }
+
+
+ 
+
 
 }

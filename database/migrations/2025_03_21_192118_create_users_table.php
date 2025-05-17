@@ -15,6 +15,7 @@ return new class extends Migration {
             $table->string('email')->unique();
             $table->string('password');
             $table->string('avatar');
+            $table->string('userColor');
             $table->string('role')->default('Owner');
             $table->string('google_id')->nullable(); // google_id as nullable
             $table->string('lang_pref'); 
