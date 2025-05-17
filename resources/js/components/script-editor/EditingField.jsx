@@ -5,6 +5,21 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { FileDown, Save } from "lucide-react";
 import { useSelector } from "react-redux";
 import { useMemo } from 'react';
+import {
+  Menubar,
+  MenubarCheckboxItem,
+  MenubarContent,
+  MenubarItem,
+  MenubarMenu,
+  MenubarRadioGroup,
+  MenubarRadioItem,
+  MenubarSeparator,
+  MenubarShortcut,
+  MenubarSub,
+  MenubarSubContent,
+  MenubarSubTrigger,
+  MenubarTrigger,
+} from "@/components/ui/menubar"
 import html2pdf from 'html2pdf.js';
 import {
     Tooltip,
@@ -35,7 +50,7 @@ import {
 } from "lucide-react";
 
 import { useDispatch } from "react-redux";
-[activeTextFieldId, setactiveTextFieldId] = useState()
+//const [activeTextFieldId, setactiveTextFieldId] = useState()
 
 import { nanoid } from "nanoid";
 import {
@@ -76,11 +91,11 @@ export function EditorField({script ,scenes, scenecharacters, user}) {
         router.post(`/scripts/${script.id}/scenes`, { scenes: activeScriptState.scenes , characters}, {
           onSuccess: () => {
             console.log('Scenes saved successfully!');
-           
+            
           },
           onError: (errors) => {
             console.error('Failed to save scenes:', errors);
-          
+            
           },
         });
       }
@@ -91,9 +106,9 @@ export function EditorField({script ,scenes, scenecharacters, user}) {
 
     
 
-    const proxyUrl = "https:.freeboard.io/fetch/";
+    const proxyUrl = "https://thingproxy.freeboard.io/fetch/";
     const targetUrl =
-        "https:-spelling-checker-demo.onrender.com/spellcheck";
+        "https://amharic-spelling-checker-demo.onrender.com/spellcheck";
 
     const [suggWords, setsuggWords] = useState([]);
 
@@ -170,7 +185,7 @@ const exportScript = () => {
                         }
                     });
                 });
-   
+    
     html2pdf()
         .set({
             margin: 10,
@@ -729,7 +744,11 @@ const onchange = (e) =>{
                     </TabsList>
 
                     <div className="flex items-center gap-1">
-                        <Button
+                     
+
+                       
+ <Menubar className="border-none">
+     <MenubarMenu>   <Button
                             variant="ghost"
                             onClick={scheduleHandler}
                             size="sm"
@@ -737,9 +756,8 @@ const onchange = (e) =>{
                         >
                             <Save className="h-4 w-4" />
                             <span className="text-xs">Production Schedule</span>
-                        </Button>
-
-                        <Button
+                        </Button></MenubarMenu>
+    <MenubarMenu> <Button
                             variant="ghost"
                             onClick={saveScript}
                             size="sm"
@@ -747,12 +765,36 @@ const onchange = (e) =>{
                         >
                             <Save className="h-4 w-4" />
                             <span className="text-xs">Save</span>
-                        </Button>
-
-                        <Button variant="ghost" size="sm" onClick={exportScriptAspf} className="h-8 gap-1">
-                            <FileDown className="h-4 w-4" />
+                        </Button></MenubarMenu> 
+      <MenubarMenu>
+        <MenubarTrigger><Button
+                            variant="ghost"
+                           
+                            size="sm"
+                            className="h-8 gap-1"
+                        >
+                            <Save className="h-4 w-4" />
                             <span className="text-xs">Export</span>
+                        </Button></MenubarTrigger>
+        <MenubarContent>
+        
+          <MenubarItem>
+            <Button variant="ghost" size="sm" onClick={exportScriptAspf} className="h-8 gap-1">
+                            <FileDown className="h-4 w-4" />
+                            <span className="text-xs">as ASPF</span>
                         </Button>
+          </MenubarItem>
+           <MenubarItem>
+            <Button variant="ghost" size="sm" onClick={exportScript} className="h-8 gap-1">
+                            <FileDown clayssName="h-4 w-4" />
+                            <span className="text-xs"> as PDF</span>
+                        </Button>
+          </MenubarItem>
+        </MenubarContent>
+      </MenubarMenu>
+      
+    </Menubar>
+                       
                     </div>
                 </div>
 
