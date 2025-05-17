@@ -100,8 +100,8 @@ use App\Http\Controllers\ImportScriptController;
     Route::post('/verify-otp', [RegisterController::class, 'verifyOtp']);
 
     Route::post('/scripts', [ScriptsController::class, 'store'])->name('scripts');
-    // routes/web.php
-    Route::post('/production-schedule', [ProductionScheduleController::class, 'showWithStaticData']);
+    Route::get('/production-schedule', [ProductionScheduleController::class, 'index'])->name('scenes.index');
+    Route::post('/production-schedule', [ProductionScheduleController::class, 'showWithStaticData'])->name('scenes.update');
 
 
 
