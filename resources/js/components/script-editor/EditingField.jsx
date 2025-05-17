@@ -69,8 +69,10 @@ import { elements } from "../../../../public/data/elements";
 import { initScript } from "../../features/activeScriptSlice";
 import { router } from "@inertiajs/react";
 import { pdfstyle } from "../../../../public/data/pdfstyle";
+import { store } from "../../app/store";
 
 export function EditorField({script ,scenes, scenecharacters, user}) {
+    console.log({script ,scenes, scenecharacters, user})
     const dispatch = useDispatch();
     const [selectedElement, setselectedElement] = useState("scene_heading");
 
@@ -85,10 +87,106 @@ export function EditorField({script ,scenes, scenecharacters, user}) {
 
     
     const saveScript = () => {
-        console.log(JSON.stringify({ scenes: activeScriptState.scenes ,characters }))
-        console.log(JSON.stringify())
 
-        router.post(`/scripts/${script.id}/scenes`, { scenes: activeScriptState.scenes , characters}, {
+       const lastTextArea = document.querySelector("textarea:last-child");
+         if (lastTextArea) {
+            if (lastTextArea.getAttribute("data-type") == "character") {
+                let charId = nanoid();
+                let char = characters.find(
+                    (character) => character.name === lastTextArea?.value
+                );
+
+                if (char) {
+                    let updatedInScene = [...char.inScene];
+                    let found = false;
+
+                    updatedInScene = updatedInScene.map((sceneObj) => {
+                        if (sceneObj.hasOwnProperty(sceneId)) {
+                            found = true;
+                            return { [sceneId]: sceneObj[sceneId] + 1 };
+                        }
+                        return sceneObj;
+                    });
+
+                    if (!found) {
+                        updatedInScene.push({ [sceneId]: 1 });
+                    }
+
+                    dispatch(
+                        updateCharacter({
+                            id: char.id,
+                            updates: { inScene: updatedInScene },
+                        })
+                    );
+
+                    let character = { id: char.id, text: lastTextArea?.value };
+                    setline({ ...line, character });
+                } else {
+                    dispatch(
+                        addCharacter({
+                            id: charId,
+                            name: lastTextArea?.value,
+                            role: null,
+                            description: null,
+                            relationships: [],
+                            inScene: [{ [sceneId]: 1 }],
+                        })
+                    );
+
+                    let character = { id: charId, text: lastTextArea?.value };
+                    setline({ ...line, character });
+                }
+            }
+
+            if (
+                lastTextArea?.getAttribute("data-type") == "character_emotion"
+            ) {
+                let emotion = { id: nanoid(), text: lastTextArea?.value };
+                setline({ ...line, emotion });
+            }
+
+            if (lastTextArea?.getAttribute("data-type") == "dialogue") {
+                let dialogue = { id: nanoid(), text: lastTextArea?.value };
+                let fullLine = { ...line, dialogue };
+                setline(fullLine);
+                dispatch(
+                    addLine({
+                        sceneId,
+                        line: { lineId: nanoid(), ...fullLine },
+                    })
+                );
+                setline({});
+            }
+            if (lastTextArea?.getAttribute("data-type") == "scene_heading") {
+                let sceneID = nanoid();
+
+                setsceneId(sceneID);
+
+                setemptyScript(false);
+                let sceneHead = { id: nanoid(), text: lastTextArea?.value };
+                console.log({ id: sceneID, sceneHead, sceneDesc: null });
+                dispatch(addScene({ id: sceneID, sceneHead, sceneDesc: null }));
+              
+            }
+            if (lastTextArea?.getAttribute("data-type") == "action") {
+                let action = { id: nanoid(), text: lastTextArea?.value };
+
+                dispatch(
+                    addLine({ sceneId, line: { lineId: nanoid(), action } })
+                );
+            }
+            if (
+                lastTextArea?.getAttribute("data-type") == "scene_description"
+            ) {
+                setemptyScript(false);
+                let sceneDesc = { id: nanoid(), text: lastTextArea?.value };
+                dispatch(editSceneMeta({ sceneId, sceneDesc }));
+            }
+        }
+        const latestActiveScriptState = store.getState().activeScript; //  <--  Get latest
+    const latestCharacters = store.getState().characters;
+       
+        router.post(`/scripts/${script.id}/scenes`, { scenes: latestActiveScriptState.scenes , characters:latestCharacters}, {
           onSuccess: () => {
             console.log('Scenes saved successfully!');
             
@@ -111,7 +209,7 @@ export function EditorField({script ,scenes, scenecharacters, user}) {
         "https://amharic-spelling-checker-demo.onrender.com/spellcheck";
 
     const [suggWords, setsuggWords] = useState([]);
-
+const [dive, setdive] = useState(false)
 const exportScript = () => {
   let boardtopdf = document.createElement("div");
   boardtopdf.style.width = "80%"
@@ -265,6 +363,7 @@ const exportScriptAspf = () => {
     const [sceneId, setsceneId] = useState(null);
     const [emptyScript, setemptyScript] = useState(true);
     useEffect(() => {
+       
         const lastTextArea = document.querySelector("textarea:last-child");
         if (lastTextArea) {
             if (lastTextArea.getAttribute("data-type") == "character") {
@@ -337,7 +436,7 @@ const exportScriptAspf = () => {
             if (lastTextArea?.getAttribute("data-type") == "scene_heading") {
                 let sceneID = nanoid();
                 setsceneId(sceneID);
-
+ console.log("Hereeyu")
                 setemptyScript(false);
                 let sceneHead = { id: nanoid(), text: lastTextArea?.value };
                 console.log({ id: sceneID, sceneHead, sceneDesc: null });
@@ -360,7 +459,9 @@ const exportScriptAspf = () => {
             }
         }
 
-        let element = elements[selectedElement];
+      if(dive){
+        console.log("LLobject")
+          let element = elements[selectedElement];
         let ele = document.createElement(element?.tag);
         ele.setAttribute("class", element?.style);
         element?.style == "character" && ele.setAttribute("char", true);
@@ -371,6 +472,7 @@ const exportScriptAspf = () => {
             ele.focus();
         }, 0);
         setcontent(document.querySelector(".board").innerHTML);
+      
 
         
 
@@ -396,7 +498,7 @@ const exportScriptAspf = () => {
                     .then((result) => setsuggWords(result))
                     .catch((error) => console.error("Error:", error));
             }
-        });
+        }); }
     }, [selectedElement]);
 const onchange = (e) =>{
    console.log(e.target.id, e.target.value)
@@ -481,6 +583,18 @@ const onchange = (e) =>{
                         }
                     });
                 });
+        let element = elements[selectedElement];
+        let ele = document.createElement(element?.tag);
+        ele.setAttribute("class", element?.style);
+        element?.style == "character" && ele.setAttribute("char", true);
+        ele.setAttribute("data-type", selectedElement);
+        ele.setAttribute("id", new Date().getTime());
+        document.querySelector(".board").appendChild(ele);
+        setTimeout(() => {
+            ele.focus();
+        }, 0);
+        setcontent(document.querySelector(".board").innerHTML);
+      setdive(true)
         }
     }, []);
 
