@@ -130,6 +130,9 @@ class SceneController extends Controller
         return Inertia::location(url()->previous());
     }
 
+
+    
+
     public function updateCharacters(array $characters, $scriptID)
     {
         foreach ($characters as $characterData) {

@@ -119,25 +119,37 @@ export default function Dashboard({ myScripts, invitedScripts, user}) {
         script.category?.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
-    const handleImport = (e) => {
-      const file = e.target.files[0]; // Get the first selected file
+const handleImport = (e) => {
+  const file = e.target.files[0];
   if (!file) return;
 
   const reader = new FileReader();
 
   reader.onload = (event) => {
     try {
-      const json = JSON.parse(event.target.result); // Parse JSON
-      console.log('script', json);
-      // user_id
+      const json = JSON.parse(event.target.result); // Parse JSON from file
+
+      // Send to Laravel via Inertia
+      router.post('/import-script', {
+        data: json,
+      }, {
+        onSuccess: () => {
+          alert('Script imported successfully!');
+        },
+        onError: (errors) => {
+          console.error('Import error:', errors);
+          alert('Failed to import script.');
+        }
+      });
     } catch (error) {
       console.error('Error parsing JSON file:', error);
+      alert('Invalid JSON file');
     }
   };
 
-  reader.readAsText(file); // Read file as text
+  reader.readAsText(file); // Read the file content as text
+};
 
-    };
 
     const handleStoryboard = () => {
         // Implement storyboard logic
