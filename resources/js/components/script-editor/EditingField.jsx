@@ -5,7 +5,22 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { FileDown, Save } from "lucide-react";
 import { useSelector } from "react-redux";
 import { useMemo } from 'react';
-
+import {
+  Menubar,
+  MenubarCheckboxItem,
+  MenubarContent,
+  MenubarItem,
+  MenubarMenu,
+  MenubarRadioGroup,
+  MenubarRadioItem,
+  MenubarSeparator,
+  MenubarShortcut,
+  MenubarSub,
+  MenubarSubContent,
+  MenubarSubTrigger,
+  MenubarTrigger,
+} from "@/components/ui/menubar"
+import html2pdf from 'html2pdf.js';
 import {
     Tooltip,
     TooltipContent,
@@ -35,7 +50,7 @@ import {
 } from "lucide-react";
 
 import { useDispatch } from "react-redux";
-// const [activeTextFieldId, setactiveTextFieldId] = useState()
+//const [activeTextFieldId, setactiveTextFieldId] = useState()
 
 import { nanoid } from "nanoid";
 import {
@@ -53,6 +68,7 @@ import {
 import { elements } from "../../../../public/data/elements";
 import { initScript } from "../../features/activeScriptSlice";
 import { router } from "@inertiajs/react";
+import { pdfstyle } from "../../../../public/data/pdfstyle";
 
 export function EditorField({script ,scenes, scenecharacters, user}) {
     const dispatch = useDispatch();
@@ -61,12 +77,13 @@ export function EditorField({script ,scenes, scenecharacters, user}) {
     const onElementChange = (value) => {
         setselectedElement(value);
     };
+    
     const [importedScript, setimportedScript] = useState(null);
     const characters = useSelector(selectcharacters);
     const [content, setcontent] = useState();
     const activeScriptState = useSelector(selectActiveScript);
 
-    // save script
+    
     const saveScript = () => {
         console.log(JSON.stringify({ scenes: activeScriptState.scenes ,characters }))
         console.log(JSON.stringify())
@@ -74,11 +91,11 @@ export function EditorField({script ,scenes, scenecharacters, user}) {
         router.post(`/scripts/${script.id}/scenes`, { scenes: activeScriptState.scenes , characters}, {
           onSuccess: () => {
             console.log('Scenes saved successfully!');
-            // Optionally, provide user feedback (e.g., a toast notification)
+            
           },
           onError: (errors) => {
             console.error('Failed to save scenes:', errors);
-            // Optionally, display error messages to the user
+            
           },
         });
       }
@@ -87,13 +104,126 @@ export function EditorField({script ,scenes, scenecharacters, user}) {
     router.post('/production-schedule', { scenes: activeScriptState.scenes });
 };
 
-    // word suggestion
+    
 
     const proxyUrl = "https://thingproxy.freeboard.io/fetch/";
     const targetUrl =
         "https://amharic-spelling-checker-demo.onrender.com/spellcheck";
 
     const [suggWords, setsuggWords] = useState([]);
+
+const exportScript = () => {
+  let boardtopdf = document.createElement("div");
+  boardtopdf.style.width = "80%"
+ 
+      activeScriptState.scenes?.map((scence) => {
+                    if (scence.sceneHead.text) {
+                        let element = pdfstyle["scene_heading"];
+                        let ele = document.createElement(element?.tag);
+                        ele.innerText = scence.sceneHead.text;
+                        ele.setAttribute("class", element?.style);
+                        ele.addEventListener("change",onchange)
+                        ele.setAttribute("data-type", "scene_heading");
+                        ele.setAttribute("id", scence.sceneHead.id);
+                        boardtopdf.appendChild(ele);
+                    }
+                    if (scence.sceneDesc.text) {
+                        let element = pdfstyle["scene_description"];
+                        let ele = document.createElement(element?.tag);
+                        ele.innerText = scence.sceneDesc.text;
+                        ele.setAttribute("class", element?.style);
+                        ele.addEventListener("change",onchange)
+                        ele.setAttribute("data-type", "scene_description");
+                        ele.setAttribute("id", scence.sceneDesc.id);
+                        boardtopdf.appendChild(ele);
+                    }
+    
+                    scence.lines.map((line) => {
+                        for (let key in line) {
+                            if (key == "action") {
+                                let element = pdfstyle["action"];
+                                let ele = document.createElement(element?.tag);
+                                ele.innerText = line[key].text;
+                                ele.setAttribute("class", element?.style);
+                                ele.addEventListener("change",onchange)
+                                ele.setAttribute("data-type", "action");
+                                ele.setAttribute("id", line[key].id);
+                                boardtopdf.appendChild(ele);
+                            } else {
+                                if (key == "character") {
+                                    let element = pdfstyle["character"];
+                                    let ele = document.createElement(element?.tag);
+                                    ele.innerText = line[key].text;
+                                    ele.setAttribute("class", element?.style);
+                                    ele.addEventListener("change",onchange)
+                                    ele.setAttribute("data-type", "character");
+                                    ele.setAttribute("id", line[key].id);
+                                    boardtopdf.appendChild(ele);
+                                } else if (key == "dialogue") {
+                                    let element = pdfstyle["dialogue"];
+                                    let ele = document.createElement(element?.tag);
+                                    ele.innerText = line[key].text;
+                                    ele.setAttribute("class", element?.style);
+                                    ele.addEventListener("change",onchange)
+                                    ele.setAttribute("data-type", "dialogue");
+                                    ele.setAttribute("id", line[key].id);
+                                    boardtopdf.appendChild(ele);
+                                } else if (key == "emotion") {
+                                    let element = pdfstyle["character_emotion"];
+                                    let ele = document.createElement(element?.tag);
+                                    ele.innerText = line[key].text;
+                                    ele.setAttribute("class", element?.style);
+                                    ele.addEventListener("change",onchange)
+                                    ele.setAttribute(
+                                        "data-type",
+                                        "character_emotion"
+                                    );
+                                    ele.setAttribute("id", line[key].id);
+                                    boardtopdf.appendChild(ele);
+                                }
+                            }
+                        }
+                    });
+                });
+    
+    html2pdf()
+        .set({
+            margin: 10,
+            filename: `${script.title}.pdf`,
+            image: { type: 'jpeg', quality: 0.98 },
+            html2canvas: { scale: 2 },
+            jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+        })
+        .from(boardtopdf)
+        .save()
+        .then(() => {
+            console.log("PDF generated");
+         
+        })
+        .catch((err) => {
+            console.error("PDF generation error:", err);
+        });
+
+    console.log(boardtopdf);
+};
+const exportScriptAspf = () => {
+ 
+  const blob = new Blob([JSON.stringify({script ,activeScriptState, user} )], { type: 'text/plain' });
+
+ 
+  const link = document.createElement('a');
+  link.href = URL.createObjectURL(blob);
+  link.download = `${script.title}.aspf`;
+
+  
+  document.body.appendChild(link);
+  link.click();
+
+  
+  document.body.removeChild(link);
+  URL.revokeObjectURL(link.href);
+
+};
 
     useEffect(() => {
         const textarea = document.querySelector(".board textarea:last-child");
@@ -131,7 +261,7 @@ export function EditorField({script ,scenes, scenecharacters, user}) {
     }, [suggWords]);
 
     const [line, setline] = useState(null);
-    // element format
+    
     const [sceneId, setsceneId] = useState(null);
     const [emptyScript, setemptyScript] = useState(true);
     useEffect(() => {
@@ -242,7 +372,7 @@ export function EditorField({script ,scenes, scenecharacters, user}) {
         }, 0);
         setcontent(document.querySelector(".board").innerHTML);
 
-        // spell chk
+        
 
         ele.addEventListener("input", async (e) => {
             const value = e.target.value.trim();
@@ -272,7 +402,7 @@ const onchange = (e) =>{
    console.log(e.target.id, e.target.value)
 }
     useEffect(() => {
-        // console.log("okay",scenes)
+        
         if (scenes) {
           scenecharacters &&
                 dispatch(initCharacter(scenecharacters));
@@ -400,7 +530,7 @@ const onchange = (e) =>{
                                 Action
                             </SelectItem>
                             <SelectItem
-                                disabled={selectedElement == "character"}
+                                disabled={selectedElement == "character" ||selectedElement == "emotion"}
                                 value="character"
                             >
                                 Character
@@ -614,7 +744,11 @@ const onchange = (e) =>{
                     </TabsList>
 
                     <div className="flex items-center gap-1">
-                        <Button
+                     
+
+                       
+ <Menubar className="border-none">
+     <MenubarMenu>   <Button
                             variant="ghost"
                             onClick={scheduleHandler}
                             size="sm"
@@ -622,9 +756,8 @@ const onchange = (e) =>{
                         >
                             <Save className="h-4 w-4" />
                             <span className="text-xs">Production Schedule</span>
-                        </Button>
-
-                        <Button
+                        </Button></MenubarMenu>
+    <MenubarMenu> <Button
                             variant="ghost"
                             onClick={saveScript}
                             size="sm"
@@ -632,12 +765,36 @@ const onchange = (e) =>{
                         >
                             <Save className="h-4 w-4" />
                             <span className="text-xs">Save</span>
-                        </Button>
-
-                        <Button variant="ghost" size="sm" className="h-8 gap-1">
-                            <FileDown className="h-4 w-4" />
+                        </Button></MenubarMenu> 
+      <MenubarMenu>
+        <MenubarTrigger><Button
+                            variant="ghost"
+                           
+                            size="sm"
+                            className="h-8 gap-1"
+                        >
+                            <Save className="h-4 w-4" />
                             <span className="text-xs">Export</span>
+                        </Button></MenubarTrigger>
+        <MenubarContent>
+        
+          <MenubarItem>
+            <Button variant="ghost" size="sm" onClick={exportScriptAspf} className="h-8 gap-1">
+                            <FileDown className="h-4 w-4" />
+                            <span className="text-xs">as ASPF</span>
                         </Button>
+          </MenubarItem>
+           <MenubarItem>
+            <Button variant="ghost" size="sm" onClick={exportScript} className="h-8 gap-1">
+                            <FileDown clayssName="h-4 w-4" />
+                            <span className="text-xs"> as PDF</span>
+                        </Button>
+          </MenubarItem>
+        </MenubarContent>
+      </MenubarMenu>
+      
+    </Menubar>
+                       
                     </div>
                 </div>
 
@@ -647,7 +804,7 @@ const onchange = (e) =>{
                         className="absolute bg-white border rounded-md shadow-md z-50 max-h-40 overflow-auto hidden"
                     ></div>
 
-                    <div className="board h-[70vh] overflow-y-scroll  py-5 px-10 bg-gray-100"></div>
+                    <div className="board h-[70vh] overflow-y-scroll  py-5 px-10 bg-gray-100">{}</div>
                     <div
                         id="suggestion-box"
                         className="absolute bg-white border border-gray-300 rounded shadow-md z-50 hidden text-sm max-h-40 overflow-auto"
