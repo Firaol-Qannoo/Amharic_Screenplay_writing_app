@@ -208,7 +208,7 @@ const exportScript = () => {
 };
 const exportScriptAspf = () => {
  
-  const blob = new Blob([JSON.stringify({script ,activeScriptState, user} )], { type: 'text/plain' });
+  const blob = new Blob([JSON.stringify({script ,scenes: activeScriptState.scenes,characters, user} )], { type: 'text/plain' });
 
  
   const link = document.createElement('a');

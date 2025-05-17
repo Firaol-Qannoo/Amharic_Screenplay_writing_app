@@ -13,6 +13,8 @@ use App\Http\Controllers\EditorController;
 use App\Http\Controllers\ProductionScheduleController;
 use App\Http\Controllers\SceneController;
 use App\Http\Controllers\ScriptInvitationController;
+use App\Http\Controllers\ImportScriptController;
+
 
 
   // Route::get('/', function () {
@@ -88,7 +90,8 @@ use App\Http\Controllers\ScriptInvitationController;
 
         Route::get('/editor', [EditorController::class, 'index'])->name('editor');
         Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-
+        
+        Route::post('/import-script', [ImportScriptController::class, 'store'])->name('import-script');
         Route::post('/logout', [RegisterController::class, 'logout'])->name('logout');
     });
 
