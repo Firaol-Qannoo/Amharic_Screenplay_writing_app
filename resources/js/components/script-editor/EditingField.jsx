@@ -70,6 +70,8 @@ import { initScript } from "../../features/activeScriptSlice";
 import { router } from "@inertiajs/react";
 import { pdfstyle } from "../../../../public/data/pdfstyle";
 import { store } from "../../app/store";
+import { InviteCollaboratorDialog } from "@/components/invite-collaborator-dialog";
+
 
 export function EditorField({ script, scenes, scenecharacters, user }) {
     console.log({ script, scenes, scenecharacters, user });
@@ -85,6 +87,7 @@ export function EditorField({ script, scenes, scenecharacters, user }) {
     const [content, setcontent] = useState();
     const activeScriptState = useSelector(selectActiveScript);
 
+    
     const saveScript = () => {
         console.log("user", user);
         const lastTextArea = document.querySelector("textarea:last-child");
@@ -876,26 +879,26 @@ const storyboardHandler = () => {
                     </TooltipProvider>
 
                     {!user.invitation && (
-                        <TooltipProvider>
-                            <Tooltip>
-                                <TooltipTrigger asChild>
-                                    <Button
-                                        variant="ghost"
-                                        size="sm"
-                                        className="h-8 gap-1"
-                                    >
-                                        <Users className="h-4 w-4" />
-                                        <span className="text-xs">
-                                            Invite Collaborators
-                                        </span>
-                                        <Plus className="h-3 w-3 opacity-50" />
-                                    </Button>
-                                </TooltipTrigger>
-                                <TooltipContent>
-                                    <p>Share Script</p>
-                                </TooltipContent>
-                            </Tooltip>
-                        </TooltipProvider>
+                    <TooltipProvider>
+                        <Tooltip>
+                            <TooltipTrigger asChild>
+                                <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    className="h-8 gap-1"
+                                >
+                                    <Users className="h-4 w-4" />
+                                    <span className="text-xs">
+                                        Invite Collaborators
+                                    </span>
+                                    <Plus className="h-3 w-3 opacity-50" />
+                                </Button>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                                <p>Share Script</p>
+                            </TooltipContent>
+                        </Tooltip>
+                    </TooltipProvider>
                     )}
                 </div>
             </div>
