@@ -882,7 +882,7 @@ const storyboardHandler = () => {
                     <TooltipProvider>
                         <Tooltip>
                             <TooltipTrigger asChild>
-                                <Button
+                                {/* <Button
                                     variant="ghost"
                                     size="sm"
                                     className="h-8 gap-1"
@@ -892,7 +892,8 @@ const storyboardHandler = () => {
                                         Invite Collaborators
                                     </span>
                                     <Plus className="h-3 w-3 opacity-50" />
-                                </Button>
+                                </Button> */}
+                                <InviteCollaboratorDialog scriptId={script.id} />
                             </TooltipTrigger>
                             <TooltipContent>
                                 <p>Share Script</p>
