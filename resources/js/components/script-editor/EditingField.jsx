@@ -185,6 +185,7 @@ export function EditorField({script ,scenes, scenecharacters, user}) {
         }
         const latestActiveScriptState = store.getState().activeScript; //  <--  Get latest
     const latestCharacters = store.getState().characters;
+    console.log("updated", { scenes: latestActiveScriptState.scenes , characters:latestCharacters});
        
         router.post(`/scripts/${script.id}/scenes`, { scenes: latestActiveScriptState.scenes , characters:latestCharacters}, {
           onSuccess: () => {
