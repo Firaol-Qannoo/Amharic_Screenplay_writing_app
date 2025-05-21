@@ -5,6 +5,7 @@ use Inertia\Inertia;
 use Illuminate\Support\Facades\Auth;
 use Laravel\Socialite\Facades\Socialite;
 use App\Models\User;
+use App\Models\Test;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\SocialAuthController;
 use App\Http\Controllers\DashboardController;
@@ -13,6 +14,7 @@ use App\Http\Controllers\EditorController;
 use App\Http\Controllers\ProductionScheduleController;
 use App\Http\Controllers\SceneController;
 use App\Http\Controllers\ScriptInvitationController;
+use App\Http\Controllers\StoryboardController;
 
 
   // Route::get('/', function () {
@@ -79,17 +81,16 @@ use App\Http\Controllers\ScriptInvitationController;
 
 
     Route::middleware(['auth'])->group(function () {
-        // Route::get('/dashboard', function () {
-        //     return Inertia::render('writers/Dashboard/DashboardPage', [
-        //         'user' => Auth::user(),
-        //         'success' => 'Login successfully.',
-        //     ]);
-        // })->name('dashboard');
-
-        Route::get('/editor', [EditorController::class, 'index'])->name('editor');
         Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
-        Route::post('/logout', [RegisterController::class, 'logout'])->name('logout');
+        // Storyboard routes
+        Route::get('/drawer/storyboard/{scriptID?}', [StoryboardController::class, 'index'])->name('storyboard.index');
+        Route::post('/storyboard', [StoryboardController::class, 'store'])->name('storyboard.store');
+        Route::put('/storyboard/{id}', [StoryboardController::class, 'update'])->name('storyboard.update');
+        Route::delete('/storyboard/{id}', [StoryboardController::class, 'destroy'])->name('storyboard.destroy');
+        Route::post('/storyboard/generate-image', [StoryboardController::class, 'generateImage'])->name('storyboard.generate-image');
+        Route::get('/storyboard/stream/{scriptId}', [StoryboardController::class, 'streamUpdates'])
+            ->name('storyboard.stream');
     });
 
     Route::post('/forgot-password', [RegisterController::class, 'sendResetOtp']);
@@ -103,12 +104,11 @@ Route::post('/production-schedule', [ProductionScheduleController::class, 'showW
 
 
      Route::post('/verify-signup-otp', [RegisterController::class, 'verifySignupOtp'])->name('verify-signup-otp');
-
      Route::get('/verify-otp-signup', function () {
         return Inertia::render('verify_otp_signup'); // Make sure this is the correct Inertia component
     })->name('verify-otp-signup');
     
 
+    Route::get('/scripts', [ScriptsController::class, 'index'])->name('scripts.index');
     Route::post('/scripts/{scriptID}/scenes', [SceneController::class, 'store'])->name('scenes.store');
-
     Route::post('/settings/update', [RegisterController::class, 'update'])->name('settings.update');

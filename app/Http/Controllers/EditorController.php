@@ -14,6 +14,11 @@ class EditorController extends Controller
     {
         $user = Auth::user();  
         $script = session('script');  
+        
+        if (!$script) {
+            return redirect()->route('dashboard');
+        }
+        
         return Inertia::render('writers/EditorPage', [
             'script' => $script,  
             'user' => $user,

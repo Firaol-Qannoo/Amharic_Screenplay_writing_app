@@ -39,11 +39,19 @@ class DashboardController extends Controller
             ->where('user_id', '!=', $userId)
             ->get();
 
+        $allScripts = Script::all()->map(function ($script) {
+            return [
+                'id' => $script->_id,
+                'title' => $script->title,
+            ];
+        });
+
         return Inertia::render('writers/Dashboard/DashboardPage', [
             'myScripts' => $myScripts,
             'invitedScripts' => $invitedScripts,
-            'user' =>  $user
+            'user' =>  $user,
+            'allScripts' => $allScripts,
             // 'success' => 'Login successfully.',
             ]);
-        }  
+        }
     }
