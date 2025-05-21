@@ -24,7 +24,8 @@ class SocialAuthController extends Controller {
      * Handle Google callback and login the user.
      */
     public function handleGoogleCallback()  {
-        
+    
+
       try {
         Log::info('Google OAuth callback triggered.');
 
@@ -38,33 +39,44 @@ class SocialAuthController extends Controller {
             'name' => $googleUser->getName(),
         ]);
 
-        $nameParts = explode(' ', $googleUser->getName(), 2);
+        // Check if user already exists by email
+        $user = User::where('email', $googleUser->getEmail())->first();
 
-        $firstName = $nameParts[0]; 
-        $lastName = isset($nameParts[1]) ? $nameParts[1] : '';
+
+    if (!$user) {
+        // $nameParts = explode(' ', $googleUser->getName(), 2);
+
+        // $firstName = $nameParts[0]; 
+        // $lastName = isset($nameParts[1]) ? $nameParts[1] : '';
+         $fullname = $googleUser->getName();
 
         $user = User::updateOrCreate(
             ['email' => $googleUser->getEmail()],
             [
-                'password' => bcrypt(Str::random(24)),
-                'first_name' => $firstName,
-                'last_name' => $lastName,
+                'first_name' => $fullname,
+                'password' => bcrypt(Str::random(24)), // Random password since Google handles auth
+                'avatar' => $googleUser->getAvatar(), // Or store locally if you want
+                'userColor' => $this->generateRandomCode(), // Your custom logic
                 'google_id' => $googleUser->getId(),
-                'avatar' => $googleUser->getAvatar(),
 
             ]
         );
 
-        Log::info('User found or created.', ['user_id' => $user->id]);
+        Log::info('New Google user created.', ['user_id' => $user->id]);
+        } else {
+            // Existing user, optionally link Google ID if not yet linked
+            if (!$user->google_id) {
+                $user->update([
+                    'google_id' => $googleUser->getId(),
+                ]);
+            }
+
+            Log::info('Existing user logged in with Google.', ['user_id' => $user->id]);
+        }
 
         Auth::login($user);
 
         Log::info('User logged in successfully.', ['user_id' => $user->id]);
-
-        // return redirect()->route('dashboard')->with('success', 'Logged in with Google!');
-        // return Inertia::render('dashboard', [
-        //     'success' => 'Logged in with Google!',
-        // ]);
 
         flash()->success(
             'Logged in with Google!!'
@@ -81,4 +93,17 @@ class SocialAuthController extends Controller {
         return Inertia::location(route('login'));
     }
  }
+
+
+        public function generateRandomCode() {
+            // Characters: 1-9 and A-F
+            $characters = array_merge(range('1', '9'), range('A', 'F'));
+
+            $code = '';
+            for ($i = 0; $i < 6; $i++) {
+                $code .= $characters[array_rand($characters)];
+            }
+
+            return $code;
+    }
  }

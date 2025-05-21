@@ -159,26 +159,32 @@ class ScriptInvitationController extends Controller
 
 
     public function updateCollaboratorRole(Request $request, $scriptId, $userId)
-    {
-        $request->validate([
-            'role' => 'required|array',
-            'role.*' => 'string|in:Writer,Artist,Director',
-        ]);
-    
-        $collaborator = ScriptInvitation::where('invitee_id', $userId)
-            ->where('script_id', $scriptId)
-            ->first();
-    
-        if (!$collaborator) {
-            Flasher::addError('Collaborator not found.');
-            return response()->json(['message' => 'Collaborator not found.'], 404);
-        }
-    
-        $collaborator->role = json_encode($request->role); // Or implode(',', $request->role)
-        $collaborator->save();
-    
-        flash()->success('Collaborator Role Changed successfully!');
+{
+    $request->validate([
+        'role' => 'required|array',
+        'role.*' => 'string|in:Writer,Artist,Director',
+    ]);
+
+    if (empty($request->role)) {
+        Flasher::addError('No roles assigned. Please select at least one role.');
         return Inertia::location(route('dashboard'));
     }
+
+    $collaborator = ScriptInvitation::where('invitee_id', $userId)
+        ->where('script_id', $scriptId)
+        ->first();
+
+    if (!$collaborator) {
+        Flasher::addError('Collaborator not found.');
+        return Inertia::location(route('dashboard'));
+    }
+
+    $collaborator->role = $request->role;
+    $collaborator->save();
+
+    flash()->success('Collaborator role changed successfully!');
+    return Inertia::location(route('dashboard'));
+}
+
     
 }

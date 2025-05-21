@@ -55,9 +55,12 @@ export function CollaboratorsListDialog({ collaborators = [], script }) {
   const saveEdit = () => {
     if (!editUser) return;
 
+    console.log("script.id:", script?.id, "editUser.id:", editUser?.id);
+    console.log("roles", editRoles);
+
     router
       .put(`/update-collaborator-role/${script.id}/${editUser.id}`, {
-        role: editRoles.join(","), // Save as comma-separated string
+        role: editRoles, 
       })
       .then(() => {
         setEditUser(null);

@@ -42,8 +42,7 @@ class RegisterController extends Controller
          // Validate signup data
    }
 
-   public function generateRandomCode()
-{
+   public function generateRandomCode() {
     // Characters: 1-9 and A-F
     $characters = array_merge(range('1', '9'), range('A', 'F'));
 
@@ -58,10 +57,12 @@ class RegisterController extends Controller
    public function store(Request $request) {
     // Validate the input
     $validated = $request->validate([
-        'fullname' => 'required|string',
+        'fullname' => ['required', 'string', 'regex:/^[a-zA-Z\s]+$/'],
         'email' => 'required|email',
         'password' => 'required|string|min:6',
-        'profilePicture' => 'nullable|image|mimes:jpg,jpeg,png|max:2048', // Optional file validation
+        'profilePicture' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+    ], [
+        'fullname.regex' => 'The full name must contain only letters and spaces.',
     ]);
 
     // Check if the email already exists

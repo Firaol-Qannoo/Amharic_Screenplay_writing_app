@@ -20,47 +20,8 @@ class SceneController extends Controller
     }
 
     public function store(Request $request, $scriptID) {
-        $validator = Validator::make($request->all(), [
-            'scenes' => 'required|array',
-            'scenes.*.sceneHead' => 'nullable|array',
-            'scenes.*.sceneHead.id' => 'nullable|string',
-            'scenes.*.sceneHead.text' => 'nullable|string',
-            'scenes.*.sceneDesc' => 'nullable|array',
-            'scenes.*.sceneDesc.id' => 'nullable|string',
-            'scenes.*.sceneDesc.text' => 'nullable|string',
-            'scenes.*.lines' => 'nullable|array',
-            'scenes.*.lines.*.lineId' => 'nullable|string',
-            'scenes.*.lines.*.character' => 'nullable|array',
-            'scenes.*.lines.*.character.id' => 'nullable|string',
-            'scenes.*.lines.*.character.text' => 'nullable|string',
-            'scenes.*.lines.*.emotion' => 'nullable|array',
-            'scenes.*.lines.*.emotion.id' => 'nullable|string',
-            'scenes.*.lines.*.emotion.text' => 'nullable|string',
-            'scenes.*.lines.*.dialogue' => 'nullable|array',
-            'scenes.*.lines.*.dialogue.id' => 'nullable|string',
-            'scenes.*.lines.*.dialogue.text' => 'nullable|string',
-            'scenes.*.lines.*.action' => 'nullable|array',
-            'scenes.*.lines.*.action.id' => 'nullable|string',
-            'scenes.*.lines.*.action.text' => 'nullable|string',
-            'scenes.*.scene_num' => 'nullable|integer',
-            'characters' => 'required|array',  // Added validation for characters
-            'characters.*.id' => 'nullable|string',
-            'characters.*.name' => 'nullable|string',
-            'characters.*.role' => 'nullable|string',
-            'characters.*.description' => 'nullable|string',
-            'characters.*.relationships' => 'nullable|array',
-            'characters.*.relationships.*.to' => 'nullable|string',
-            'characters.*.relationships.*.type' => 'nullable|string',
-            'characters.*.relationships.*.description' => 'nullable|string',
-            'characters.*.inScene' => 'nullable|array',
-            // Add more validation rules as needed for your scene data
-        ]);
 
         $user = Auth::user();
-    
-        if ($validator->fails()) {
-            return back()->withErrors($validator)->withInput(); 
-        }
 
         // Fetch scenes and characters
             $scenes = Scene::where('scriptID', $scriptID)->get();
@@ -103,13 +64,9 @@ class SceneController extends Controller
                 }
             }
 
-            
-    
-            // Create scene with full structure (including sceneHead and sceneDesc as objects)
-
             $user = Auth::user();
             Scene::create([
-                'id' =>  $sceneId,
+                'id' => $sceneId,
                 'scriptID' => $scriptID,
                 'scene_num' => $sceneData['scene_num'] ?? null,
                 'sceneHead' => $sceneData['sceneHead'] ?? null, 
@@ -117,6 +74,7 @@ class SceneController extends Controller
                 'lines' => $cleanedLines,
                 'user' => $sceneData['user'],
             ]);
+            
         }
     
         // Save character data
@@ -124,7 +82,7 @@ class SceneController extends Controller
             foreach ($request->input('characters') as $characterData) {
                 Character::create([
                     'id' => $characterData['id'],
-                    'sceneID' => $scriptID, // Associate the character with the current scriptID
+                    'sceneID' => $scriptID, 
                     'name' => $characterData['name'] ?? null,
                     'role' => $characterData['role'] ?? null,
                     'description' => $characterData['description'] ?? null,

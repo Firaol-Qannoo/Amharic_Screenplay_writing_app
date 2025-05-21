@@ -8,6 +8,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { loginSchema } from '../../utils/validation/login';
 import { useEffect, useState } from 'react';
 import flasher from '@flasher/flasher';
+import { GoogleOAuthProvider, GoogleLogin } from "@react-oauth/google";
 
 export default function LoginPage() {
   const { handleSubmit, register, formState } = useForm({
@@ -29,6 +30,10 @@ export default function LoginPage() {
   //     }, 3000); // Hide after 3 seconds
   //   }
   // }, [errors]);
+
+  const handleGoogleLogin = () => {
+    window.location.href = "/auth/google"; 
+};
 
    const { messages } = usePage().props;
   
@@ -122,8 +127,14 @@ export default function LoginPage() {
               <Button type="submit" className="w-full">
                 Sign in
               </Button>
-            </div>
+            </div>        
           </form>
+          <GoogleOAuthProvider clientId="304333585377-5llja3fa2fdhkkm02sgo5u4ng0je7su1.apps.googleusercontent.com">
+                <GoogleLogin
+                    onSuccess={handleGoogleLogin}
+                    onError={() => console.log("Google Login Failed")}
+                />
+            </GoogleOAuthProvider>
         </div>
       </div>
     </div>
