@@ -9,62 +9,74 @@ import {
 } from "@/components/ui/dialog";
 import { User, Pencil, Trash, Eye, X } from "lucide-react";
 import dayjs from "dayjs";
-import { router } from '@inertiajs/react';
+import { router } from "@inertiajs/react";
 
 export function CollaboratorsListDialog({ collaborators = [], script }) {
   const [open, setOpen] = useState(false);
   const [viewUser, setViewUser] = useState(null);
-
-  // New states for editing role
   const [editUser, setEditUser] = useState(null);
-  const [editRole, setEditRole] = useState("");
+  const [editRoles, setEditRoles] = useState([]);
 
-  const handleEdit = (user) => {
-    console.log("Edit", user);
-  };
+  const ALL_ROLES = ["Writer", "Artist", "Director"];
 
-  const handleDelete = (user) => {
-    console.log("Delete", user);
-  };
+  const handleView = (user) => setViewUser(user);
+  const closeView = () => setViewUser(null);
 
-  const handleView = (user) => {
-    setViewUser(user);
-  };
-
-  const closeView = () => {
-    setViewUser(null);
-  };
-
-  // Start editing role for a user
   const startEdit = (user) => {
     setEditUser(user);
-    setEditRole(user.invitation?.role || "Writer");
+    let userRoles = [];
+    try {
+      if (Array.isArray(user.invitation?.role)) {
+        userRoles = user.invitation.role;
+      } else if (typeof user.invitation?.role === "string") {
+        userRoles = user.invitation.role.split(",").map((r) => r.trim());
+      }
+      setEditRoles(userRoles);
+    } catch (e) {
+      console.error("Error parsing user roles on startEdit:", e);
+      setEditRoles([]);
+    }
   };
+  
 
-  // Cancel editing
   const cancelEdit = () => {
     setEditUser(null);
-    setEditRole("");
+    setEditRoles([]);
   };
 
-  // Save edited role
+  const toggleRole = (role) => {
+    setEditRoles((prevRoles) =>
+      prevRoles.includes(role)
+        ? prevRoles.filter((r) => r !== role)
+        : [...prevRoles, role]
+    );
+  };
+
   const saveEdit = () => {
     if (!editUser) return;
 
-    router.put(`/update-collaborator-role/${script.id}/${editUser.id}`, { role: editRole })
+    console.log("script.id:", script?.id, "editUser.id:", editUser?.id);
+    console.log("roles", editRoles);
+
+    router
+      .put(`/update-collaborator-role/${script.id}/${editUser.id}`, {
+        role: editRoles, 
+      })
       .then(() => {
         setEditUser(null);
-        // Refresh page or data to show update
-        router.visit(window.location.pathname, { preserveScroll: true, replace: true });
+        router.visit(window.location.pathname, {
+          preserveScroll: true,
+          replace: true,
+        });
       })
       .catch((error) => {
         console.error("Error updating role:", error);
+        // TODO: Add user-friendly error feedback
       });
   };
 
   return (
     <>
-      {/* Main Dialog */}
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger asChild>
           <Button variant="ghost">
@@ -85,90 +97,124 @@ export function CollaboratorsListDialog({ collaborators = [], script }) {
                     <th className="px-4 py-2 border-b">#</th>
                     <th className="px-4 py-2 border-b">Name</th>
                     <th className="px-4 py-2 border-b">Email</th>
-                    <th className="px-4 py-2 border-b">Role</th>
+                    <th className="px-4 py-2 border-b">Role(s)</th>
                     <th className="px-4 py-2 border-b">Joined</th>
                     <th className="px-4 py-2 border-b">Last Updated</th>
                     <th className="px-4 py-2 border-b">Action</th>
                   </tr>
                 </thead>
                 <tbody className="text-sm text-gray-800">
-                  {collaborators.map((user, index) => (
-                    <tr key={index} className="hover:bg-gray-50 transition duration-200">
-                      <td className="px-4 py-2 border-b text-gray-500">{index + 1}</td>
-                      <td className="px-4 py-2 border-b">{user.first_name || "N/A"}</td>
-                      <td className="px-4 py-2 border-b">{user.email}</td>
-                      <td className="px-4 py-2 border-b">
-                        {editUser && editUser.id === user.id ? (
-                          <>
-                            <select
-                              value={editRole}
-                              onChange={(e) => setEditRole(e.target.value)}
-                              className="border border-gray-300 rounded px-2 py-1"
-                            >
-                              <option value="Writer">Writer</option>
-                              <option value="Artist">Artist</option>
-                              <option value="Director">Director</option>
-                            </select>
-                            <div className="mt-2 flex space-x-2">
-                            <button
-                              onClick={saveEdit}
-                              className="px-3 py-1 bg-green-500 text-white rounded"
-                            >
-                              Save
-                            </button>
-                            <button
-                              onClick={cancelEdit}
-                              className="px-3 py-1 bg-gray-300 rounded"
-                            >
-                              Cancel
-                            </button>
-                          </div>
-                          </>
-                        ) : (
-                          user.invitation?.role || "—"
-                        )}
-                      </td>
-                      <td className="px-4 py-2 border-b">
-                        {dayjs(user.created_at).format("YYYY-MM-DD")}
-                      </td>
-                      <td className="px-4 py-2 border-b">
-                        {dayjs(user.updated_at).format("YYYY-MM-DD")}
-                      </td>
-                      <td className="px-4 py-2 border-b flex space-x-2 items-center">
-                        <Eye
-                          size={21}
-                          className="cursor-pointer text-blue-500 hover:text-blue-700"
-                          onClick={() => handleView(user)}
-                        />
-                        {!editUser && (
-                          <Pencil
+                  {collaborators.map((user, index) => {
+                   let userRoles = [];
+                   try {
+                     if (Array.isArray(user.invitation?.role)) {
+                       userRoles = user.invitation.role;
+                     } else if (typeof user.invitation?.role === "string") {
+                       userRoles = user.invitation.role.split(",").map((r) => r.trim());
+                     } else {
+                       userRoles = [];
+                     }
+                   } catch (e) {
+                     console.error("Error parsing user roles for display:", e);
+                     userRoles = [];
+                   }
+                   
+                    return (
+                      <tr key={index} className="hover:bg-gray-50 transition duration-200">
+                        <td className="px-4 py-2 border-b text-gray-500">{index + 1}</td>
+                        <td className="px-4 py-2 border-b">{user.first_name || "N/A"}</td>
+                        <td className="px-4 py-2 border-b">{user.email}</td>
+                        <td className="px-4 py-2 border-b">
+                          {editUser && editUser.id === user.id ? (
+                            <div className="flex flex-wrap gap-2">
+                              {ALL_ROLES.map((role) => (
+                                <button
+                                  key={role}
+                                  onClick={() => toggleRole(role)}
+                                  className={`px-3 py-1 rounded-full text-xs font-semibold ${
+                                    editRoles.includes(role)
+                                      ? "bg-blue-500 text-white"
+                                      : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+                                  }`}
+                                >
+                                  {role}
+                                </button>
+                              ))}
+                              <div className="mt-2 flex space-x-2 w-full">
+                                <button
+                                  onClick={saveEdit}
+                                  className="px-3 py-1 bg-green-500 text-white rounded text-sm"
+                                >
+                                  Save
+                                </button>
+                                <button
+                                  onClick={cancelEdit}
+                                  className="px-3 py-1 bg-gray-300 rounded text-sm"
+                                >
+                                  Cancel
+                                </button>
+                              </div>
+                            </div>
+                          ) : userRoles.length > 0 ? (
+                            <div className="flex flex-wrap gap-1">
+                              {userRoles.map((role, i) => (
+                                <span
+                                  key={i}
+                                  className="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded-full"
+                                >
+                                  {role}
+                                </span>
+                              ))}
+                            </div>
+                          ) : (
+                            "—"
+                          )}
+                        </td>
+                        <td className="px-4 py-2 border-b">
+                          {dayjs(user.created_at).format("YYYY-MM-DD")}
+                        </td>
+                        <td className="px-4 py-2 border-b">
+                          {dayjs(user.updated_at).format("YYYY-MM-DD")}
+                        </td>
+                        <td className="px-4 py-2 border-b flex space-x-2 items-center">
+                          <Eye
                             size={21}
-                            className="cursor-pointer text-yellow-500 hover:text-yellow-700"
-                            onClick={() => startEdit(user)}
+                            className="cursor-pointer text-blue-500 hover:text-blue-700"
+                            onClick={() => handleView(user)}
                           />
-                        )}
-                        <Trash
-                          size={21}
-                          className="cursor-pointer text-red-500 hover:text-red-700"
-                          onClick={() => {
-                            if (window.confirm('Are you sure you want to delete this Collaborator?')) {
-                              router.delete(`/delete-collab/${script.id}/${user.id}`)
-                                .then(() => {
-                                  console.log('Collaborator deleted successfully');
-                                  router.visit(window.location.pathname, {
-                                    preserveScroll: true,
-                                    replace: true,
+                          {!editUser && (
+                            <Pencil
+                              size={21}
+                              className="cursor-pointer text-yellow-500 hover:text-yellow-700"
+                              onClick={() => startEdit(user)}
+                            />
+                          )}
+                          <Trash
+                            size={21}
+                            className="cursor-pointer text-red-500 hover:text-red-700"
+                            onClick={() => {
+                              if (
+                                window.confirm("Are you sure you want to delete this Collaborator?")
+                              ) {
+                                router
+                                  .delete(`/delete-collab/${script.id}/${user.id}`)
+                                  .then(() => {
+                                    console.log("Collaborator deleted successfully");
+                                    router.visit(window.location.pathname, {
+                                      preserveScroll: true,
+                                      replace: true,
+                                    });
+                                  })
+                                  .catch((error) => {
+                                    console.error("Error deleting collaborator:", error);
                                   });
-                                })
-                                .catch((error) => {
-                                  console.error('Error deleting collaborator:', error);
-                                });
-                            }
-                          }}
-                        />
-                      </td>
-                    </tr>
-                  ))}
+                              }
+                            }}
+                          />
+                        </td>
+                      </tr>
+                    );
+                  })}
                 </tbody>
               </table>
             ) : (
@@ -178,7 +224,6 @@ export function CollaboratorsListDialog({ collaborators = [], script }) {
         </DialogContent>
       </Dialog>
 
-      {/* View Details Slide Dialog */}
       {viewUser && (
         <div className="fixed inset-0 z-50 flex items-start justify-center pt-10 bg-black/10">
           <div className="w-full max-w-xl rounded-xl bg-white shadow-xl border border-gray-200 animate-slideDown">
@@ -192,7 +237,40 @@ export function CollaboratorsListDialog({ collaborators = [], script }) {
             <div className="px-6 py-4 space-y-3 text-gray-700">
               <p><strong>Name:</strong> {viewUser.first_name || "N/A"}</p>
               <p><strong>Email:</strong> {viewUser.email}</p>
-              <p><strong>Role:</strong> {viewUser.invitation?.role || "N/A"}</p>
+              <p>
+                <strong>Role(s):</strong>{" "}
+                {(() => {
+                  try {
+                    let roles = [];
+                        try {
+                          if (Array.isArray(viewUser.invitation?.role)) {
+                            roles = viewUser.invitation.role;
+                          } else if (typeof viewUser.invitation?.role === "string") {
+                            roles = viewUser.invitation.role.split(",").map((r) => r.trim());
+                          }
+                        } catch (e) {
+                          console.error("Error parsing view user roles:", e);
+                        }
+                    return roles.length > 0 ? (
+                      <div className="flex flex-wrap gap-1 mt-1">
+                        {roles.map((role, i) => (
+                          <span
+                            key={i}
+                            className="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded-full"
+                          >
+                            {role}
+                          </span>
+                        ))}
+                      </div>
+                    ) : (
+                      "N/A"
+                    );
+                  } catch (e) {
+                    console.error("Error parsing view user roles:", e);
+                    return "N/A";
+                  }
+                })()}
+              </p>
               <p><strong>Joined:</strong> {dayjs(viewUser.created_at).format("YYYY-MM-DD")}</p>
               <p><strong>Last Updated:</strong> {dayjs(viewUser.updated_at).format("YYYY-MM-DD")}</p>
             </div>

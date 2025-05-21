@@ -11,13 +11,12 @@ class CreateScriptInvitationsTable extends Migration
         Schema::connection('mongodb')->create('script_invitations', function (Blueprint $collection) {
             $collection->string('script_id');               
             $collection->string('inviter_id');              
-            $collection->string('invitee_id'); 
+            $collection->string('invitee_id')->nullable(); 
             $collection->string('invitee_email');           
             $collection->string('token');                   
-            $collection->string('role');
+            $collection->json('role'); 
             $collection->boolean('accepted')->default(false); 
-
-            // Timestamps
+        
             $collection->timestamps();
         });
     }

@@ -11,18 +11,22 @@ class ScriptInvitation extends Model
 {
     protected $connection = 'mongodb'; // Ensure it's using MongoDB connection
     protected $collection = 'script_invitations';
+ 
     protected $fillable = [
         'script_id', 
         'inviter_id', 
-        'invitee_id', // now using ID instead of email
+        'invitee_id',
         'invitee_email', 
         'token', 
         'role', 
         'accepted'];
 
-    // You can define the MongoDB-specific cast for 'accepted' if needed
+        
+
+    
     protected $casts = [
         'accepted' => 'boolean',
+        'role' => 'array',
     ];
 
     /**

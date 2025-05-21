@@ -33,7 +33,9 @@ return [
     |            "postmark", "resend", "log", "array",
     |            "failover", "roundrobin"
     |
-    */
+    */  
+
+    'encryption' => env('MAIL_ENCRYPTION', 'tls'),
 
     'mailers' => [
 

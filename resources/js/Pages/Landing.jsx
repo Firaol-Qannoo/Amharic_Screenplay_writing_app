@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -17,19 +18,127 @@ import {
 } from "lucide-react";
 
 import { Link } from '@inertiajs/react';
+import { usePage } from "@inertiajs/react";
+
+
 export default function Landing() {
+  const { url } = usePage(); 
+
+  // State to track theme mode: true = dark, false = light
+    const [isDarkMode, setIsDarkMode] = useState(false);
+  
+    // On mount, check if user prefers dark mode or has a saved preference
+    useEffect(() => {
+      const savedTheme = localStorage.getItem("theme");
+      if (
+        savedTheme === "dark" ||
+        (!savedTheme &&
+          window.matchMedia("(prefers-color-scheme: dark)").matches)
+      ) {
+        setIsDarkMode(true);
+        document.documentElement.classList.add("dark");
+      } else {
+        setIsDarkMode(false);
+        document.documentElement.classList.remove("dark");
+      }
+    }, []);
+  
+    // Toggle dark mode and save preference
+    function toggleDarkMode() {
+      if (isDarkMode) {
+        document.documentElement.classList.remove("dark");
+        localStorage.setItem("theme", "light");
+        setIsDarkMode(false);
+      } else {
+        document.documentElement.classList.add("dark");
+        localStorage.setItem("theme", "dark");
+        setIsDarkMode(true);
+      }
+    }
+
   return (
     <div className="flex min-h-screen flex-col ">
-      <header className="sticky top-0 z-50 w-full border-b px-10 backdrop-blur bg-background/60">
-        <div className="container flex h-16 items-center justify-between">
-          <div className="flex items-center gap-2">
-            <span className="text-lg font-bold">
-              Amharic Screenplay Writing Tool
-            </span>
+    <header className="sticky top-0 z-50 w-full border-b px-10 backdrop-blur bg-background/60">
+  <div className="container flex h-16 items-center justify-between">
+    <div className="flex items-center">
+      <span className="text-lg font-bold mr-24">Amharic Screenplay Writing Tool</span>
+      <nav className="hidden md:flex gap-8 text-sm">
+  <Link
+    href="/"
+    className={`transition-colors hover:text-primary ${url === '/' ? 'text-primary font-semibold' : 'text-muted-foreground'}`}
+  >
+    Home
+  </Link>
+  <Link
+    href="/about"
+    className={`transition-colors hover:text-primary ${url === '/about' ? 'text-primary font-semibold' : 'text-muted-foreground'}`}
+  >
+    About
+  </Link>
+  <Link
+    href="/services"
+    className={`transition-colors hover:text-primary ${url === '/services' ? 'text-primary font-semibold' : 'text-muted-foreground'}`}
+  >
+    Services
+  </Link>
+  <Link
+    href="/contact"
+    className={`transition-colors hover:text-primary ${url === '/contact' ? 'text-primary font-semibold' : 'text-muted-foreground'}`}
+  >
+    Contact Us
+  </Link>
+</nav>
+    </div>
+    <div className="flex items-center gap-2">
+            {/* Dark/Light Mode Toggle Button */}
+            <button
+              onClick={toggleDarkMode}
+              aria-label="Toggle Dark Mode"
+              className="rounded-md border p-2 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+            >
+              {isDarkMode ? (
+                // Sun icon for light mode
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-5 w-5 text-yellow-400"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  strokeWidth={2}
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M12 3v1m0 16v1m8.66-9h-1M4.34 12h-1m15.07 5.07l-.7-.7M6.34 6.34l-.7-.7m12.02 12.02l-.7-.7M6.34 17.66l-.7-.7M12 7a5 5 0 100 10 5 5 0 000-10z"
+                  />
+                </svg>
+              ) : (
+                // Moon icon for dark mode
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-5 w-5 text-gray-900"
+                  fill="currentColor"
+                  viewBox="0 0 24 24"
+                  stroke="none"
+                >
+                  <path d="M21 12.79A9 9 0 1111.21 3a7 7 0 109.79 9.79z" />
+                </svg>
+              )}
+            </button>
+
+            <Link href="/dashboard">
+              <Button variant="outline" size="sm">
+                Login
+              </Button>
+            </Link>
+            <Link href="/signup">
+              <Button size="sm">Register</Button>
+            </Link>
           </div>
-       
-        </div>
-      </header>
+  </div>
+</header>
+
+
       <main className="flex-1">
         <section className="w-full px-10 py-12 md:py-10 lg:py-10 xl:py-20">
           <div className="container  px-4 md:px-6">
@@ -45,9 +154,9 @@ export default function Landing() {
                   </p>
                 </div>
                 <div className="flex flex-col gap-2 min-[400px]:flex-row">
-                  <Link href="/dashboard">
+                  {/* <Link href="/dashboard">
                     <Button size="lg">Try Now</Button>
-                  </Link>
+                  </Link> */}
                 </div>
               </div>
               <div className="flex items-center justify-center">

@@ -89,9 +89,9 @@ class ScriptsController extends Controller
         $script = Script::findOrFail($id); 
     
         // Delete thumbnail file if it exists
-        if ($script->thumbnail && file_exists(public_path($script->thumbnail))) {
-            unlink(public_path($script->thumbnail));
-        }
+        // if ($script->thumbnail && file_exists(public_path($script->thumbnail))) {
+        //     unlink(public_path($script->thumbnail));
+        // }
     
         $script->delete(); 
     

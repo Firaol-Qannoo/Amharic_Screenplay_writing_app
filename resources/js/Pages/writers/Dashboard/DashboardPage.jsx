@@ -119,7 +119,7 @@ export default function Dashboard({ myScripts, invitedScripts, user}) {
         script.category?.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
-const handleImport = (e) => {
+ const handleImport = (e) => {
   const file = e.target.files[0];
   if (!file) return;
 
@@ -127,9 +127,8 @@ const handleImport = (e) => {
 
   reader.onload = (event) => {
     try {
-      const json = JSON.parse(event.target.result); // Parse JSON from file
+      const json = JSON.parse(event.target.result);
 
-      // Send to Laravel via Inertia
       router.post('/import-script', {
         data: json,
       }, {
@@ -147,7 +146,7 @@ const handleImport = (e) => {
     }
   };
 
-  reader.readAsText(file); // Read the file content as text
+  reader.readAsText(file); 
 };
 
 

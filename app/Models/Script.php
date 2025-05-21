@@ -19,7 +19,7 @@ class Script extends Model
         'type',
         'user_id',
         'thumbnail',
-        'collaborators',
+        'collaborators', 
     ];
 
     public function user()

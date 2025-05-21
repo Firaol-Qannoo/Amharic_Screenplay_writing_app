@@ -4,23 +4,23 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { FileDown, Save } from "lucide-react";
 import { useSelector } from "react-redux";
-import { useMemo } from 'react';
+import { useMemo } from "react";
 import {
-  Menubar,
-  MenubarCheckboxItem,
-  MenubarContent,
-  MenubarItem,
-  MenubarMenu,
-  MenubarRadioGroup,
-  MenubarRadioItem,
-  MenubarSeparator,
-  MenubarShortcut,
-  MenubarSub,
-  MenubarSubContent,
-  MenubarSubTrigger,
-  MenubarTrigger,
-} from "@/components/ui/menubar"
-import html2pdf from 'html2pdf.js';
+    Menubar,
+    MenubarCheckboxItem,
+    MenubarContent,
+    MenubarItem,
+    MenubarMenu,
+    MenubarRadioGroup,
+    MenubarRadioItem,
+    MenubarSeparator,
+    MenubarShortcut,
+    MenubarSub,
+    MenubarSubContent,
+    MenubarSubTrigger,
+    MenubarTrigger,
+} from "@/components/ui/menubar";
+import html2pdf from "html2pdf.js";
 import {
     Tooltip,
     TooltipContent,
@@ -71,25 +71,24 @@ import { router } from "@inertiajs/react";
 import { pdfstyle } from "../../../../public/data/pdfstyle";
 import { store } from "../../app/store";
 
-export function EditorField({script ,scenes, scenecharacters, user}) {
-    console.log({script ,scenes, scenecharacters, user})
+export function EditorField({ script, scenes, scenecharacters, user }) {
+    console.log({ script, scenes, scenecharacters, user });
     const dispatch = useDispatch();
     const [selectedElement, setselectedElement] = useState("scene_heading");
 
     const onElementChange = (value) => {
         setselectedElement(value);
     };
-    
+
     const [importedScript, setimportedScript] = useState(null);
     const characters = useSelector(selectcharacters);
     const [content, setcontent] = useState();
     const activeScriptState = useSelector(selectActiveScript);
 
-    
     const saveScript = () => {
-
-       const lastTextArea = document.querySelector("textarea:last-child");
-         if (lastTextArea) {
+        console.log("user", user);
+        const lastTextArea = document.querySelector("textarea:last-child");
+        if (lastTextArea) {
             if (lastTextArea.getAttribute("data-type") == "character") {
                 let charId = nanoid();
                 let char = characters.find(
@@ -165,8 +164,9 @@ export function EditorField({script ,scenes, scenecharacters, user}) {
                 setemptyScript(false);
                 let sceneHead = { id: nanoid(), text: lastTextArea?.value };
                 console.log({ id: sceneID, sceneHead, sceneDesc: null });
-                dispatch(addScene({ id: sceneID, sceneHead, sceneDesc: null }));
-              
+                dispatch(
+                    addScene({ user, id: sceneID, sceneHead, sceneDesc: null })
+                );
             }
             if (lastTextArea?.getAttribute("data-type") == "action") {
                 let action = { id: nanoid(), text: lastTextArea?.value };
@@ -183,20 +183,28 @@ export function EditorField({script ,scenes, scenecharacters, user}) {
                 dispatch(editSceneMeta({ sceneId, sceneDesc }));
             }
         }
-        const latestActiveScriptState = store.getState().activeScript; //  <--  Get latest
-    const latestCharacters = store.getState().characters;
-       
-        router.post(`/scripts/${script.id}/scenes`, { scenes: latestActiveScriptState.scenes , characters:latestCharacters}, {
-          onSuccess: () => {
-            console.log('Scenes saved successfully!');
-            
-          },
-          onError: (errors) => {
-            console.error('Failed to save scenes:', errors);
-            
-          },
+        const latestActiveScriptState = store.getState().activeScript; 
+        const latestCharacters = store.getState().characters;
+        console.log("oksa", {
+            scenes: latestActiveScriptState.scenes,
+            characters: latestCharacters,
         });
-      }
+        router.post(
+            `/scripts/${script.id}/scenes`,
+            {
+                scenes: latestActiveScriptState.scenes,
+                characters: latestCharacters,
+            },
+            {
+                onSuccess: () => {
+                    console.log("Scenes saved successfully!");
+                },
+                onError: (errors) => {
+                    console.error("Failed to save scenes:", errors);
+                },
+            }
+        );
+    };
 
     const scheduleHandler = () => {
     router.post('/production-schedule', { scenes: activeScriptState.scenes });
@@ -217,119 +225,120 @@ const storyboardHandler = () => {
         "https://amharic-spelling-checker-demo.onrender.com/spellcheck";
 
     const [suggWords, setsuggWords] = useState([]);
-const [dive, setdive] = useState(false)
-const exportScript = () => {
-  let boardtopdf = document.createElement("div");
-  boardtopdf.style.width = "80%"
- 
-      activeScriptState.scenes?.map((scence) => {
-                    if (scence.sceneHead.text) {
-                        let element = pdfstyle["scene_heading"];
+    const [dive, setdive] = useState(false);
+    const exportScript = () => {
+        let boardtopdf = document.createElement("div");
+        boardtopdf.style.width = "80%";
+
+        activeScriptState.scenes?.map((scence) => {
+            if (scence.sceneHead.text) {
+                let element = pdfstyle["scene_heading"];
+                let ele = document.createElement(element?.tag);
+                ele.innerText = scence.sceneHead.text;
+                ele.setAttribute("class", element?.style);
+                ele.addEventListener("change", onchange);
+                ele.setAttribute("data-type", "scene_heading");
+                ele.setAttribute("id", scence.sceneHead.id);
+                boardtopdf.appendChild(ele);
+            }
+            if (scence.sceneDesc.text) {
+                let element = pdfstyle["scene_description"];
+                let ele = document.createElement(element?.tag);
+                ele.innerText = scence.sceneDesc.text;
+                ele.setAttribute("class", element?.style);
+                ele.addEventListener("change", onchange);
+                ele.setAttribute("data-type", "scene_description");
+                ele.setAttribute("id", scence.sceneDesc.id);
+                boardtopdf.appendChild(ele);
+            }
+
+            scence.lines.map((line) => {
+                for (let key in line) {
+                    if (key == "action") {
+                        let element = pdfstyle["action"];
                         let ele = document.createElement(element?.tag);
-                        ele.innerText = scence.sceneHead.text;
+                        ele.innerText = line[key].text;
                         ele.setAttribute("class", element?.style);
-                        ele.addEventListener("change",onchange)
-                        ele.setAttribute("data-type", "scene_heading");
-                        ele.setAttribute("id", scence.sceneHead.id);
+                        ele.addEventListener("change", onchange);
+                        ele.setAttribute("data-type", "action");
+                        ele.setAttribute("id", line[key].id);
                         boardtopdf.appendChild(ele);
-                    }
-                    if (scence.sceneDesc.text) {
-                        let element = pdfstyle["scene_description"];
-                        let ele = document.createElement(element?.tag);
-                        ele.innerText = scence.sceneDesc.text;
-                        ele.setAttribute("class", element?.style);
-                        ele.addEventListener("change",onchange)
-                        ele.setAttribute("data-type", "scene_description");
-                        ele.setAttribute("id", scence.sceneDesc.id);
-                        boardtopdf.appendChild(ele);
-                    }
-    
-                    scence.lines.map((line) => {
-                        for (let key in line) {
-                            if (key == "action") {
-                                let element = pdfstyle["action"];
-                                let ele = document.createElement(element?.tag);
-                                ele.innerText = line[key].text;
-                                ele.setAttribute("class", element?.style);
-                                ele.addEventListener("change",onchange)
-                                ele.setAttribute("data-type", "action");
-                                ele.setAttribute("id", line[key].id);
-                                boardtopdf.appendChild(ele);
-                            } else {
-                                if (key == "character") {
-                                    let element = pdfstyle["character"];
-                                    let ele = document.createElement(element?.tag);
-                                    ele.innerText = line[key].text;
-                                    ele.setAttribute("class", element?.style);
-                                    ele.addEventListener("change",onchange)
-                                    ele.setAttribute("data-type", "character");
-                                    ele.setAttribute("id", line[key].id);
-                                    boardtopdf.appendChild(ele);
-                                } else if (key == "dialogue") {
-                                    let element = pdfstyle["dialogue"];
-                                    let ele = document.createElement(element?.tag);
-                                    ele.innerText = line[key].text;
-                                    ele.setAttribute("class", element?.style);
-                                    ele.addEventListener("change",onchange)
-                                    ele.setAttribute("data-type", "dialogue");
-                                    ele.setAttribute("id", line[key].id);
-                                    boardtopdf.appendChild(ele);
-                                } else if (key == "emotion") {
-                                    let element = pdfstyle["character_emotion"];
-                                    let ele = document.createElement(element?.tag);
-                                    ele.innerText = line[key].text;
-                                    ele.setAttribute("class", element?.style);
-                                    ele.addEventListener("change",onchange)
-                                    ele.setAttribute(
-                                        "data-type",
-                                        "character_emotion"
-                                    );
-                                    ele.setAttribute("id", line[key].id);
-                                    boardtopdf.appendChild(ele);
-                                }
-                            }
+                    } else {
+                        if (key == "character") {
+                            let element = pdfstyle["character"];
+                            let ele = document.createElement(element?.tag);
+                            ele.innerText = line[key].text;
+                            ele.setAttribute("class", element?.style);
+                            ele.addEventListener("change", onchange);
+                            ele.setAttribute("data-type", "character");
+                            ele.setAttribute("id", line[key].id);
+                            boardtopdf.appendChild(ele);
+                        } else if (key == "dialogue") {
+                            let element = pdfstyle["dialogue"];
+                            let ele = document.createElement(element?.tag);
+                            ele.innerText = line[key].text;
+                            ele.setAttribute("class", element?.style);
+                            ele.addEventListener("change", onchange);
+                            ele.setAttribute("data-type", "dialogue");
+                            ele.setAttribute("id", line[key].id);
+                            boardtopdf.appendChild(ele);
+                        } else if (key == "emotion") {
+                            let element = pdfstyle["character_emotion"];
+                            let ele = document.createElement(element?.tag);
+                            ele.innerText = line[key].text;
+                            ele.setAttribute("class", element?.style);
+                            ele.addEventListener("change", onchange);
+                            ele.setAttribute("data-type", "character_emotion");
+                            ele.setAttribute("id", line[key].id);
+                            boardtopdf.appendChild(ele);
                         }
-                    });
-                });
-    
-    html2pdf()
-        .set({
-            margin: 10,
-            filename: `${script.title}.pdf`,
-            image: { type: 'jpeg', quality: 0.98 },
-            html2canvas: { scale: 2 },
-            jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-        })
-        .from(boardtopdf)
-        .save()
-        .then(() => {
-            console.log("PDF generated");
-         
-        })
-        .catch((err) => {
-            console.error("PDF generation error:", err);
+                    }
+                }
+            });
         });
 
-    console.log(boardtopdf);
-};
-const exportScriptAspf = () => {
- 
-  const blob = new Blob([JSON.stringify({script ,scenes: activeScriptState.scenes,characters, user} )], { type: 'text/plain' });
+        html2pdf()
+            .set({
+                margin: 10,
+                filename: `${script.title}.pdf`,
+                image: { type: "jpeg", quality: 0.98 },
+                html2canvas: { scale: 2 },
+                jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
+            })
+            .from(boardtopdf)
+            .save()
+            .then(() => {
+                console.log("PDF generated");
+            })
+            .catch((err) => {
+                console.error("PDF generation error:", err);
+            });
 
- 
-  const link = document.createElement('a');
-  link.href = URL.createObjectURL(blob);
-  link.download = `${script.title}.aspf`;
+        console.log(boardtopdf);
+    };
+    const exportScriptAspf = () => {
+        const blob = new Blob(
+            [
+                JSON.stringify({
+                    script,
+                    scenes: activeScriptState.scenes,
+                    characters,
+                    user,
+                }),
+            ],
+            { type: "text/plain" }
+        );
 
-  
-  document.body.appendChild(link);
-  link.click();
+        const link = document.createElement("a");
+        link.href = URL.createObjectURL(blob);
+        link.download = `${script.title}.aspf`;
 
-  
-  document.body.removeChild(link);
-  URL.revokeObjectURL(link.href);
+        document.body.appendChild(link);
+        link.click();
 
-};
+        document.body.removeChild(link);
+        URL.revokeObjectURL(link.href);
+    };
 
     useEffect(() => {
         const textarea = document.querySelector(".board textarea:last-child");
@@ -367,11 +376,10 @@ const exportScriptAspf = () => {
     }, [suggWords]);
 
     const [line, setline] = useState(null);
-    
+
     const [sceneId, setsceneId] = useState(null);
     const [emptyScript, setemptyScript] = useState(true);
     useEffect(() => {
-       
         const lastTextArea = document.querySelector("textarea:last-child");
         if (lastTextArea) {
             if (lastTextArea.getAttribute("data-type") == "character") {
@@ -444,11 +452,13 @@ const exportScriptAspf = () => {
             if (lastTextArea?.getAttribute("data-type") == "scene_heading") {
                 let sceneID = nanoid();
                 setsceneId(sceneID);
- console.log("Hereeyu")
+                console.log("Hereeyu");
                 setemptyScript(false);
                 let sceneHead = { id: nanoid(), text: lastTextArea?.value };
                 console.log({ id: sceneID, sceneHead, sceneDesc: null });
-                dispatch(addScene({ id: sceneID, sceneHead, sceneDesc: null }));
+                dispatch(
+                    addScene({ user, id: sceneID, sceneHead, sceneDesc: null })
+                );
                 console.log(activeScriptState);
             }
             if (lastTextArea?.getAttribute("data-type") == "action") {
@@ -467,142 +477,175 @@ const exportScriptAspf = () => {
             }
         }
 
-      if(dive){
-        console.log("LLobject")
-          let element = elements[selectedElement];
-        let ele = document.createElement(element?.tag);
-        ele.setAttribute("class", element?.style);
-        element?.style == "character" && ele.setAttribute("char", true);
-        ele.setAttribute("data-type", selectedElement);
-        ele.setAttribute("id", new Date().getTime());
-        document.querySelector(".board").appendChild(ele);
-        setTimeout(() => {
-            ele.focus();
-        }, 0);
-        setcontent(document.querySelector(".board").innerHTML);
-      
+        if (dive) {
+            console.log("LLobject");
+            let element = elements[selectedElement];
+            let ele = document.createElement(element?.tag);
+            ele.setAttribute("class", element?.style);
+            element?.style == "character" && ele.setAttribute("char", true);
+            ele.setAttribute("data-type", selectedElement);
+            ele.setAttribute("id", new Date().getTime());
+            document.querySelector(".board").appendChild(ele);
+            setTimeout(() => {
+                ele.focus();
+            }, 0);
+            setcontent(document.querySelector(".board").innerHTML);
 
-        
+            ele.addEventListener("input", async (e) => {
+                const value = e.target.value.trim();
+                const lastWord = value.split(" ").pop();
 
-        ele.addEventListener("input", async (e) => {
-            const value = e.target.value.trim();
-            const lastWord = value.split(" ").pop();
+                if (lastWord?.length > 200) {
+                    const myHeaders = new Headers();
+                    myHeaders.append("Content-Type", "application/json");
+                    myHeaders.append("Accept", "application/json");
 
-            if (lastWord?.length > 200) {
-                const myHeaders = new Headers();
-                myHeaders.append("Content-Type", "application/json");
-                myHeaders.append("Accept", "application/json");
+                    const raw = JSON.stringify({ word: lastWord });
 
-                const raw = JSON.stringify({ word: lastWord });
+                    const requestOptions = {
+                        method: "POST",
+                        headers: myHeaders,
+                        body: raw,
+                    };
 
-                const requestOptions = {
-                    method: "POST",
-                    headers: myHeaders,
-                    body: raw,
-                };
-
-                fetch(targetUrl, requestOptions)
-                    .then((response) => response.text())
-                    .then((result) => setsuggWords(result))
-                    .catch((error) => console.error("Error:", error));
-            }
-        }); }
+                    fetch(targetUrl, requestOptions)
+                        .then((response) => response.text())
+                        .then((result) => setsuggWords(result))
+                        .catch((error) => console.error("Error:", error));
+                }
+            });
+        }
     }, [selectedElement]);
-const onchange = (e) =>{
-   console.log(e.target.id, e.target.value)
-}
+    const onchange = (e) => {
+        console.log(e.target.id, e.target.value);
+    };
     useEffect(() => {
-        
+        let color = "000000";
+        let name = "Anonymous";
         if (scenes) {
-          scenecharacters &&
-                dispatch(initCharacter(scenecharacters));
-                scenes && dispatch(initScript({scenes: scenes})); scenes?.map((scence) => {
-                    if (scence.sceneHead.text) {
-                        let element = elements["scene_heading"];
-                        let ele = document.createElement(element?.tag);
-                        ele.innerText = scence.sceneHead.text;
-                        ele.setAttribute("class", element?.style);
-                        ele.addEventListener("change",onchange)
-                        ele.setAttribute("data-type", "scene_heading");
-                        ele.setAttribute("id", scence.sceneHead.id);
-                        document.querySelector(".board").appendChild(ele);
-                    }
-                    if (scence.sceneDesc.text) {
-                        let element = elements["scene_description"];
-                        let ele = document.createElement(element?.tag);
-                        ele.innerText = scence.sceneDesc.text;
-                        ele.setAttribute("class", element?.style);
-                        ele.addEventListener("change",onchange)
-                        ele.setAttribute("data-type", "scene_description");
-                        ele.setAttribute("id", scence.sceneDesc.id);
-                        document.querySelector(".board").appendChild(ele);
-                    }
-    
-                    scence.lines.map((line) => {
-                        for (let key in line) {
-                            if (key == "action") {
-                                let element = elements["action"];
+            
+            scenecharacters && dispatch(initCharacter(scenecharacters));
+            scenes && dispatch(initScript({ scenes: scenes }));
+            scenes?.map((scence) => {
+                color = script.user_id ==scence.user.id ? "000000" :scence.user.userColor;
+                //color = scence.user.first_name==user.first_name ? "000000" :scence.user.userColor;
+                
+                name = scence.user.first_name==user.first_name ? script.user_id== user.id ?"You ( Creator )" : "You": script.user_id== scence.user.id ? scence.user.first_name +` ( Creator )` : scence.user.first_name;
+
+                if (scence.sceneHead.text) {
+                    let element = elements["scene_heading"];
+                    let wrapper = document.createElement("div");
+                    wrapper.className =
+                        "relative group inline-block cursor-default"; 
+
+                    
+                    let tooltip = document.createElement("div");
+                    tooltip.innerText = name; 
+                    tooltip.className = `
+    absolute -top-6 left-1/2 text-nowrap -translate-x-1/2 
+    bg-gray-700 text-white text-xs px-2 py-1 rounded 
+    opacity-0 group-hover:opacity-100 transition-opacity 
+    pointer-events-none z-10
+`;
+
+                  
+                    let ele = document.createElement(element?.tag);
+                    ele.innerText = scence.sceneHead.text;
+                    ele.setAttribute(
+                        "class",
+                        element?.style + ` cursor-default `
+                    );
+                    ele.setAttribute("style", `color: #${color}`);
+                    ele.addEventListener("change", onchange);
+                    ele.setAttribute("data-type", "scene_heading");
+                    ele.setAttribute("id", scence.sceneHead.id);
+
+                  
+                    wrapper.appendChild(tooltip);
+                    wrapper.appendChild(ele);
+                    document.querySelector(".board").appendChild(wrapper);
+                }
+                if (scence.sceneDesc.text) {
+                    let element = elements["scene_description"];
+                    let ele = document.createElement(element?.tag);
+                    ele.innerText = scence.sceneDesc.text;
+                    ele.setAttribute("class", element?.style);
+                    ele.setAttribute("style", `color: #${color}`);
+                    ele.addEventListener("change", onchange);
+                    ele.setAttribute("data-type", "scene_description");
+                    ele.setAttribute("id", scence.sceneDesc.id);
+                    document.querySelector(".board").appendChild(ele);
+                }
+
+                scence.lines.map((line) => {
+                    for (let key in line) {
+                        if (key == "action") {
+                            let element = elements["action"];
+                            let ele = document.createElement(element?.tag);
+                            ele.innerText = line[key].text;
+                            ele.setAttribute("class", element?.style);
+                            ele.setAttribute("style", `color: #${color}`);
+                            ele.addEventListener("change", onchange);
+                            ele.setAttribute("data-type", "action");
+                            ele.setAttribute("id", line[key].id);
+                            document.querySelector(".board").appendChild(ele);
+                        } else {
+                            if (key == "character") {
+                                let element = elements["character"];
                                 let ele = document.createElement(element?.tag);
                                 ele.innerText = line[key].text;
                                 ele.setAttribute("class", element?.style);
-                                ele.addEventListener("change",onchange)
-                                ele.setAttribute("data-type", "action");
+                                ele.setAttribute("style", `color: #${color}`);
+                                ele.addEventListener("change", onchange);
+                                ele.setAttribute("data-type", "character");
                                 ele.setAttribute("id", line[key].id);
-                                document.querySelector(".board").appendChild(ele);
-                            } else {
-                                if (key == "character") {
-                                    let element = elements["character"];
-                                    let ele = document.createElement(element?.tag);
-                                    ele.innerText = line[key].text;
-                                    ele.setAttribute("class", element?.style);
-                                    ele.addEventListener("change",onchange)
-                                    ele.setAttribute("data-type", "character");
-                                    ele.setAttribute("id", line[key].id);
-                                    document
-                                        .querySelector(".board")
-                                        .appendChild(ele);
-                                } else if (key == "dialogue") {
-                                    let element = elements["dialogue"];
-                                    let ele = document.createElement(element?.tag);
-                                    ele.innerText = line[key].text;
-                                    ele.setAttribute("class", element?.style);
-                                    ele.addEventListener("change",onchange)
-                                    ele.setAttribute("data-type", "dialogue");
-                                    ele.setAttribute("id", line[key].id);
-                                    document
-                                        .querySelector(".board")
-                                        .appendChild(ele);
-                                } else if (key == "emotion") {
-                                    let element = elements["character_emotion"];
-                                    let ele = document.createElement(element?.tag);
-                                    ele.innerText = line[key].text;
-                                    ele.setAttribute("class", element?.style);
-                                    ele.addEventListener("change",onchange)
-                                    ele.setAttribute(
-                                        "data-type",
-                                        "character_emotion"
-                                    );
-                                    ele.setAttribute("id", line[key].id);
-                                    document
-                                        .querySelector(".board")
-                                        .appendChild(ele);
-                                }
+                                document
+                                    .querySelector(".board")
+                                    .appendChild(ele);
+                            } else if (key == "dialogue") {
+                                let element = elements["dialogue"];
+                                let ele = document.createElement(element?.tag);
+                                ele.innerText = line[key].text;
+                                ele.setAttribute("class", element?.style);
+                                ele.setAttribute("style", `color: #${color}`);
+                                ele.addEventListener("change", onchange);
+                                ele.setAttribute("data-type", "dialogue");
+                                ele.setAttribute("id", line[key].id);
+                                document
+                                    .querySelector(".board")
+                                    .appendChild(ele);
+                            } else if (key == "emotion") {
+                                let element = elements["character_emotion"];
+                                let ele = document.createElement(element?.tag);
+                                ele.innerText = line[key].text;
+                                ele.setAttribute("class", element?.style);
+                                ele.setAttribute("style", `color: #${color}`);
+                                ele.addEventListener("change", onchange);
+                                ele.setAttribute(
+                                    "data-type",
+                                    "character_emotion"
+                                );
+                                ele.setAttribute("id", line[key].id);
+                                document
+                                    .querySelector(".board")
+                                    .appendChild(ele);
                             }
                         }
-                    });
+                    }
                 });
-        let element = elements[selectedElement];
-        let ele = document.createElement(element?.tag);
-        ele.setAttribute("class", element?.style);
-        element?.style == "character" && ele.setAttribute("char", true);
-        ele.setAttribute("data-type", selectedElement);
-        ele.setAttribute("id", new Date().getTime());
-        document.querySelector(".board").appendChild(ele);
-        setTimeout(() => {
-            ele.focus();
-        }, 0);
-        setcontent(document.querySelector(".board").innerHTML);
-      setdive(true)
+            });
+            let element = elements[selectedElement];
+            let ele = document.createElement(element?.tag);
+            ele.setAttribute("class", element?.style);
+            element?.style == "character" && ele.setAttribute("char", true);
+            ele.setAttribute("data-type", selectedElement);
+            ele.setAttribute("id", new Date().getTime());
+            document.querySelector(".board").appendChild(ele);
+            setTimeout(() => {
+                ele.focus();
+            }, 0);
+            setcontent(document.querySelector(".board").innerHTML);
+            setdive(true);
         }
     }, []);
 
@@ -614,7 +657,7 @@ const onchange = (e) =>{
                         defaultValue={selectedElement}
                         onValueChange={(value) => onElementChange(value)}
                     >
-                        <SelectTrigger className="h-8 w-[130px] text-xs">
+                        <SelectTrigger className="h-8 w-[130px]  text-xs">
                             <SelectValue placeholder="Element Type" />
                         </SelectTrigger>
                         <SelectContent>
@@ -652,7 +695,10 @@ const onchange = (e) =>{
                                 Action
                             </SelectItem>
                             <SelectItem
-                                disabled={selectedElement == "character" ||selectedElement == "emotion"}
+                                disabled={
+                                    selectedElement == "character" ||
+                                    selectedElement == "emotion"
+                                }
                                 value="character"
                             >
                                 Character
@@ -828,28 +874,28 @@ const onchange = (e) =>{
                             </TooltipContent>
                         </Tooltip>
                     </TooltipProvider>
-                   
+
                     {!user.invitation && (
-                    <TooltipProvider>
-                        <Tooltip>
-                            <TooltipTrigger asChild>
-                                <Button
-                                    variant="ghost"
-                                    size="sm"
-                                    className="h-8 gap-1"
-                                >
-                                    <Users className="h-4 w-4" />
-                                    <span className="text-xs">
-                                        Invite Collaborators
-                                    </span>
-                                    <Plus className="h-3 w-3 opacity-50" />
-                                </Button>
-                            </TooltipTrigger>
-                            <TooltipContent>
-                                <p>Share Script</p>
-                            </TooltipContent>
-                        </Tooltip>
-                    </TooltipProvider>
+                        <TooltipProvider>
+                            <Tooltip>
+                                <TooltipTrigger asChild>
+                                    <Button
+                                        variant="ghost"
+                                        size="sm"
+                                        className="h-8 gap-1"
+                                    >
+                                        <Users className="h-4 w-4" />
+                                        <span className="text-xs">
+                                            Invite Collaborators
+                                        </span>
+                                        <Plus className="h-3 w-3 opacity-50" />
+                                    </Button>
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                    <p>Share Script</p>
+                                </TooltipContent>
+                            </Tooltip>
+                        </TooltipProvider>
                     )}
                 </div>
             </div>
@@ -935,7 +981,9 @@ const onchange = (e) =>{
                         className="absolute bg-white border rounded-md shadow-md z-50 max-h-40 overflow-auto hidden"
                     ></div>
 
-                    <div className="board h-[70vh] overflow-y-scroll  py-5 px-10 bg-gray-100">{}</div>
+                    <div className="board h-[70vh] overflow-y-scroll  py-5 px-10 bg-gray-100">
+                        {}
+                    </div>
                     <div
                         id="suggestion-box"
                         className="absolute bg-white border border-gray-300 rounded shadow-md z-50 hidden text-sm max-h-40 overflow-auto"

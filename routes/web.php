@@ -33,10 +33,21 @@ Route::get('/auth/google', [SocialAuthController::class, 'redirectToGoogle'])->n
 Route::get('/auth/google/callback', [SocialAuthController::class, 'handleGoogleCallback']);
 
 
-Route::get('/', function () {
-    // return Inertia::render('Home', ['name' => '']);
-    return Inertia::render('Landing');
-});
+    Route::get('/', function () {
+        return Inertia::render('Landing');
+    });
+
+    Route::get('/about', function () {
+        return Inertia::render('about');
+    });
+
+    Route::get('/contact', function () {
+        return Inertia::render('contact');
+    });
+
+    Route::get('/services', function () {
+        return Inertia::render('services');
+    });
 
 Route::get('/signup', function () {
     return Inertia::render('auth/SignUpPage');
