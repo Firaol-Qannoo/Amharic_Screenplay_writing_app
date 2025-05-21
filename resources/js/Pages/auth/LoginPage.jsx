@@ -136,7 +136,6 @@ export default function LoginPage() {
                 />
             </GoogleOAuthProvider>
         </div>
-       
       </div>
     </div>
   );
