@@ -69,10 +69,10 @@ class SceneController extends Controller
                 'id' => $sceneId,
                 'scriptID' => $scriptID,
                 'scene_num' => $sceneData['scene_num'] ?? null,
-                'sceneHead' => isset($sceneData['sceneHead']) && is_array($sceneData['sceneHead']) ? $sceneData['sceneHead'] : null,
-                'sceneDesc' => isset($sceneData['sceneDesc']) && is_array($sceneData['sceneDesc']) ? $sceneData['sceneDesc'] : null,
-                'lines' => !empty($cleanedLines) ? $cleanedLines : [],
-                'user' => $user->toArray(),
+                'sceneHead' => $sceneData['sceneHead'] ?? null, 
+                'sceneDesc' => $sceneData['sceneDesc'] ?? null, 
+                'lines' => $cleanedLines,
+                'user' => $sceneData['user'],
             ]);
             
         }

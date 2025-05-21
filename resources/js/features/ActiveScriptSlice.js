@@ -12,9 +12,10 @@ export const activeScript = createSlice({
       return action.payload
     },
     addScene: (state, action) => {
-      const { id, sceneHead, sceneDesc } = action.payload;
+      const { id, sceneHead, sceneDesc,user } = action.payload;
       state.scenes.push({
         id,
+        user,
         sceneHead: { id: sceneHead?.id || null, text: sceneHead?.text || null },
         sceneDesc: { id: sceneDesc?.id|| null, text: sceneDesc?.text|| null },
         lines: []
