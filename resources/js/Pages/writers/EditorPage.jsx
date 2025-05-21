@@ -14,8 +14,6 @@ import AiAssistantDialog from '@/components/aiassistancedialog'
 
 import { Link, usePage, router } from "@inertiajs/react"
 
-import { Link, usePage } from "@inertiajs/react"
-
 export default function EditorPage({ script, user, scenecharacters, scenes }) {
     const [showNetworkView, setShowNetworkView] = useState(false)
     const [editorContent, setEditorContent] = useState("");
