@@ -115,7 +115,7 @@ class SceneController extends Controller
                 'sceneHead' => $sceneData['sceneHead'] ?? null, 
                 'sceneDesc' => $sceneData['sceneDesc'] ?? null, 
                 'lines' => $cleanedLines,
-                'user' => $user->toArray(),
+                'user' => $sceneData['user'],
             ]);
         }
     
