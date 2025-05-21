@@ -56,6 +56,15 @@ class ScriptsController extends Controller
        return Inertia::location(route('dashboard'));
     }
 
+    public function index()
+    {
+        // Retrieve all scripts for the authenticated user
+        $scripts = Script::where('user_id', Auth::id())->get();
+
+        return Inertia::render('Scripts/Index', [
+            'scripts' => $scripts,
+        ]);
+    }
 
     public function update(Request $request, $id)
 {

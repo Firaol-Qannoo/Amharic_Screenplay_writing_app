@@ -41,4 +41,8 @@ return [
         'redirect' => env('GOOGLE_REDIRECT_URI'),
     ],
 
+    'stability' => [
+        'key' => env('STABILITY_API_KEY'),
+    ],
+
 ];

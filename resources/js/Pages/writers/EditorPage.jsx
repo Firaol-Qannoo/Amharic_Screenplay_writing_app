@@ -4,7 +4,7 @@ import { ThemeToggle } from "@/components/theme-toggle"
 import { SettingsDialog } from "@/components/settings-dialog"
 import { ArrowLeft, Languages, User } from "lucide-react"
 
-import { useState,useEffect } from "react"
+import { useState, useEffect } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { useSelector } from "react-redux"
 import { selectcharacters } from "../../features/Characters"
@@ -12,6 +12,7 @@ import { EditorField } from "../../components/script-editor/EditingField"
 import { CharacterRelationships } from "../../components/script-editor/CharacterRelationships"
 import AiAssistantDialog from '@/components/aiassistancedialog'
 
+import { Link, usePage, router } from "@inertiajs/react"
 
 import { Link, usePage } from "@inertiajs/react"
 
