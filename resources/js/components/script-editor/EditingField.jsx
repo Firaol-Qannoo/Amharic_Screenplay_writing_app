@@ -70,6 +70,8 @@ import { initScript } from "../../features/activeScriptSlice";
 import { router } from "@inertiajs/react";
 import { pdfstyle } from "../../../../public/data/pdfstyle";
 import { store } from "../../app/store";
+import { InviteCollaboratorDialog } from "@/components/invite-collaborator-dialog";
+
 
 export function EditorField({script ,scenes, scenecharacters, user}) {
     console.log({script ,scenes, scenecharacters, user})
@@ -84,6 +86,37 @@ export function EditorField({script ,scenes, scenecharacters, user}) {
     const characters = useSelector(selectcharacters);
     const [content, setcontent] = useState();
     const activeScriptState = useSelector(selectActiveScript);
+
+
+    const [isDarkMode, setIsDarkMode] = useState(false);
+    
+    useEffect(() => {
+        const savedTheme = localStorage.getItem("theme");
+        if (
+          savedTheme === "dark" ||
+          (!savedTheme &&
+            window.matchMedia("(prefers-color-scheme: dark)").matches)
+        ) {
+          setIsDarkMode(true);
+          document.documentElement.classList.add("dark");
+        } else {
+          setIsDarkMode(false);
+          document.documentElement.classList.remove("dark");
+        }
+      }, []);
+    
+      // Toggle dark mode and save preference
+      function toggleDarkMode() {
+        if (isDarkMode) {
+          document.documentElement.classList.remove("dark");
+          localStorage.setItem("theme", "light");
+          setIsDarkMode(false);
+        } else {
+          document.documentElement.classList.add("dark");
+          localStorage.setItem("theme", "dark");
+          setIsDarkMode(true);
+        }
+      }
 
     
     const saveScript = () => {
@@ -826,17 +859,15 @@ const onchange = (e) =>{
                     <TooltipProvider>
                         <Tooltip>
                             <TooltipTrigger asChild>
-                                <Button
+                                {/* <Button
                                     variant="ghost"
                                     size="sm"
                                     className="h-8 gap-1"
-                                >
-                                    <Users className="h-4 w-4" />
-                                    <span className="text-xs">
-                                        Invite Collaborators
-                                    </span>
-                                    <Plus className="h-3 w-3 opacity-50" />
-                                </Button>
+                                > */}
+                                    {/* <Users className="h-4 w-4" /> */}
+                                   <InviteCollaboratorDialog scriptId={script.id} />
+                                    {/* <Plus className="h-3 w-3 opacity-50" /> */}
+                                {/* </Button> */}
                             </TooltipTrigger>
                             <TooltipContent>
                                 <p>Share Script</p>

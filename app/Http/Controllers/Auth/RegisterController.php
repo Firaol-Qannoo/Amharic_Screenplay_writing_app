@@ -314,10 +314,10 @@ public function verifySignupOtp(Request $request) {
     public function update(Request $request) {
     $request->validate([
         'first_name' => 'required|string|max:255',
-        'email' => 'required|email|max:255|unique:users,email,' . auth()->id(),
+        // 'email' => 'required|email|max:255|unique:users,email,' . auth()->id(),
     ]);
 
-    auth()->user()->update($request->only('first_name', 'email'));
+    auth()->user()->update($request->only('first_name'));
 
     flash()->success('Account Updated successfully!');
        return Inertia::location(route('dashboard'));
