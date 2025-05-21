@@ -14,8 +14,7 @@ use App\Http\Controllers\ProductionScheduleController;
 use App\Http\Controllers\SceneController;
 use App\Http\Controllers\ScriptInvitationController;
 use App\Http\Controllers\ImportScriptController;
-
-
+use App\Http\Controllers\StoryboardController;
 
 // Route::get('/', function () {
 //     return view('welcome');
@@ -103,6 +102,8 @@ Route::post('/scripts', [ScriptsController::class, 'store'])->name('scripts');
 Route::get('/production-schedule', [ProductionScheduleController::class, 'index'])->name('scenes.index');
 Route::post('/production-schedule', [ProductionScheduleController::class, 'showWithStaticData'])->name('scenes.update');
 Route::post('/production-schedule/save-locations', [ProductionScheduleController::class, 'saveShootLocations']);
+Route::get('/scripts/{scriptId}/storyboard', [StoryboardController::class, 'index'])->name('storyboard.index');
+Route::post('/storyboard/save', [StoryboardController::class, 'save']);
 
 
 

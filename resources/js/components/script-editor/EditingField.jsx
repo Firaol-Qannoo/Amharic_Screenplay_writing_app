@@ -201,6 +201,14 @@ export function EditorField({script ,scenes, scenecharacters, user}) {
     const scheduleHandler = () => {
     router.post('/production-schedule', { scenes: activeScriptState.scenes });
 };
+const storyboardHandler = () => {
+    if (!script?.id) {
+        alert("Script ID is missing!");
+        return;
+    }
+
+    router.visit(`/scripts/${script.id}/storyboard`);
+};
 
     
 
@@ -862,6 +870,15 @@ const onchange = (e) =>{
 
                        
  <Menubar className="border-none">
+    <MenubarMenu>   <Button
+                            variant="ghost"
+                            onClick={storyboardHandler}
+                            size="sm"
+                            className="h-8 gap-1"
+                        >
+                            <Save className="h-4 w-4" />
+                            <span className="text-xs">Storyboard</span>
+                        </Button></MenubarMenu>
      <MenubarMenu>   <Button
                             variant="ghost"
                             onClick={scheduleHandler}
