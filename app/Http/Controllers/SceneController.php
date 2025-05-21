@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Validator;
 use App\Models\Script;
 use App\Models\Character;
 use Inertia\Inertia;
+use Illuminate\Support\Facades\Auth;
 
 class SceneController extends Controller
 {
@@ -54,6 +55,8 @@ class SceneController extends Controller
             'characters.*.inScene' => 'nullable|array',
             // Add more validation rules as needed for your scene data
         ]);
+
+        $user = Auth::user();
     
         if ($validator->fails()) {
             return back()->withErrors($validator)->withInput(); 
@@ -99,8 +102,12 @@ class SceneController extends Controller
                     $cleanedLines[] = $cleanedLine;
                 }
             }
+
+            
     
             // Create scene with full structure (including sceneHead and sceneDesc as objects)
+
+            $user = Auth::user();
             Scene::create([
                 'id' =>  $sceneId,
                 'scriptID' => $scriptID,
@@ -108,6 +115,7 @@ class SceneController extends Controller
                 'sceneHead' => $sceneData['sceneHead'] ?? null, 
                 'sceneDesc' => $sceneData['sceneDesc'] ?? null, 
                 'lines' => $cleanedLines,
+                'user' => $user->toArray(),
             ]);
         }
     

@@ -11,15 +11,17 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Checkbox } from "@/components/ui/checkbox"; 
 import { Share } from "lucide-react";
 import flasher from "@flasher/flasher";
 
 export function InviteCollaboratorDialog({ scriptId }) {
   const [open, setOpen] = useState(false);
+  
 
   const { data, setData, post, processing, errors, reset } = useForm({
     invitee_email: "",
-    role: "Writer", // default role
+    role: [], 
     script_id: scriptId,
   });
 
@@ -34,6 +36,8 @@ export function InviteCollaboratorDialog({ scriptId }) {
       },
     });
   };
+
+  const availableRoles = ["Writer", "Artist", "Director"];
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -64,18 +68,30 @@ export function InviteCollaboratorDialog({ scriptId }) {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="role">Role</Label>
-            <select
-              id="role"
-              value={data.role}
-              onChange={(e) => setData("role", e.target.value)}
-              className="w-full border border-gray-300 rounded px-3 py-2"
-              required
-            >
-              <option value="Writer">Writer</option>
-              <option value="Artist">Artist</option>
-              <option value="Director">Director</option>
-            </select>
+            <Label>Roles</Label>
+            <div className="space-y-2">
+            {availableRoles.map((role) => (
+  <div key={role} className="flex items-center space-x-2">
+    <Checkbox
+      id={role}
+      checked={Array.isArray(data.role) && data.role.includes(role)}
+      onCheckedChange={(checked) => {
+        const isChecked = checked === true;
+        const roles = Array.isArray(data.role) ? data.role : [];
+        const newRoles = isChecked
+          ? [...roles, role]
+          : roles.filter((r) => r !== role);
+        setData("role", newRoles);
+      }}
+    />
+    <label htmlFor={role} className="text-sm">
+      {role}
+    </label>
+  </div>
+))}
+
+
+            </div>
             {errors.role && (
               <p className="text-red-500 text-sm">{errors.role}</p>
             )}

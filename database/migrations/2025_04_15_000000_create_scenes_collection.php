@@ -13,11 +13,14 @@ class CreateScenesCollection extends Migration
             $collection->integer('scene_num')->nullable(); 
             $collection->string('sceneHead')->nullable(); 
             $collection->string('sceneDesc')->nullable();
-
-            
+        
             $collection->array('lines')->nullable();    
+            
+            $collection->object('user')->nullable(); 
+        
             $collection->timestamps();
         });
+        
     }
 
     public function down()

@@ -21,7 +21,7 @@ class ScriptInvitationController extends Controller
         $request->validate([
             'script_id' => 'required|string',
             'invitee_email' => 'required|email',
-            'role' => 'nullable|string',
+            'role.*' => 'in:Writer,Artist,Director',
         ]);
     
         try {
@@ -158,12 +158,13 @@ class ScriptInvitationController extends Controller
     
 
 
-    public function updateCollaboratorRole(Request $request, $scriptId, $userId) {
+    public function updateCollaboratorRole(Request $request, $scriptId, $userId)
+    {
         $request->validate([
-            'role' => 'required|string|in:Writer,Artist,Director',
+            'role' => 'required|array',
+            'role.*' => 'string|in:Writer,Artist,Director',
         ]);
     
-        // Find the collaborator invitation record
         $collaborator = ScriptInvitation::where('invitee_id', $userId)
             ->where('script_id', $scriptId)
             ->first();
@@ -173,11 +174,11 @@ class ScriptInvitationController extends Controller
             return response()->json(['message' => 'Collaborator not found.'], 404);
         }
     
-        // Update the role
-        $collaborator->role = $request->role;
+        $collaborator->role = json_encode($request->role); // Or implode(',', $request->role)
         $collaborator->save();
     
         flash()->success('Collaborator Role Changed successfully!');
         return Inertia::location(route('dashboard'));
     }
+    
 }

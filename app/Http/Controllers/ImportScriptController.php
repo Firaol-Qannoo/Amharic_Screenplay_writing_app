@@ -14,7 +14,7 @@ class ImportScriptController extends Controller
 {
     public function store(Request $request)
     {
-        $data = $request->input('data'); // ✅ Top-level 'data'
+        $data = $request->input('data');
 
           $imported = $data['script'];
         // Create the main script record
@@ -24,12 +24,13 @@ class ImportScriptController extends Controller
             'genre' => $imported['genre'],
             'type' => $imported['type'],
             'thumbnail' => $imported['thumbnail'],
-            'user_id' => Auth::id(), // Use the current authenticated user
+            'user_id' => Auth::id(), 
+            'invitee_id' => $imported['invitee_id'] ?? [], 
         ]);
     
         $scriptID = $script->id;
     
-        // Create scenes (from top-level "scenes" key)
+        
         foreach ($data['scenes'] as $sceneData) {
             $cleanedLines = [];
     
@@ -66,7 +67,7 @@ class ImportScriptController extends Controller
             ]);
         }
     
-        // Create characters (from top-level "characters" key)
+       
         foreach ($data['characters'] as $characterData) {
             Character::create([
                 'name' => $characterData['name'],

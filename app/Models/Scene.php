@@ -16,10 +16,12 @@ class Scene extends Model
         'sceneHead',
         'sceneDesc',
         'lines',
+        'user', 
     ];
 
     protected $casts = [
-        'lines' => 'array', // Automatically cast the 'lines' attribute to an array
+        'lines' => 'array',
+        'user' => 'array', 
     ];
 
     public function characters() {
