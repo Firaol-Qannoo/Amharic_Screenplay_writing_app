@@ -210,10 +210,18 @@ export function EditorField({ script, scenes, scenecharacters, user }) {
     };
 
     const scheduleHandler = () => {
-        router.post("/production-schedule", {
-            scenes: activeScriptState.scenes,
-        });
-    };
+    router.post('/production-schedule', { scenes: activeScriptState.scenes });
+};
+const storyboardHandler = () => {
+    if (!script?.id) {
+        alert("Script ID is missing!");
+        return;
+    }
+
+    router.visit(`/scripts/${script.id}/storyboard`);
+};
+
+    
 
     const proxyUrl = "https://thingproxy.freeboard.io/fetch/";
     const targetUrl =
@@ -523,6 +531,7 @@ export function EditorField({ script, scenes, scenecharacters, user }) {
             scenes && dispatch(initScript({ scenes: scenes }));
             scenes?.map((scence) => {
                 color = script.user_id ==scence.user.id ? "000000" :scence.user.userColor;
+                //color = scence.user.first_name==user.first_name ? "000000" :scence.user.userColor;
                 
                 name = scence.user.first_name==user.first_name ? script.user_id== user.id ?"You ( Creator )" : "You": script.user_id== scence.user.id ? scence.user.first_name +` ( Creator )` : scence.user.first_name;
 
@@ -873,7 +882,7 @@ export function EditorField({ script, scenes, scenecharacters, user }) {
                     <TooltipProvider>
                         <Tooltip>
                             <TooltipTrigger asChild>
-                                <Button
+                                {/* <Button
                                     variant="ghost"
                                     size="sm"
                                     className="h-8 gap-1"
@@ -883,7 +892,8 @@ export function EditorField({ script, scenes, scenecharacters, user }) {
                                         Invite Collaborators
                                     </span>
                                     <Plus className="h-3 w-3 opacity-50" />
-                                </Button>
+                                </Button> */}
+                                <InviteCollaboratorDialog scriptId={script.id} />
                             </TooltipTrigger>
                             <TooltipContent>
                                 <p>Share Script</p>
@@ -906,75 +916,66 @@ export function EditorField({ script, scenes, scenecharacters, user }) {
                     </TabsList>
 
                     <div className="flex items-center gap-1">
-                        <Menubar className="border-none">
-                            <MenubarMenu>
-                                {" "}
-                                <Button
-                                    variant="ghost"
-                                    onClick={scheduleHandler}
-                                    size="sm"
-                                    className="h-8 gap-1"
-                                >
-                                    <Save className="h-4 w-4" />
-                                    <span className="text-xs">
-                                        Production Schedule
-                                    </span>
-                                </Button>
-                            </MenubarMenu>
-                            <MenubarMenu>
-                                {" "}
-                                <Button
-                                    variant="ghost"
-                                    onClick={saveScript}
-                                    size="sm"
-                                    className="h-8 gap-1"
-                                >
-                                    <Save className="h-4 w-4" />
-                                    <span className="text-xs">Save</span>
-                                </Button>
-                            </MenubarMenu>
-                            <MenubarMenu>
-                                <MenubarTrigger>
-                                    <Button
-                                        variant="ghost"
-                                        size="sm"
-                                        className="h-8 gap-1"
-                                    >
-                                        <Save className="h-4 w-4" />
-                                        <span className="text-xs">Export</span>
-                                    </Button>
-                                </MenubarTrigger>
-                                <MenubarContent>
-                                    <MenubarItem>
-                                        <Button
-                                            variant="ghost"
-                                            size="sm"
-                                            onClick={exportScriptAspf}
-                                            className="h-8 gap-1"
-                                        >
-                                            <FileDown className="h-4 w-4" />
-                                            <span className="text-xs">
-                                                as ASPF
-                                            </span>
-                                        </Button>
-                                    </MenubarItem>
-                                    <MenubarItem>
-                                        <Button
-                                            variant="ghost"
-                                            size="sm"
-                                            onClick={exportScript}
-                                            className="h-8 gap-1"
-                                        >
-                                            <FileDown clayssName="h-4 w-4" />
-                                            <span className="text-xs">
-                                                {" "}
-                                                as PDF
-                                            </span>
-                                        </Button>
-                                    </MenubarItem>
-                                </MenubarContent>
-                            </MenubarMenu>
-                        </Menubar>
+                     
+
+                       
+ <Menubar className="border-none">
+    <MenubarMenu>   <Button
+                            variant="ghost"
+                            onClick={storyboardHandler}
+                            size="sm"
+                            className="h-8 gap-1"
+                        >
+                            <Save className="h-4 w-4" />
+                            <span className="text-xs">Storyboard</span>
+                        </Button></MenubarMenu>
+     <MenubarMenu>   <Button
+                            variant="ghost"
+                            onClick={scheduleHandler}
+                            size="sm"
+                            className="h-8 gap-1"
+                        >
+                            <Save className="h-4 w-4" />
+                            <span className="text-xs">Production Schedule</span>
+                        </Button></MenubarMenu>
+    <MenubarMenu> <Button
+                            variant="ghost"
+                            onClick={saveScript}
+                            size="sm"
+                            className="h-8 gap-1"
+                        >
+                            <Save className="h-4 w-4" />
+                            <span className="text-xs">Save</span>
+                        </Button></MenubarMenu> 
+      <MenubarMenu>
+        <MenubarTrigger><Button
+                            variant="ghost"
+                           
+                            size="sm"
+                            className="h-8 gap-1"
+                        >
+                            <Save className="h-4 w-4" />
+                            <span className="text-xs">Export</span>
+                        </Button></MenubarTrigger>
+        <MenubarContent>
+        
+          <MenubarItem>
+            <Button variant="ghost" size="sm" onClick={exportScriptAspf} className="h-8 gap-1">
+                            <FileDown className="h-4 w-4" />
+                            <span className="text-xs">as ASPF</span>
+                        </Button>
+          </MenubarItem>
+           <MenubarItem>
+            <Button variant="ghost" size="sm" onClick={exportScript} className="h-8 gap-1">
+                            <FileDown clayssName="h-4 w-4" />
+                            <span className="text-xs"> as PDF</span>
+                        </Button>
+          </MenubarItem>
+        </MenubarContent>
+      </MenubarMenu>
+      
+    </Menubar>
+                       
                     </div>
                 </div>
 
