@@ -72,11 +72,12 @@ import { pdfstyle } from "../../../../public/data/pdfstyle";
 import { store } from "../../app/store";
 
 export function EditorField({ script, scenes, scenecharacters, user }) {
-    console.log({ script, scenes, scenecharacters, user });
+   
     const dispatch = useDispatch();
     const [selectedElement, setselectedElement] = useState("scene_heading");
 
     const onElementChange = (value) => {
+       
         setselectedElement(value);
     };
 
@@ -85,9 +86,13 @@ export function EditorField({ script, scenes, scenecharacters, user }) {
     const [content, setcontent] = useState();
     const activeScriptState = useSelector(selectActiveScript);
 
-    const saveScript = () => {
-        console.log("user", user);
-        const lastTextArea = document.querySelector("textarea:last-child");
+    const proxyUrl = "https://thingproxy.freeboard.io/fetch/";
+    const targetUrl =
+        "https://amharic-spelling-checker-demo.onrender.com/spellcheck";
+
+   const saveScript = () => {
+       
+        const lastTextArea = document.querySelector(".board > div:last-of-type textarea");
         if (lastTextArea) {
             if (lastTextArea.getAttribute("data-type") == "character") {
                 let charId = nanoid();
@@ -120,6 +125,10 @@ export function EditorField({ script, scenes, scenecharacters, user }) {
 
                     let character = { id: char.id, text: lastTextArea?.value };
                     setline({ ...line, character });
+                    dispatch(addLine({
+                        sceneId,
+                        line: { ...line, character },
+                    }))
                 } else {
                     dispatch(
                         addCharacter({
@@ -134,7 +143,13 @@ export function EditorField({ script, scenes, scenecharacters, user }) {
 
                     let character = { id: charId, text: lastTextArea?.value };
                     setline({ ...line, character });
+                    dispatch(addLine({
+                        sceneId,
+                        line: { ...line, character },
+                    }))
                 }
+
+
             }
 
             if (
@@ -142,6 +157,10 @@ export function EditorField({ script, scenes, scenecharacters, user }) {
             ) {
                 let emotion = { id: nanoid(), text: lastTextArea?.value };
                 setline({ ...line, emotion });
+                dispatch(addLine({
+                        sceneId,
+                        line: { ...line, character },
+                    }))
             }
 
             if (lastTextArea?.getAttribute("data-type") == "dialogue") {
@@ -163,7 +182,7 @@ export function EditorField({ script, scenes, scenecharacters, user }) {
 
                 setemptyScript(false);
                 let sceneHead = { id: nanoid(), text: lastTextArea?.value };
-                console.log({ id: sceneID, sceneHead, sceneDesc: null });
+               
                 dispatch(
                     addScene({ user, id: sceneID, sceneHead, sceneDesc: null })
                 );
@@ -185,10 +204,7 @@ export function EditorField({ script, scenes, scenecharacters, user }) {
         }
         const latestActiveScriptState = store.getState().activeScript; 
         const latestCharacters = store.getState().characters;
-        console.log("oksa", {
-            scenes: latestActiveScriptState.scenes,
-            characters: latestCharacters,
-        });
+       
         router.post(
             `/scripts/${script.id}/scenes`,
             {
@@ -211,10 +227,6 @@ export function EditorField({ script, scenes, scenecharacters, user }) {
             scenes: activeScriptState.scenes,
         });
     };
-
-    const proxyUrl = "https://thingproxy.freeboard.io/fetch/";
-    const targetUrl =
-        "https://amharic-spelling-checker-demo.onrender.com/spellcheck";
 
     const [suggWords, setsuggWords] = useState([]);
     const [dive, setdive] = useState(false);
@@ -306,7 +318,7 @@ export function EditorField({ script, scenes, scenecharacters, user }) {
                 console.error("PDF generation error:", err);
             });
 
-        console.log(boardtopdf);
+      
     };
     const exportScriptAspf = () => {
         const blob = new Blob(
@@ -333,7 +345,7 @@ export function EditorField({ script, scenes, scenecharacters, user }) {
     };
 
     useEffect(() => {
-        const textarea = document.querySelector(".board textarea:last-child");
+        const textarea = document.querySelector(".board > div:last-of-type textarea");
         const box = document.getElementById("suggestion-box");
         if (!textarea || !box) return;
 
@@ -372,8 +384,11 @@ export function EditorField({ script, scenes, scenecharacters, user }) {
     const [sceneId, setsceneId] = useState(null);
     const [emptyScript, setemptyScript] = useState(true);
     useEffect(() => {
-        const lastTextArea = document.querySelector("textarea:last-child");
+        console.log(selectedElement)
+        const lastTextArea =  document.querySelector(".board > div:last-of-type textarea");
+       
         if (lastTextArea) {
+           
             if (lastTextArea.getAttribute("data-type") == "character") {
                 let charId = nanoid();
                 let char = characters.find(
@@ -430,6 +445,7 @@ export function EditorField({ script, scenes, scenecharacters, user }) {
             }
 
             if (lastTextArea?.getAttribute("data-type") == "dialogue") {
+                  
                 let dialogue = { id: nanoid(), text: lastTextArea?.value };
                 let fullLine = { ...line, dialogue };
                 setline(fullLine);
@@ -442,16 +458,16 @@ export function EditorField({ script, scenes, scenecharacters, user }) {
                 setline({});
             }
             if (lastTextArea?.getAttribute("data-type") == "scene_heading") {
+               console.log("object")
                 let sceneID = nanoid();
                 setsceneId(sceneID);
-                console.log("Hereeyu");
+              
                 setemptyScript(false);
                 let sceneHead = { id: nanoid(), text: lastTextArea?.value };
-                console.log({ id: sceneID, sceneHead, sceneDesc: null });
-                dispatch(
+               dispatch(
                     addScene({ user, id: sceneID, sceneHead, sceneDesc: null })
                 );
-                console.log(activeScriptState);
+               
             }
             if (lastTextArea?.getAttribute("data-type") == "action") {
                 let action = { id: nanoid(), text: lastTextArea?.value };
@@ -470,14 +486,34 @@ export function EditorField({ script, scenes, scenecharacters, user }) {
         }
 
         if (dive) {
-            console.log("LLobject");
+        
+
             let element = elements[selectedElement];
+             let wrapper = document.createElement("div");
+                    
+
+                    
+                    let tooltip = document.createElement("div");
+                    tooltip.innerText = "None"; 
+                    tooltip.className = `
+    absolute -top-6 left-1/2 text-nowrap -translate-x-1/2 
+    bg-gray-700 text-white text-xs px-2 py-1 rounded 
+    opacity-0 group-hover:opacity-100 transition-opacity 
+    pointer-events-none z-10
+`;
+     
+            wrapper.className = element?.style
             let ele = document.createElement(element?.tag);
             ele.setAttribute("class", element?.style);
+             ele.setAttribute("style", `color: #${user.userColor}`);
             element?.style == "character" && ele.setAttribute("char", true);
             ele.setAttribute("data-type", selectedElement);
+            
             ele.setAttribute("id", new Date().getTime());
-            document.querySelector(".board").appendChild(ele);
+            
+                    wrapper.appendChild(tooltip);
+                    wrapper.appendChild(ele);
+                    document.querySelector(".board").appendChild(wrapper);
             setTimeout(() => {
                 ele.focus();
             }, 0);
@@ -509,31 +545,31 @@ export function EditorField({ script, scenes, scenecharacters, user }) {
         }
     }, [selectedElement]);
     const onchange = (e) => {
-        console.log(e.target.id, e.target.value);
+        
     };
     useEffect(() => {
         let color = "000000";
         let name = "Anonymous";
         if (scenes) {
-            
-            scenecharacters && dispatch(initCharacter(scenecharacters));
+            // save chars on redux if exists
+              scenecharacters && dispatch(initCharacter(scenecharacters));
+            // save scenes on redux if exists
             scenes && dispatch(initScript({ scenes: scenes }));
+            // iterate scene
             scenes?.map((scence) => {
-                color = script.user_id ==scence.user.id ? "000000" :scence.user.userColor;
+                color =script.user_id ==scence.user.id ? "000000" :scence.user.userColor;
                 
                 name = scence.user.first_name==user.first_name ? script.user_id== user.id ?"You ( Creator )" : "You": script.user_id== scence.user.id ? scence.user.first_name +` ( Creator )` : scence.user.first_name;
 
                 if (scence.sceneHead.text) {
                     let element = elements["scene_heading"];
                     let wrapper = document.createElement("div");
-                    wrapper.className =
-                        "relative group inline-block cursor-default"; 
+                   wrapper.className = `${element?.style} relative group block`;
 
-                    
                     let tooltip = document.createElement("div");
                     tooltip.innerText = name; 
                     tooltip.className = `
-    absolute -top-6 left-1/2 text-nowrap -translate-x-1/2 
+    absolute -top-6 left-15 text-nowrap -translate-x-1/2 
     bg-gray-700 text-white text-xs px-2 py-1 rounded 
     opacity-0 group-hover:opacity-100 transition-opacity 
     pointer-events-none z-10
@@ -558,6 +594,20 @@ export function EditorField({ script, scenes, scenecharacters, user }) {
                 }
                 if (scence.sceneDesc.text) {
                     let element = elements["scene_description"];
+                     let wrapper = document.createElement("div");
+                    wrapper.className =
+                        element?.style
+
+                    
+                    let tooltip = document.createElement("div");
+                    tooltip.innerText = name; 
+                    tooltip.className = `
+    absolute -top-6 left-1/2 text-nowrap -translate-x-1/2 
+    bg-gray-700 text-white text-xs px-2 py-1 rounded 
+    opacity-0 group-hover:opacity-100 transition-opacity 
+    pointer-events-none z-10
+`;
+
                     let ele = document.createElement(element?.tag);
                     ele.innerText = scence.sceneDesc.text;
                     ele.setAttribute("class", element?.style);
@@ -565,13 +615,30 @@ export function EditorField({ script, scenes, scenecharacters, user }) {
                     ele.addEventListener("change", onchange);
                     ele.setAttribute("data-type", "scene_description");
                     ele.setAttribute("id", scence.sceneDesc.id);
-                    document.querySelector(".board").appendChild(ele);
+              
+                    wrapper.appendChild(tooltip);
+                    wrapper.appendChild(ele);
+                    document.querySelector(".board").appendChild(wrapper);
                 }
 
                 scence.lines.map((line) => {
                     for (let key in line) {
                         if (key == "action") {
                             let element = elements["action"];
+                             let wrapper = document.createElement("div");
+                    wrapper.className =
+                        element?.style
+
+                    
+                    let tooltip = document.createElement("div");
+                    tooltip.innerText = name; 
+                    tooltip.className = `
+    absolute -top-6 left-1/2 text-nowrap -translate-x-1/2 
+    bg-gray-700 text-white text-xs px-2 py-1 rounded 
+    opacity-0 group-hover:opacity-100 transition-opacity 
+    pointer-events-none z-10
+`;
+
                             let ele = document.createElement(element?.tag);
                             ele.innerText = line[key].text;
                             ele.setAttribute("class", element?.style);
@@ -579,10 +646,27 @@ export function EditorField({ script, scenes, scenecharacters, user }) {
                             ele.addEventListener("change", onchange);
                             ele.setAttribute("data-type", "action");
                             ele.setAttribute("id", line[key].id);
-                            document.querySelector(".board").appendChild(ele);
+                          
+                    wrapper.appendChild(tooltip);
+                    wrapper.appendChild(ele);
+                    document.querySelector(".board").appendChild(wrapper);
                         } else {
                             if (key == "character") {
                                 let element = elements["character"];
+                                 let wrapper = document.createElement("div");
+                    wrapper.className =
+                        element?.style
+
+                    
+                    let tooltip = document.createElement("div");
+                    tooltip.innerText = name; 
+                    tooltip.className = `
+    absolute -top-6 left-1/2 text-nowrap -translate-x-1/2 
+    bg-gray-700 text-white text-xs px-2 py-1 rounded 
+    opacity-0 group-hover:opacity-100 transition-opacity 
+    pointer-events-none z-10
+`;
+
                                 let ele = document.createElement(element?.tag);
                                 ele.innerText = line[key].text;
                                 ele.setAttribute("class", element?.style);
@@ -590,11 +674,26 @@ export function EditorField({ script, scenes, scenecharacters, user }) {
                                 ele.addEventListener("change", onchange);
                                 ele.setAttribute("data-type", "character");
                                 ele.setAttribute("id", line[key].id);
-                                document
-                                    .querySelector(".board")
-                                    .appendChild(ele);
+                              
+                    wrapper.appendChild(tooltip);
+                    wrapper.appendChild(ele);
+                    document.querySelector(".board").appendChild(wrapper);
                             } else if (key == "dialogue") {
                                 let element = elements["dialogue"];
+                                 let wrapper = document.createElement("div");
+                    wrapper.className =
+                        element?.style
+
+                    
+                    let tooltip = document.createElement("div");
+                    tooltip.innerText = name; 
+                    tooltip.className = `
+    absolute -top-6 left-1/2 text-nowrap -translate-x-1/2 
+    bg-gray-700 text-white text-xs px-2 py-1 rounded 
+    opacity-0 group-hover:opacity-100 transition-opacity 
+    pointer-events-none z-10
+`;
+
                                 let ele = document.createElement(element?.tag);
                                 ele.innerText = line[key].text;
                                 ele.setAttribute("class", element?.style);
@@ -602,11 +701,26 @@ export function EditorField({ script, scenes, scenecharacters, user }) {
                                 ele.addEventListener("change", onchange);
                                 ele.setAttribute("data-type", "dialogue");
                                 ele.setAttribute("id", line[key].id);
-                                document
-                                    .querySelector(".board")
-                                    .appendChild(ele);
+                           
+                    wrapper.appendChild(tooltip);
+                    wrapper.appendChild(ele);
+                    document.querySelector(".board").appendChild(wrapper);
                             } else if (key == "emotion") {
                                 let element = elements["character_emotion"];
+                                 let wrapper = document.createElement("div");
+                    wrapper.className =
+                        element?.style
+
+                    
+                    let tooltip = document.createElement("div");
+                    tooltip.innerText = name; 
+                    tooltip.className = `
+    absolute -top-6 left-1/2 text-nowrap -translate-x-1/2 
+    bg-gray-700 text-white text-xs px-2 py-1 rounded 
+    opacity-0 group-hover:opacity-100 transition-opacity 
+    pointer-events-none z-10
+`;
+
                                 let ele = document.createElement(element?.tag);
                                 ele.innerText = line[key].text;
                                 ele.setAttribute("class", element?.style);
@@ -617,26 +731,39 @@ export function EditorField({ script, scenes, scenecharacters, user }) {
                                     "character_emotion"
                                 );
                                 ele.setAttribute("id", line[key].id);
-                                document
-                                    .querySelector(".board")
-                                    .appendChild(ele);
+                              
+                    wrapper.appendChild(tooltip);
+                    wrapper.appendChild(ele);
+                    document.querySelector(".board").appendChild(wrapper);
                             }
                         }
                     }
                 });
             });
+
             let element = elements[selectedElement];
+             let wrapper = document.createElement("div");
+                    wrapper.className =element?.style;
+                    let tooltip = document.createElement("div");
+                    tooltip.innerText = ""; 
+                    tooltip.className = element?.style
+
             let ele = document.createElement(element?.tag);
             ele.setAttribute("class", element?.style);
             element?.style == "character" && ele.setAttribute("char", true);
             ele.setAttribute("data-type", selectedElement);
+             ele.setAttribute("style", `color: #${user.userColor}`);
             ele.setAttribute("id", new Date().getTime());
-            document.querySelector(".board").appendChild(ele);
+             
+                    wrapper.appendChild(tooltip);
+                    wrapper.appendChild(ele);
+                    document.querySelector(".board").appendChild(wrapper);
             setTimeout(() => {
                 ele.focus();
             }, 0);
             setcontent(document.querySelector(".board").innerHTML);
             setdive(true);
+     
         }
     }, []);
 
