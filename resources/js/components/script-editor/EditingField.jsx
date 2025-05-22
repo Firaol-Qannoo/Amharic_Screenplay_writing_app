@@ -501,11 +501,11 @@ export function EditorField({ script, scenes, scenecharacters, user }) {
     opacity-0 group-hover:opacity-100 transition-opacity 
     pointer-events-none z-10
 `;
-     
+      let color =script.user_id ==user.id ? "000000" :user.id;
             wrapper.className = element?.style
             let ele = document.createElement(element?.tag);
             ele.setAttribute("class", element?.style);
-             ele.setAttribute("style", `color: #${user.userColor}`);
+             ele.setAttribute("style", `color: #${color}`);
             element?.style == "character" && ele.setAttribute("char", true);
             ele.setAttribute("data-type", selectedElement);
             
@@ -747,12 +747,12 @@ export function EditorField({ script, scenes, scenecharacters, user }) {
                     let tooltip = document.createElement("div");
                     tooltip.innerText = ""; 
                     tooltip.className = element?.style
-
+ let color2 =script.user_id ==user.id ? "000000" :user.id;
             let ele = document.createElement(element?.tag);
             ele.setAttribute("class", element?.style);
             element?.style == "character" && ele.setAttribute("char", true);
             ele.setAttribute("data-type", selectedElement);
-             ele.setAttribute("style", `color: #${user.userColor}`);
+             ele.setAttribute("style", `color: #${color2}`);
             ele.setAttribute("id", new Date().getTime());
              
                     wrapper.appendChild(tooltip);

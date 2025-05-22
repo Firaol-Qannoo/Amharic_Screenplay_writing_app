@@ -1,5 +1,4 @@
-import React, { useState } from "react";
-import { useEffect } from 'react'
+import React, { useState, useEffect } from "react";
 import { router, usePage } from '@inertiajs/react';
 import {
     Card,
@@ -96,6 +95,38 @@ export default function Dashboard({ myScripts, invitedScripts, user}) {
 //         }
 //     }, [flash]);
 
+
+ // State to track theme mode: true = dark, false = light
+ const [isDarkMode, setIsDarkMode] = useState(false);
+
+useEffect(() => {
+    const savedTheme = localStorage.getItem("theme");
+    if (
+      savedTheme === "dark" ||
+      (!savedTheme &&
+        window.matchMedia("(prefers-color-scheme: dark)").matches)
+    ) {
+      setIsDarkMode(true);
+      document.documentElement.classList.add("dark");
+    } else {
+      setIsDarkMode(false);
+      document.documentElement.classList.remove("dark");
+    }
+  }, []);
+
+  // Toggle dark mode and save preference
+  function toggleDarkMode() {
+    if (isDarkMode) {
+      document.documentElement.classList.remove("dark");
+      localStorage.setItem("theme", "light");
+      setIsDarkMode(false);
+    } else {
+      document.documentElement.classList.add("dark");
+      localStorage.setItem("theme", "dark");
+      setIsDarkMode(true);
+    }
+  }
+
         const { messages } = usePage().props;
 
         useEffect(() => {
@@ -185,7 +216,41 @@ export default function Dashboard({ myScripts, invitedScripts, user}) {
                                     onChange={(e) => setSearchQuery(e.target.value)}
                                 />
                             </div>
-                            <ThemeToggle />
+                             {/* Dark/Light Mode Toggle Button */}
+            <button
+              onClick={toggleDarkMode}
+              aria-label="Toggle Dark Mode"
+              className="rounded-md border p-2 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+            >
+              {isDarkMode ? (
+                // Sun icon for light mode
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-5 w-5 text-yellow-400"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  strokeWidth={2}
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M12 3v1m0 16v1m8.66-9h-1M4.34 12h-1m15.07 5.07l-.7-.7M6.34 6.34l-.7-.7m12.02 12.02l-.7-.7M6.34 17.66l-.7-.7M12 7a5 5 0 100 10 5 5 0 000-10z"
+                  />
+                </svg>
+              ) : (
+                // Moon icon for dark mode
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-5 w-5 text-gray-900"
+                  fill="currentColor"
+                  viewBox="0 0 24 24"
+                  stroke="none"
+                >
+                  <path d="M21 12.79A9 9 0 1111.21 3a7 7 0 109.79 9.79z" />
+                </svg>
+              )}
+            </button>
                             <SettingsDialog user={user} />
                             <DropdownMenu>
                                 <DropdownMenuTrigger asChild>
@@ -327,7 +392,7 @@ export default function Dashboard({ myScripts, invitedScripts, user}) {
                                                         </div>
                                                         <div className="flex items-center">
                                                         <BookOpen className="mr-1 h-3 w-3" />
-                                                        <span>{script.pages || '23 Pages'} pages</span>
+                                                        <span>{script.pages || '1 Pages'}</span>
                                                         </div>
                                                     </CardFooter>
                                                     </Card>

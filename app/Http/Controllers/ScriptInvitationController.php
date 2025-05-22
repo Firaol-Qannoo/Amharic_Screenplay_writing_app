@@ -29,7 +29,7 @@ class ScriptInvitationController extends Controller
     
             if ($request->invitee_email === $currentUser->email) {
                 Flasher::addError('You cannot invite yourself to the script.');
-                return Inertia::location(route('dashboard'));
+                return Inertia::location(url()->previous());
             }
     
             $script = Script::findOrFail($request->script_id);
@@ -51,7 +51,7 @@ class ScriptInvitationController extends Controller
 
                     if ($alreadyCollaborator) {
                         Flasher::addError('User is already a collaborator on this script!');
-                        return Inertia::location(route('dashboard'));
+                        return Inertia::location(url()->previous());
                     }
                 }
     
@@ -63,7 +63,7 @@ class ScriptInvitationController extends Controller
     
             if ($existingInvitation) {
                 Flasher::addInfo('This user has already been invited to this script.');
-                return Inertia::location(route('dashboard'));
+                return Inertia::location(url()->previous());
             }
     
             $invitation = ScriptInvitation::create([
@@ -84,12 +84,12 @@ class ScriptInvitationController extends Controller
             Mail::to($request->invitee_email)->send(new ScriptInvitationMail($invitation));
     
             Flasher::addSuccess('Invitation sent successfully.');
-            return Inertia::location(route('dashboard'));
+            return Inertia::location(url()->previous());
     
         } catch (Exception $e) {
             Log::error("Error sending invitation: " . $e->getMessage());
             Flasher::addError('Failed to send invitation. Please try again.');
-            return Inertia::location(route('dashboard'));
+            return Inertia::location(url()->previous());
         }
     }    
 

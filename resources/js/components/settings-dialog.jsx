@@ -19,10 +19,9 @@ import { Settings } from "lucide-react"
 export function SettingsDialog({ user }) {
   const [open, setOpen] = useState(false)
   const [first_name, setName] = useState(user?.first_name || "")
-  const [email, setEmail] = useState(user?.email || "")
 
   const handleSave = () => {
-    router.post("/settings/update", { first_name, email })
+    router.post("/settings/update", { first_name })
     setOpen(false)
   }
 
@@ -59,7 +58,7 @@ export function SettingsDialog({ user }) {
                 <option value="english">English</option>
               </select>
             </div>
-            <div className="flex items-center justify-between">
+            {/* <div className="flex items-center justify-between">
               <div className="space-y-0.5">
                 <Label htmlFor="auto-save">Auto Save</Label>
                 <div className="text-sm text-muted-foreground">
@@ -67,8 +66,8 @@ export function SettingsDialog({ user }) {
                 </div>
               </div>
               <Switch id="auto-save" defaultChecked />
-            </div>
-            <div className="flex items-center justify-between">
+            </div> */}
+            {/* <div className="flex items-center justify-between">
               <div className="space-y-0.5">
                 <Label htmlFor="notifications">Notifications</Label>
                 <div className="text-sm text-muted-foreground">
@@ -76,7 +75,7 @@ export function SettingsDialog({ user }) {
                 </div>
               </div>
               <Switch id="notifications" defaultChecked />
-            </div>
+            </div> */}
           </TabsContent>
 
           {/* Editor Tab */}
@@ -110,20 +109,11 @@ export function SettingsDialog({ user }) {
           {/* Account Tab */}
           <TabsContent value="account" className="space-y-4 py-4">
             <div className="space-y-2">
-              <Label htmlFor="name">Display Name</Label>
+              <Label htmlFor="first_name">Display Name</Label>
               <Input
                 id="first_name"
                 value={first_name}
                 onChange={(e) => setName(e.target.value)}
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
-              <Input
-                id="email"
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
               />
             </div>
           </TabsContent>
