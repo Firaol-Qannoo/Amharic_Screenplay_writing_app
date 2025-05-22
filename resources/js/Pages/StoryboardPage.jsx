@@ -5,11 +5,14 @@ export default function StoryboardPage({ scriptId, frames }) {
     const [localFrames, setLocalFrames] = useState(frames || []);
     const [currentSceneIndex, setCurrentSceneIndex] = useState(0);
     const [isDrawing, setIsDrawing] = useState(false);
+    const [generatedImageStatus, setGeneratedImageStatus] = useState(null); // null | IN_QUEUE | COMPLETED
+    const [generatedImageUrl, setGeneratedImageUrl] = useState(null);
+    const [generating, setGenerating] = useState(false);
+    const [polling, setPolling] = useState(false);
 
-    // Load selected scene
     const selectedScene = localFrames[currentSceneIndex];
 
-    // Initialize canvases after render
+    // Initialize canvas drawing
     useEffect(() => {
         const canvas = document.querySelector('canvas');
         if (!canvas || !selectedScene) return;
@@ -45,7 +48,7 @@ export default function StoryboardPage({ scriptId, frames }) {
     const handleMouseUpOrLeave = (e) => {
         setIsDrawing(false);
         const canvas = e.target;
-        const imageData = canvas.toDataURL(); // Save current image
+        const imageData = canvas.toDataURL(); // Save current drawing
         updateLocalFrame(selectedScene.scene_json_id, 'image_data', imageData);
     };
 
@@ -82,10 +85,10 @@ export default function StoryboardPage({ scriptId, frames }) {
                 })
             });
 
-            if (!response.ok) throw new Error('Failed to save');
-            alert('Saved!');
+            if (!response.ok) throw new Error("Failed to save");
+            alert("Saved!");
         } catch (error) {
-            console.error('Error saving frame:', error);
+            console.error("Error saving frame:", error);
         }
     };
 
@@ -103,16 +106,62 @@ export default function StoryboardPage({ scriptId, frames }) {
                 })
             });
 
-            if (!response.ok) throw new Error('Save failed');
-            alert('All sketches saved!');
+            if (!response.ok) throw new Error("Save failed");
+            alert("All sketches saved!");
         } catch (error) {
-            console.error('Error saving storyboard:', error);
-            alert('Failed to save');
+            console.error("Error saving storyboard:", error);
+            alert("Failed to save");
         }
     };
 
+    // Generate AI Reference Image
+const generateAIReference = async () => {
+    if (!selectedScene?.description) {
+        alert("No description available for this scene.");
+        return;
+    }
+
+    setGenerating(true);
+    setGeneratedImageStatus("IN_QUEUE");
+
+    try {
+        const response = await fetch('http://localhost:4800/generate-image', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                scene: selectedScene.description,
+                extra: "ethiopian vibe, cinematic style, dramatic lighting"
+            })
+        });
+        console.log(selectedScene.description);
+
+        if (!response.ok) {
+            throw new Error(`Failed to generate image (status ${response.status})`);
+        }
+
+        const data = await response.json();
+
+        if (data.image_url) {
+            const imageUrl = data.image_url.trim(); // <-- Important: trim!
+            setGeneratedImageUrl(imageUrl);
+            setGeneratedImageStatus("COMPLETED");
+        } else {
+            throw new Error("No image URL returned from API.");
+        }
+    } catch (error) {
+        console.error("Error calling FastAPI:", error);
+        alert("Failed to generate AI reference image.");
+    } finally {
+        setGenerating(false);
+    }
+};
+
     const selectScene = (index) => {
         setCurrentSceneIndex(index);
+        setGeneratedImageStatus(null);
+        setGeneratedImageUrl(null);
     };
 
     return (
@@ -131,7 +180,7 @@ export default function StoryboardPage({ scriptId, frames }) {
                                         : 'hover:bg-gray-100'
                                 }`}
                             >
-                                {frame.heading || 'Untitled Scene'}
+                                {frame.heading || `Scene ${frame.scene_json_id}`}
                             </button>
                         </li>
                     ))}
@@ -141,15 +190,19 @@ export default function StoryboardPage({ scriptId, frames }) {
             {/* Canvas + Description */}
             <div className="flex-1 space-y-6">
                 {/* Back Button */}
-                <Link href={`/scripts/${scriptId}`} className="text-blue-600 hover:text-blue-800 inline-block">
-                    ← Back to Script Editor
-                </Link>
+                    <button
+        onClick={() => window.history.back()}
+        type="button"
+        className="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-gray-100 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-400"
+    >
+        ← Back
+    </button>
 
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                     {/* Canvas */}
-                    <div className="border rounded shadow-sm p-4 bg-white">
+                    <div className="lg:col-span-2 border rounded shadow-sm p-4 bg-white">
                         <h3 className="font-medium mb-2">
-                            Draw for Scene: {selectedScene?.heading || 'Untitled Scene'}
+                            Draw for Scene: {selectedScene?.heading || 'Untitled'}
                         </h3>
                         <canvas
                             id="storyboard-canvas"
@@ -165,23 +218,58 @@ export default function StoryboardPage({ scriptId, frames }) {
                         <textarea
                             placeholder="Add notes here..."
                             value={selectedScene?.notes || ''}
-                            onChange={(e) => updateLocalFrame(selectedScene.scene_json_id, 'notes', e.target.value)}
+                            onChange={(e) => handleNotesChange(e.target.value)}
                             className="mt-3 w-full border rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                         />
 
                         <button
                             onClick={() => handleSaveSingle(selectedScene)}
-                            className="mt-3 bg-blue-600 hover:bg-blue-700 text-white px-4 py-1 rounded text-sm"
+                            className="mt-3 bg-black text-white px-4 py-1 rounded text-sm"
                         >
                             Save Frame
                         </button>
                     </div>
 
-                    {/* Scene Info */}
-                    <div className="bg-white border rounded shadow-sm p-4">
-                        <h3 className="font-medium mb-2">Scene Details</h3>
-                        <div className="text-sm text-gray-700 whitespace-pre-line">
-                            {selectedScene?.description || "No description available."}
+                    {/* Scene Info + AI Image Preview */}
+                    <div className="bg-white border rounded shadow-sm p-4 space-y-6">
+                        <div>
+                            <h3 className="font-medium mb-2">Scene Details</h3>
+                            <div className="text-sm text-gray-700 whitespace-pre-line">
+                                {selectedScene?.description || "No description available."}
+                            </div>
+                        </div>
+
+                        {/* AI Generated Image */}
+                        <div>
+                            <h3 className="font-medium mb-2">AI Reference</h3>
+                            <div className="relative border border-dashed border-gray-300 rounded p-4 min-h-[200px] bg-gray-50 flex items-center justify-center">
+                                {generating && (
+    <div className="flex items-center gap-2">
+        <svg className="animate-spin h-5 w-5 text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+        </svg>
+        <span>Generating image...</span>
+    </div>
+)}
+                                {polling && <span>🔄 Polling status...</span>}
+                                {generatedImageStatus === "COMPLETED" && generatedImageUrl && (
+                                   <img
+    src={generatedImageUrl.trim()}
+    alt="AI Generated"
+    className="max-w-full h-auto rounded shadow-md"
+/>
+                                )}
+                                {!generatedImageStatus && (
+                                    <button
+                                        onClick={generateAIReference}
+                                        disabled={generating}
+                                        className="px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-800 rounded-md"
+                                    >
+                                        Generate Reference
+                                    </button>
+                                )}
+                            </div>
                         </div>
                     </div>
                 </div>
