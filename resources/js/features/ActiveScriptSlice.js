@@ -23,10 +23,14 @@ export const activeScript = createSlice({
     },
 
     editSceneMeta: (state, action) => {
-      const { sceneId, sceneHead, sceneDesc } = action.payload;
-      const scene = state.scenes.find(s => s.id === sceneId);
+      const { sceneId, sceneHead, sceneDesc,comment,userId } = action.payload;
+      console.log({ sceneId,comment,userId })
+      const scene = state.scenes.find(s =>   console.log(s.id));
+    
       if (scene) {
+       
         if (sceneHead) scene.sceneHead = { id: sceneHead?.id || null, text: sceneHead?.text|| null };
+        if (sceneHead) scene.comment = { comment, userId};
         if (sceneDesc) scene.sceneDesc = { id: sceneDesc?.id|| null, text: sceneDesc?.text|| null };
       }
     },

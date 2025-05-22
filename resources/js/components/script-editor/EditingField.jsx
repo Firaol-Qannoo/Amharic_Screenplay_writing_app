@@ -561,37 +561,104 @@ export function EditorField({ script, scenes, scenecharacters, user }) {
                 
                 name = scence.user.first_name==user.first_name ? script.user_id== user.id ?"You ( Creator )" : "You": script.user_id== scence.user.id ? scence.user.first_name +` ( Creator )` : scence.user.first_name;
 
-                if (scence.sceneHead.text) {
-                    let element = elements["scene_heading"];
-                    let wrapper = document.createElement("div");
-                   wrapper.className = `${element?.style} relative group block`;
+   if (scence.sceneHead.text) {
+    let element = elements["scene_heading"];
+    let wrapper = document.createElement("div");
+    wrapper.className = `${element?.style} relative group block wrapper`;
 
-                    let tooltip = document.createElement("div");
-                    tooltip.innerText = name; 
-                    tooltip.className = `
-    absolute -top-6 left-15 text-nowrap -translate-x-1/2 
-    bg-gray-700 text-white text-xs px-2 py-1 rounded 
-    opacity-0 group-hover:opacity-100 transition-opacity 
-    pointer-events-none z-10
-`;
+    // Tooltip
+    let tooltip = document.createElement("div");
+    tooltip.innerText = name;
+    tooltip.className = `
+        absolute -top-6 left-1/2 text-nowrap -translate-x-1/2 
+        bg-gray-700 text-white text-xs px-2 py-1 rounded 
+        opacity-0 group-hover:opacity-100 transition-opacity 
+        pointer-events-none z-10
+    `;
 
-                  
-                    let ele = document.createElement(element?.tag);
-                    ele.innerText = scence.sceneHead.text;
-                    ele.setAttribute(
-                        "class",
-                        element?.style + ` cursor-default `
-                    );
-                    ele.setAttribute("style", `color: #${color}`);
-                    ele.addEventListener("change", onchange);
-                    ele.setAttribute("data-type", "scene_heading");
-                    ele.setAttribute("id", scence.sceneHead.id);
+    // Main Element
+    let ele = document.createElement(element?.tag);
+    ele.innerText = scence.sceneHead.text;
+    ele.setAttribute("class", element?.style + ` cursor-default focus:outline-none`);
+    ele.setAttribute("style", `color: #${color}`);
+    ele.setAttribute("data-type", "scene_heading");
+    ele.setAttribute("id", scence.sceneHead.id);
+    ele.setAttribute("tabindex", "0"); // make focusable
+    ele.addEventListener("change", onchange);
 
-                  
-                    wrapper.appendChild(tooltip);
-                    wrapper.appendChild(ele);
-                    document.querySelector(".board").appendChild(wrapper);
-                }
+    // Floating Comment Button (hidden initially)
+    const commentBtn = document.createElement("button");
+    commentBtn.innerText = "💬";
+    commentBtn.className = `
+        comment-button absolute top-2 right-2 bg-blue-500 text-white rounded-full w-7 h-7 
+        flex items-center justify-center hover:bg-blue-600 transition-all text-sm hidden
+    `;
+
+    // Comment Box + Save
+    const commentBox = document.createElement("div");
+    commentBox.className = "absolute top-10 right-2 bg-white p-2 rounded shadow border hidden z-20";
+
+    const input = document.createElement("input");
+    input.type = "text";
+    input.placeholder = "Enter comment...";
+    input.className = "border px-2 py-1 text-sm w-48";
+
+    const saveBtn = document.createElement("button");
+    saveBtn.innerText = "Save";
+    saveBtn.className = "ml-2 px-3 py-1 bg-green-500 text-white rounded text-sm";
+
+    saveBtn.onclick = () => {
+        console.log("Comment saved for ID:", ele.id);
+        console.log("Comment:", input.value);
+         dispatch(editSceneMeta({ sceneId: ele.id, comment: input.value, userId: user.id }));
+        commentBox.classList.add("hidden");
+    };
+
+    commentBox.appendChild(input);
+    commentBox.appendChild(saveBtn);
+
+    commentBtn.onclick = () => {
+        commentBox.classList.toggle("hidden");
+        input.focus();
+    };
+
+    // Append to wrapper
+    wrapper.appendChild(tooltip);
+    wrapper.appendChild(ele);
+    wrapper.appendChild(commentBtn);
+    wrapper.appendChild(commentBox);
+
+    document.querySelector(".board").appendChild(wrapper);
+}
+
+// ====== Global Focus Management ======
+document.addEventListener("focusin", (e) => {
+    // Hide all comment buttons first
+    document.querySelectorAll(".comment-button").forEach(btn => {
+        btn.classList.add("hidden");
+    });
+
+    // Show only the one inside the focused wrapper
+    const wrapper = e.target.closest(".wrapper");
+    if (wrapper) {
+        const btn = wrapper.querySelector(".comment-button");
+        if (btn) btn.classList.remove("hidden");
+    }
+});
+
+document.addEventListener("focusout", (e) => {
+    const wrapper = e.target.closest(".wrapper");
+    if (wrapper) {
+        setTimeout(() => {
+            const active = document.activeElement;
+            if (!wrapper.contains(active)) {
+                const btn = wrapper.querySelector(".comment-button");
+                if (btn) btn.classList.add("hidden");
+            }
+        }, 100); // delay to allow input/save clicks
+    }
+});
+
                 if (scence.sceneDesc.text) {
                     let element = elements["scene_description"];
                      let wrapper = document.createElement("div");
