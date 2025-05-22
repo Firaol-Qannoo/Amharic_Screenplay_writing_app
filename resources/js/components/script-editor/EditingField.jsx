@@ -1032,6 +1032,17 @@ export function EditorField({ script, scenes, scenecharacters, user }) {
                     <div className="flex items-center gap-1">
                         <Menubar className="border-none">
                             <MenubarMenu>
+    <Button
+        variant="ghost"
+        size="sm"
+        className="h-8 gap-1"
+        onClick={() => router.visit(`/scripts/${script.id}/storyboard`)}
+    >
+        <Save className="h-4 w-4" />
+        <span className="text-xs">Storyboard</span>
+    </Button>
+</MenubarMenu>
+                            <MenubarMenu>
                                 {" "}
                                 <Button
                                     variant="ghost"
