@@ -1,6 +1,41 @@
-import React from 'react';
+import React, { useState } from 'react';
 
-export default function SceneTable({ scenes }) {
+export default function SceneTable({ scenes, onBack }) {
+    const [localScenes, setLocalScenes] = useState(scenes);
+    const [savingIndex, setSavingIndex] = useState(null);
+
+    const handleLocationChange = (index, value) => {
+        const updated = [...localScenes];
+        updated[index].shoot_location = value;
+        setLocalScenes(updated);
+    };
+
+    const handleSave = async (scene, index) => {
+        setSavingIndex(index);
+
+        try {
+            const response = await fetch('/production-schedule/save-locations', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.head.querySelector('meta[name="csrf-token"]').content,
+                },
+                body: JSON.stringify({
+                    scenes: [{
+                        id: scene.json_id,
+                        shoot_location: scene.shoot_location
+                    }]
+                })
+            });
+
+            if (!response.ok) throw new Error('Save failed');
+        } catch (error) {
+            console.error('Error saving:', error);
+        } finally {
+            setSavingIndex(null);
+        }
+    };
+
     return (
         <div className="bg-white shadow overflow-hidden sm:rounded-lg">
             <table className="min-w-full divide-y divide-gray-200">
@@ -10,20 +45,15 @@ export default function SceneTable({ scenes }) {
                         <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">I/E</th>
                         <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Scene Setting</th>
                         <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">D/N</th>
-                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Cast ID</th>
+                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Characters</th>
                         <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Shoot Location</th>
-                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Pages</th>
                         <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
                     </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
-                    {scenes.map((scene) => (
-                        <tr key={scene.id}>
-                            <td className="px-6 py-4 whitespace-nowrap">
-                                <div className="flex items-center">
-                                    <span className="font-medium">{scene.scene_num}</span>
-                                </div>
-                            </td>
+                    {localScenes.map((scene, index) => (
+                        <tr key={scene.json_id}>
+                            <td className="px-6 py-4 whitespace-nowrap">{scene.scene_num}</td>
                             <td className="px-6 py-4 whitespace-nowrap">{scene.location_type}</td>
                             <td className="px-6 py-4">
                                 <div className="font-medium">{scene.location}</div>
@@ -31,13 +61,44 @@ export default function SceneTable({ scenes }) {
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap">{scene.time_of_day}</td>
                             <td className="px-6 py-4 whitespace-nowrap">{scene.cast_ids?.join(', ')}</td>
-                            <td className="px-6 py-4 whitespace-nowrap">{scene.shoot_location}</td>
-                            <td className="px-6 py-4 whitespace-nowrap">{scene.pages}</td>
-                            <td className="px-6 py-4 whitespace-nowrap text-indigo-600 hover:text-indigo-900 cursor-pointer">🔍</td>
+
+                            <td className="px-6 py-4">
+                                <input
+                                    type="text"
+                                    className="border rounded px-2 py-1 w-full text-sm focus:outline-none focus:ring-2 focus:ring-black"
+                                    value={scene.shoot_location || ''}
+                                    onChange={(e) => handleLocationChange(index, e.target.value)}
+                                    placeholder="Set location"
+                                />
+                            </td>
+
+                            <td className="px-6 py-4 whitespace-nowrap">
+                                <button
+                                    onClick={() => handleSave(scene, index)}
+                                    disabled={savingIndex === index}
+                                    className={`inline-flex items-center px-3 py-1 border border-transparent text-sm leading-4 font-medium rounded-md shadow-sm text-white ${
+                                        savingIndex === index
+                                            ? 'bg-black cursor-not-allowed'
+                                            : 'bg-black hover:bg-black'
+                                    }`}
+                                >
+                                    {savingIndex === index ? 'Saving...' : 'Save'}
+                                </button>
+                            </td>
                         </tr>
                     ))}
                 </tbody>
             </table>
+
+            <div className="px-6 py-4 flex justify-start">
+    <button
+        onClick={() => window.history.back()}
+        type="button"
+        className="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-gray-100 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-400"
+    >
+        ← Back
+    </button>
+</div>
         </div>
     );
 }

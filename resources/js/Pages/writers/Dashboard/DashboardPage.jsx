@@ -182,10 +182,6 @@ useEffect(() => {
 };
 
 
-    const handleStoryboard = () => {
-        // Implement storyboard logic
-    };
-
     return (
         <div className="relative">
            
@@ -294,10 +290,6 @@ useEffect(() => {
                                         <input type="file" onChange={handleImport} className="absolute top-0 cursor-pointer border-0 opacity-0 z-50 w-full h-full" name="" id="" />
                                         <FileUp className="mr-2 cursor-pointer  h-4 w-4" />
                                         Import
-                                    </Button>
-                                    <Button variant="outline" onClick={handleStoryboard}>
-                                        <Grid className="mr-2 h-4 w-4" />
-                                        Storyboard
                                     </Button>
                                 </div>
                             </div>

@@ -43,6 +43,7 @@ use Illuminate\Http\Request;
             $parsedScene['json_id'] = $jsonSceneId;
 
             if ($existingScene) {
+                $parsedScene['shoot_location'] = $existingScene->shoot_location;
                 $existingScene->update($parsedScene);
                 $productionScene = $existingScene;
             } else {
@@ -59,11 +60,25 @@ use Illuminate\Http\Request;
         ]);
     }
 
-    private function parseScene(array $scene): array {
-        
-        $maxSceneNum = ProductionScene::max('scene_num');
-        $scene_num = $maxSceneNum + 1;
+    public function saveShootLocations(Request $request)
+    {
+        $locations = $request->validate([
+            'scenes' => 'required|array',
+            'scenes.*.id' => 'required|string',
+            'scenes.*.shoot_location' => 'nullable|string'
+        ]);
 
+        foreach ($locations['scenes'] as $scene) {
+            ProductionScene::where('json_id', $scene['id'])->update([
+                'shoot_location' => $scene['shoot_location']
+            ]);
+        }
+
+        return response()->json(['status' => 'saved']);
+    }
+
+    private function parseScene(array $scene): array
+    {
         $sceneHeadText = $scene['sceneHead']['text'] ?? '';
         $locationData = $this->parseSceneHead($sceneHeadText);
 
@@ -79,9 +94,9 @@ use Illuminate\Http\Request;
         $castNames = array_values(array_unique($castNames));
 
         return [
-            'scene_num' => $scene_num,
+            'scene_num' => $locationData['scene_number'] ?? 0,
             'location_type' => $locationData['type'],
-            'location' => trim(preg_replace('/^[-–\s]+|[-–\s]+$/u', '', implode(' ', array_map('trim', array_slice(explode('.', $locationData['name']), 1))))),
+            'location' => trim($locationData['name']),
             'description' => $description,
             'time_of_day' => $locationData['time'],
             'cast_ids' => $castNames,
@@ -92,12 +107,17 @@ use Illuminate\Http\Request;
 
     private function parseSceneHead(string $text): array
     {
-        $text = preg_replace('/^\s*\d+\.\s*[-–]\s*/u', '', trim($text));
-        $text = preg_replace('/\s+/', ' ', $text);
+        $sceneNumber = null;
+        $text = trim($text);
 
-        preg_match('/^(INT|EXT|ውስጥ|ውጪ)\s*[-–]\s*(.+?)\s*[-–]\s*(DAY|NIGHT|ቀን|ንጋት|ማታ|ሌሊት)$/iu', $text, $matches);
+        if (preg_match('/^(\d+)[\.\s]*[-–\s]*/u', $text, $match)) {
+            $sceneNumber = (int)$match[1];
+            $text = substr($text, strlen($match[0]));
+        }
 
-        if (count($matches) === 4) {
+        $text = preg_replace('/\s+/', ' ', trim($text));
+
+        if (preg_match('/^(INT|EXT|ውስጥ|ውጪ)\s*[-–]\s*(.+?)\s*[-–]\s*(DAY|NIGHT|ቀን|ንጋት|ማታ|ሌሊት)$/iu', $text, $matches)) {
             $typeMap = ['INT' => 'ውስጥ', 'EXT' => 'ውጪ'];
             $timeMap = ['DAY' => 'ማታ', 'NIGHT' => 'ንጋት'];
 
@@ -106,93 +126,43 @@ use Illuminate\Http\Request;
                 $type = $typeMap[$type] ?? $type;
             }
 
-            $time = $matches[3];
-            if (in_array(strtoupper($time), ['DAY', 'NIGHT'])) {
-                $time = $timeMap[$time] ?? $time;
-            }
-
             return [
+                'scene_number' => $sceneNumber,
                 'type' => $type,
                 'name' => trim($matches[2]),
-                'time' => $time
+                'time' => $timeMap[$matches[3]] ?? $matches[3]
             ];
         }
-        $originalText = $text;
 
-        if (str_contains(mb_strtolower($text), 'ውጪ')) {
-            $type = 'ውጪ';
-            $text = str_ireplace('ውጪ', '', $text);
-        } elseif (str_contains(mb_strtolower($text), 'ውስጥ')) {
-            $type = 'ውስጥ';
-            $text = str_ireplace('ውስጥ', '', $text);
-        } elseif (preg_match('/\bext\b/i', $text)) {
-            $type = 'ውጪ';
-            $text = preg_replace('/ext\s*[-–]?\s*/i', '', $text);
-        } elseif (preg_match('/\bint\b/i', $text)) {
-            $type = 'ውስጥ';
-            $text = preg_replace('/int\s*[-–]?\s*/i', '', $text);
-        } else {
-            $type = '';
+        $text = preg_replace('/[-–]/u', ' ', $text);
+        $text = preg_replace('/\s+/', ' ', trim($text));
+        $words = explode(' ', $text);
+
+        $type = null;
+        $time = null;
+        $nameParts = [];
+
+        foreach ($words as $word) {
+            $lower = strtolower($word);
+
+            if (!$type && in_array($lower, ['int', 'ext', 'ውስጥ', 'ውጪ'])) {
+                $type = $lower === 'int' ? 'ውስጥ' : ($lower === 'ext' ? 'ውጪ' : $word);
+            } elseif (!$time && in_array($lower, ['day', 'night', 'ማታ', 'ንጋት', 'ቀን', 'ሌሊት'])) {
+                $time = $word;
+            } else {
+                $nameParts[] = $word;
+            }
         }
 
-        if (str_contains(mb_strtolower($text), 'ማታ') || str_contains(mb_strtolower($text), 'ቀን')) {
-            $time = 'ማታ';
-            $text = str_ireplace(['ማታ', 'ቀን'], '', $text);
-        } elseif (str_contains(mb_strtolower($text), 'ንጋት') || str_contains(mb_strtolower($text), 'ሌሊት')) {
-            $time = 'ንጋት';
-            $text = str_ireplace(['ንጋት', 'ሌሊት'], '', $text);
-        } elseif (preg_match('/night/i', $text)) {
-            $time = 'ንጋት';
-            $text = preg_replace('/night\s*[-–]?\s*$/i', '', $text);
-        } elseif (preg_match('/day/i', $text)) {
-            $time = 'ማታ';
-            $text = preg_replace('/day\s*[-–]?\s*$/i', '', $text);
-        } else {
-            $time = '';
-        }
+        $name = implode(' ', $nameParts);
 
-        $text = preg_replace('/[-–]/', '', $text);
-        $text = trim(preg_replace('/\s+/', ' ', $text));
+        $name = preg_replace('/^\s*(ውስጥ|ውጪ|int|ext)\s*/iu', '', $name);
 
         return [
+            'scene_number' => $sceneNumber,
             'type' => $type ?: '??',
-            'name' => $text ?: '??',
+            'name' => $name ?: '??',
             'time' => $time ?: '??'
         ];
-    }
-
-    private function getScriptJson(): array
-    {
-        return json_decode(<<<JSON
-{
-    "meta": {
-        "title": "የአማርኛ የተወሰነ የታሪክ ድራማ",
-        "author": {
-            "name": "ዮሴፍ አርበኛ"
-        }
-    },
-    "scenes": [
-        {
-            "id": "cw6IuRI99LcW9LLRXmWbh",
-            "sceneHead": {
-                "text": "ውጪ - ጊቢ ውስጥ - ማታ"
-            },
-            "sceneDesc": {
-                "text": "ጊቢ ውስጥ ብዙ ሰው ተሰብስቡዋል"
-            },
-            "lines": [
-                {
-                    "character": { "text": "ስፖርተኛ" },
-                    "dialogue": { "text": "ይቅርታ!!ሻምበል ይነበብ በላይ እርሶ ኖት" }
-                },
-                {
-                    "character": { "text": "ሻምበል" },
-                    "dialogue": { "text": "አዎ ነኝ!! ምንድነው!!" }
-                }
-            ]
-        }
-    ]
-}
-JSON, true);
     }
 }
