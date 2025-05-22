@@ -29,8 +29,10 @@ class Kernel extends HttpKernel
             \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
             \Illuminate\Session\Middleware\StartSession::class,
             // \Illuminate\Session\Middleware\AuthenticateSession::class,
-            \Inertia\Middleware::class, // ✅ Add Inertia Middleware here
+            \Illuminate\Foundation\Http\Middleware\VerifyCsrfToken::class,
+            \Inertia\Middleware::class, 
         ],
+
 
         'api' => [
            

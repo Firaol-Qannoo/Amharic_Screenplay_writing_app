@@ -10,77 +10,79 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 
-class ImportScriptController extends Controller
-{
-    public function store(Request $request)
-    {
-        $data = $request->input('data');
+    class ImportScriptController extends Controller {
 
-          $imported = $data['script'];
-        // Create the main script record
-        $script = Script::create([
-            'title' => $imported['title'],
-            'description' => $imported['description'],
-            'genre' => $imported['genre'],
-            'type' => $imported['type'],
-            'thumbnail' => $imported['thumbnail'],
-            'user_id' => Auth::id(), 
-            'invitee_id' => $imported['invitee_id'] ?? [], 
-        ]);
-    
-        $scriptID = $script->id;
-    
+        public function store(Request $request)  {
+            $data = $request->input('data');
+
+            $imported = $data['script'];
+            $script = Script::create([
+                'title' => $imported['title'],
+                'description' => $imported['description'],
+                'genre' => $imported['genre'],
+                'type' => $imported['type'],
+                'thumbnail' => $imported['thumbnail'],
+                'user_id' => Auth::id(), 
+                'invitee_id' => $imported['invitee_id'] ?? [], 
+            ]);
         
-        foreach ($data['scenes'] as $sceneData) {
-            $cleanedLines = [];
-    
-            if (!empty($sceneData['lines']) && is_array($sceneData['lines'])) {
-                foreach ($sceneData['lines'] as $line) {
-                    $cleanedLine = [];
-    
-                    if (!empty($line['lineId'])) {
-                        $cleanedLine['lineId'] = $line['lineId'];
+            $scriptID = $script->id;
+        
+            
+            foreach ($data['scenes'] as $sceneData) {
+                $cleanedLines = [];
+        
+                if (!empty($sceneData['lines']) && is_array($sceneData['lines'])) {
+                    foreach ($sceneData['lines'] as $line) {
+                        $cleanedLine = [];
+        
+                        if (!empty($line['lineId'])) {
+                            $cleanedLine['lineId'] = $line['lineId'];
+                        }
+                        if (!empty($line['character'])) {
+                            $cleanedLine['character'] = $line['character'];
+                        }
+                        if (!empty($line['emotion'])) {
+                            $cleanedLine['emotion'] = $line['emotion'];
+                        }
+                        if (!empty($line['dialogue'])) {
+                            $cleanedLine['dialogue'] = $line['dialogue'];
+                        }
+                        if (!empty($line['action'])) {
+                            $cleanedLine['action'] = $line['action'];
+                        }
+                        if (!empty($line['user'])) {
+                            $cleanedLine['user'] = $line['user'];
+                        }
+        
+                        $cleanedLines[] = $cleanedLine;
                     }
-                    if (!empty($line['character'])) {
-                        $cleanedLine['character'] = $line['character'];
-                    }
-                    if (!empty($line['emotion'])) {
-                        $cleanedLine['emotion'] = $line['emotion'];
-                    }
-                    if (!empty($line['dialogue'])) {
-                        $cleanedLine['dialogue'] = $line['dialogue'];
-                    }
-                    if (!empty($line['action'])) {
-                        $cleanedLine['action'] = $line['action'];
-                    }
-    
-                    $cleanedLines[] = $cleanedLine;
                 }
+        
+                Scene::create([
+                    'scriptID' => $scriptID,
+                    'scene_num' => $sceneData['scene_num'] ?? null,
+                    'sceneHead' => $sceneData['sceneHead'] ?? null,
+                    'sceneDesc' => $sceneData['sceneDesc'] ?? null,
+                    'user' =>  $sceneData['user'] ?? null,
+                    'lines' => $cleanedLines,
+                ]);
             }
-    
-            Scene::create([
-                'scriptID' => $scriptID,
-                'scene_num' => $sceneData['scene_num'] ?? null,
-                'sceneHead' => $sceneData['sceneHead'] ?? null,
-                'sceneDesc' => $sceneData['sceneDesc'] ?? null,
-                'lines' => $cleanedLines,
-            ]);
+        
+        
+            foreach ($data['characters'] as $characterData) {
+                Character::create([
+                    'name' => $characterData['name'],
+                    'sceneID' => $scriptID,
+                    'role' => $characterData['role'] ?? null,
+                    'description' => $characterData['description'] ?? null,
+                    'relationships' => $characterData['relationships'] ?? [],
+                    'inScene' => $characterData['inScene'] ?? [],
+                ]);
+            }
+        
+            flash()->success('Script, Scenes, and Characters imported successfully!');
+            return Inertia::location(route('dashboard'));
         }
-    
-       
-        foreach ($data['characters'] as $characterData) {
-            Character::create([
-                'name' => $characterData['name'],
-                'sceneID' => $scriptID,
-                'role' => $characterData['role'] ?? null,
-                'description' => $characterData['description'] ?? null,
-                'relationships' => $characterData['relationships'] ?? [],
-                'inScene' => $characterData['inScene'] ?? [],
-            ]);
-        }
-    
-        flash()->success('Script, Scenes, and Characters imported successfully!');
-        return Inertia::location(route('dashboard'));
-    }
-    
+        
 }

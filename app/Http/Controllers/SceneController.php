@@ -10,8 +10,8 @@ use App\Models\Character;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Auth;
 
-class SceneController extends Controller
-{
+ class SceneController extends Controller {
+    
     public function index() {
         $script = session('script');  // Retrieve the script from the session
         $script = Script::with('scenes')->findOrFail($script->id);
@@ -27,11 +27,9 @@ class SceneController extends Controller
             $scenes = Scene::where('scriptID', $scriptID)->get();
             $sceneCharacters = Character::where('sceneID', $scriptID)->get();
 
-            // Delete them
             $scenes->each->delete();
             $sceneCharacters->each->delete();
     
-        // Save the scenes
         foreach ($request->input('scenes') as $sceneData) {
             $cleanedLines = [];
             $sceneId = $sceneData['id'] ?? null;
@@ -45,19 +43,19 @@ class SceneController extends Controller
                     }
     
                     if (!empty($line['character'])) {
-                        $cleanedLine['character'] = $line['character']; // contains both id & text
+                        $cleanedLine['character'] = $line['character']; 
                     }
     
                     if (!empty($line['emotion'])) {
-                        $cleanedLine['emotion'] = $line['emotion']; // contains both id & text
+                        $cleanedLine['emotion'] = $line['emotion']; 
                     }
     
                     if (!empty($line['dialogue'])) {
-                        $cleanedLine['dialogue'] = $line['dialogue']; // contains both id & text
+                        $cleanedLine['dialogue'] = $line['dialogue']; 
                     }
     
                     if (!empty($line['action'])) {
-                        $cleanedLine['action'] = $line['action']; // contains both id & text
+                        $cleanedLine['action'] = $line['action']; 
                     }
     
                     $cleanedLines[] = $cleanedLine;
@@ -77,7 +75,6 @@ class SceneController extends Controller
             
         }
     
-        // Save character data
         if (!empty($request->input('characters'))) {
             foreach ($request->input('characters') as $characterData) {
                 Character::create([
@@ -99,8 +96,7 @@ class SceneController extends Controller
 
     
 
-    public function updateCharacters(array $characters, $scriptID)
-    {
+    public function updateCharacters(array $characters, $scriptID)  {
         foreach ($characters as $characterData) {
             if (empty($characterData['_id'])) {
                 continue; 

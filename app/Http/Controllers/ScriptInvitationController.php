@@ -94,6 +94,7 @@ class ScriptInvitationController extends Controller
     }    
 
     public function accept($token) {
+
         try {
             $invitation = ScriptInvitation::where('token', $token)->firstOrFail();
     
@@ -109,11 +110,9 @@ class ScriptInvitationController extends Controller
                 return Inertia::location(route('dashboard'));
             }
     
-            // Add user to script collaborators
             $userId = Auth::id();
             $script = Script::findOrFail($invitation->script_id);
     
-            // Assuming _id is used
             $script->collaborators()->syncWithoutDetaching([$userId]);
             $script->save();
     
@@ -131,9 +130,8 @@ class ScriptInvitationController extends Controller
         }
     }
 
-    public function deleteCollaborator($scriptId, $userId)
-    {
-        // 1. Remove userId from invitee_id array in the Script model
+    public function deleteCollaborator($scriptId, $userId) {
+    
         $script = Script::findOrFail($scriptId);
     
         $inviteeIds = is_array($script->invitee_id)
@@ -146,8 +144,6 @@ class ScriptInvitationController extends Controller
         $script->invitee_id = $updatedInvitees;
         $script->save();
     
-        // 2. Delete all ScriptInvitation records where invitee_id = $userId and script_id = $scriptId (optional filter)
-        //  // add if you want to scope[script_id] deletion to this script
         ScriptInvitation::where('invitee_id', $userId)
             ->where('script_id', $scriptId)
             ->delete();
@@ -158,33 +154,33 @@ class ScriptInvitationController extends Controller
     
 
 
-    public function updateCollaboratorRole(Request $request, $scriptId, $userId)
-{
-    $request->validate([
-        'role' => 'required|array',
-        'role.*' => 'string|in:Writer,Artist,Director',
-    ]);
+    public function updateCollaboratorRole(Request $request, $scriptId, $userId) {
+           
+         $request->validate([
+                'role' => 'required|array',
+                'role.*' => 'string|in:Writer,Artist,Director',
+            ]);
 
-    if (empty($request->role)) {
-        Flasher::addError('No roles assigned. Please select at least one role.');
+        if (empty($request->role)) {
+            Flasher::addError('No roles assigned. Please select at least one role.');
+            return Inertia::location(route('dashboard'));
+        }
+
+        $collaborator = ScriptInvitation::where('invitee_id', $userId)
+            ->where('script_id', $scriptId)
+            ->first();
+
+        if (!$collaborator) {
+            Flasher::addError('Collaborator not found.');
+            return Inertia::location(route('dashboard'));
+        }
+
+        $collaborator->role = $request->role;
+        $collaborator->save();
+
+        flash()->success('Collaborator role changed successfully!');
         return Inertia::location(route('dashboard'));
     }
-
-    $collaborator = ScriptInvitation::where('invitee_id', $userId)
-        ->where('script_id', $scriptId)
-        ->first();
-
-    if (!$collaborator) {
-        Flasher::addError('Collaborator not found.');
-        return Inertia::location(route('dashboard'));
-    }
-
-    $collaborator->role = $request->role;
-    $collaborator->save();
-
-    flash()->success('Collaborator role changed successfully!');
-    return Inertia::location(route('dashboard'));
-}
 
     
 }

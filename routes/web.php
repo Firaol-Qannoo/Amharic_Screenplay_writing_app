@@ -76,7 +76,7 @@ use App\Http\Controllers\ImportScriptController;
 
     Route::post('/register', [RegisterController::class, 'store'])->name('register');
 
-        // Handle Login Form Submission
+       
     Route::post('/login', [RegisterController::class, 'login'])->name('login');
 
    

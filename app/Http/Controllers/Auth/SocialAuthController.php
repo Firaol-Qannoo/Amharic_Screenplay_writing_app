@@ -11,21 +11,20 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
 
-class SocialAuthController extends Controller {
-    /**
-     * Redirect to Google authentication page.
-     */
-    public function redirectToGoogle()
-    {
-        return Socialite::driver('google')->redirect();
-    }
+    class SocialAuthController extends Controller {
+        /**
+         * Redirect to Google authentication page.
+         */
+        public function redirectToGoogle()
+        {
+            return Socialite::driver('google')->redirect();
+        }
 
-    /**
-     * Handle Google callback and login the user.
-     */
+        /**
+         * Handle Google callback and login the user.
+         */
     public function handleGoogleCallback()  {
     
-
       try {
         Log::info('Google OAuth callback triggered.');
 
@@ -39,7 +38,6 @@ class SocialAuthController extends Controller {
             'name' => $googleUser->getName(),
         ]);
 
-        // Check if user already exists by email
         $user = User::where('email', $googleUser->getEmail())->first();
 
 
@@ -48,6 +46,7 @@ class SocialAuthController extends Controller {
 
         // $firstName = $nameParts[0]; 
         // $lastName = isset($nameParts[1]) ? $nameParts[1] : '';
+
          $fullname = $googleUser->getName();
 
         $user = User::updateOrCreate(
@@ -55,8 +54,8 @@ class SocialAuthController extends Controller {
             [
                 'first_name' => $fullname,
                 'password' => bcrypt(Str::random(24)), // Random password since Google handles auth
-                'avatar' => $googleUser->getAvatar(), // Or store locally if you want
-                'userColor' => $this->generateRandomCode(), // Your custom logic
+                'avatar' => $googleUser->getAvatar(), 
+                'userColor' => $this->generateRandomCode(),
                 'google_id' => $googleUser->getId(),
 
             ]
@@ -64,7 +63,7 @@ class SocialAuthController extends Controller {
 
         Log::info('New Google user created.', ['user_id' => $user->id]);
         } else {
-            // Existing user, optionally link Google ID if not yet linked
+            // Existing user, optionally linking Google ID if not yet linked
             if (!$user->google_id) {
                 $user->update([
                     'google_id' => $googleUser->getId(),
@@ -83,27 +82,22 @@ class SocialAuthController extends Controller {
         );
         return Inertia::location(route('dashboard'));
         
-    } catch (\Exception $e) {
-        Log::error('Google OAuth error: ' . $e->getMessage(), ['trace' => $e->getTraceAsString()]);
-        
-        // return redirect()->route('login')->with('error', 'Something went wrong. Check logs for details.');
-        flash()->error(
-            'Something went wrong. Please retry later.'
-        );
-        return Inertia::location(route('login'));
+        } catch (\Exception $e) {
+            Log::error('Google OAuth error: ' . $e->getMessage(), ['trace' => $e->getTraceAsString()]);
+            flash()->error(
+                'Something went wrong. Please retry later.'
+            );
+            return Inertia::location(route('login'));
+        }
     }
- }
 
 
-        public function generateRandomCode() {
-            // Characters: 1-9 and A-F
+    public function generateRandomCode() {
             $characters = array_merge(range('1', '9'), range('A', 'F'));
-
             $code = '';
             for ($i = 0; $i < 6; $i++) {
                 $code .= $characters[array_rand($characters)];
             }
-
             return $code;
+        }
     }
- }

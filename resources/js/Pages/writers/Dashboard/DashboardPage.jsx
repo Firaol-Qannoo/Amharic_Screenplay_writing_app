@@ -41,6 +41,7 @@ import { CollaboratorsListDialog } from "@/components/collaborators-list.jsx";
 import { Button } from "@/components/ui/button"; // Ensure Button is imported  CollaboratorsListDialog 
 import flasher from '@flasher/flasher'
 import { UpdateScript } from "@/components/update-script";
+import { Link } from "@inertiajs/react";
 
 dayjs.extend(relativeTime);
 
@@ -202,8 +203,10 @@ useEffect(() => {
             <div className="flex min-h-screen w-[100vw] px-10 flex-col">
                 <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
                     <div className="container flex h-16 items-center justify-between">
-                        <div className="flex items-center gap-2">
-                            <span className="text-lg font-bold">Amharic Screenplay Tool</span>
+                    <div className="flex items-center gap-2">
+                        <Link href="/" className="text-lg font-bold hover:underline">
+                            Amharic Screenplay Tool
+                        </Link>
                         </div>
                         <div className="flex items-center gap-2">
                             <div className="relative w-full max-w-sm mr-2">

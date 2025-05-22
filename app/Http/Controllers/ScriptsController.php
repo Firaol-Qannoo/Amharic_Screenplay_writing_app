@@ -23,12 +23,6 @@ class ScriptsController extends Controller
         //     'thumbnail' => 'nullable|image|mimes:jpg,jpeg,png,gif|max:2048', // Validate image
         //     'user_id' => Auth::id(),
         // ]);
-    
-        // $script = new Script();
-        // $script->title = $validated['title'];
-        // $script->description = $validated['description'];
-        // $script->genre = $validated['genre'];
-        // $script->type = $validated['type'];
 
         $script = Script::create([
             'title' => $request->title,
@@ -57,16 +51,12 @@ class ScriptsController extends Controller
     }
 
 
-    public function update(Request $request, $id)
-{
+    public function update(Request $request, $id) {
     $script = Script::findOrFail($id);
 
-    // Update text fields
     $script->update($request->only(['title', 'description', 'genre']));
 
-    // Handle new thumbnail upload
     if ($request->hasFile('thumbnail')) {
-        // Delete old thumbnail if it exists
         if ($script->thumbnail && file_exists(public_path($script->thumbnail))) {
             unlink(public_path($script->thumbnail));
         }
