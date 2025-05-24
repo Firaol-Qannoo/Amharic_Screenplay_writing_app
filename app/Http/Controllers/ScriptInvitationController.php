@@ -153,16 +153,15 @@ class ScriptInvitationController extends Controller
     }
     
 
+  public function updateCollaboratorRole(Request $request, $scriptId, $userId) {
+    try {
+        $validated = $request->validate([
+            'role' => 'required|array',
+            'role.*' => 'string|in:Writer,Artist,Director',
+        ]);
 
-    public function updateCollaboratorRole(Request $request, $scriptId, $userId) {
-           
-         $request->validate([
-                'role' => 'required|array',
-                'role.*' => 'string|in:Writer,Artist,Director',
-            ]);
-
-        if (empty($request->role)) {
-            Flasher::addError('No roles assigned. Please select at least one role.');
+        if (empty($validated['role'])) {
+            flash()->error('No roles assigned. Please select at least one role.');
             return Inertia::location(route('dashboard'));
         }
 
@@ -171,16 +170,25 @@ class ScriptInvitationController extends Controller
             ->first();
 
         if (!$collaborator) {
-            Flasher::addError('Collaborator not found.');
+            flash()->error('Collaborator not found.');
             return Inertia::location(route('dashboard'));
         }
 
-        $collaborator->role = $request->role;
+        $collaborator->role = $validated['role'];
         $collaborator->save();
 
         flash()->success('Collaborator role changed successfully!');
         return Inertia::location(route('dashboard'));
+    } catch (\Illuminate\Validation\ValidationException $e) {
+        // flash()->error('Invalid input: ' . $e->getMessage());
+         flash()->info('User should have at least one role, or remove the user if not needed.');
+        return Inertia::location(route('dashboard'));
+    } catch (\Exception $e) {
+        flash()->error('Something went wrong while updating collaborator roles.');
+        return Inertia::location(route('dashboard'));
     }
+}
+
 
     
 }

@@ -39,16 +39,6 @@ export default function SignupPage() {
     });
   };
 
-  // // Show error popup for 3 seconds if errors exist
-  // useEffect(() => {
-  //   if (errors && Object.keys(errors).length > 0) {
-  //     setShowError(true);
-  //     setTimeout(() => {
-  //       setShowError(false);
-  //     }, 3000); // Hide after 3 seconds
-  //   }
-  // }, [errors]);
-
    const { messages } = usePage().props;
     
             useEffect(() => {
@@ -56,15 +46,33 @@ export default function SignupPage() {
                 flasher.render(messages);
             }
             }, [messages]);
+  const [previewImage, setPreviewImage] = useState(null);
 
-  return (
-    <div className="flex min-h-screen items-center justify-center w-[100vw] bg-gray-50 px-4 py-12 sm:px-6 lg:px-8">
+ return (
+  <div className="flex min-h-screen w-screen bg-background text-foreground transition-colors duration-300">
+    {/* Left Promotional Panel */}
+    <div className="hidden lg:flex w-1/2 bg-gradient-to-br from-blue-500 to-indigo-600 text-white items-center justify-center p-4">
+      {/* Back to Home link */}
+      <Link
+        href="/"
+        className="absolute top-4 left-4 text-white font-medium hover:text-gray-200 transition"
+      >
+        ← Back to Home
+      </Link>
+      <div className="max-w-md space-y-6">
+        <h2 className="text-3xl font-bold leading-tight">Welcome to Amharic Screenplay Writing Tool 👋</h2>
+        <p className="text-lg">Discover opportunities, manage scripts, and streamline your creative workflow — all in one place.</p>
+        <img src="/images/login-illustration.gif" alt="Illustration" className="w-full h-auto mt-8 rounded-lg shadow-lg" />
+      </div>
+    </div>
+
+    <div className="w-full lg:w-1/2 flex items-center justify-center bg-gray-50 dark:bg-gray-900 px-4 py-12 transition-colors duration-300">
       <div className="w-full max-w-md space-y-8">
         <div className="text-center">
-          <h1 className="text-3xl font-bold tracking-tight text-gray-900">
+          <h1 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-white">
             Create your account
           </h1>
-          <p className="mt-2 text-sm text-gray-600">
+          <p className="mt-2 text-sm text-gray-600 dark:text-gray-300">
             Already have an account?{" "}
             <Link
               href={"/login"}
@@ -84,43 +92,46 @@ export default function SignupPage() {
 
         <form className="mt-8 space-y-6" onSubmit={handleSubmit(signupHandler)}>
           <div className="space-y-4">
-            <div className="flex flex-col items-center justify-center">
-              <Label htmlFor="profile-picture" className="mb-2 block text-sm font-medium text-gray-700">
-                Profile Picture
-              </Label>
-              <div className="relative">
-                <Avatar className="h-24 w-24">
-                  <AvatarImage src="/placeholder.svg" alt="Profile picture" />
-                  <AvatarFallback>
-                    <Upload className="h-8 w-8 text-gray-400" />
-                  </AvatarFallback>
-                </Avatar>
-                <Input
-                  id="profilePicture"
-                  name="profilePicture"
-                  type="file"
-                  accept="image/*"
-                  className="absolute inset-0 h-full w-full cursor-pointer opacity-0"
-                  onChange={(e) => {
-                    const file = e.target.files?.[0];
-                    if (file) {
-                      setData("profilePicture", file);
-                      setZodValue("profilePicture", file);
-                    }
-                  }}
-                />
-                <div className="absolute -bottom-2 -right-2 rounded-full bg-primary p-1 text-white">
-                  <Upload className="h-4 w-4" />
-                </div>
-              </div>
-              <p className="text-red-600 self-start text-sm">
-                {formState.errors.profilePicture?.message}
-              </p>
-            </div>
+         <div className="flex flex-col items-center justify-center">
+  <Label htmlFor="profile-picture" className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
+    Profile Picture
+  </Label>
+  <div className="relative">
+    <Avatar className="h-24 w-24">
+      <AvatarImage src={previewImage || "/placeholder.svg"} alt="Profile picture" />
+      <AvatarFallback>
+        <Upload className="h-8 w-8 text-gray-400" />
+      </AvatarFallback>
+    </Avatar>
+    <Input
+      id="profilePicture"
+      name="profilePicture"
+      type="file"
+      accept="image/*"
+      className="absolute inset-0 h-full w-full cursor-pointer opacity-0"
+      onChange={(e) => {
+        const file = e.target.files?.[0];
+        if (file) {
+          setData("profilePicture", file);
+          setZodValue("profilePicture", file);
+          setPreviewImage(URL.createObjectURL(file));
+        }
+      }}
+    />
+    <div className="absolute -bottom-2 -right-2 rounded-full bg-primary p-1 text-white">
+      <Upload className="h-4 w-4" />
+    </div>
+  </div>
+  <p className="text-red-600 self-start text-sm">
+    {formState.errors.profilePicture?.message}
+  </p>
+</div>
+
+
 
             {/* Full Name */}
             <div>
-              <Label htmlFor="fullname">Full Name</Label>
+              <Label htmlFor="fullname" className="text-gray-700 dark:text-gray-300">Full Name</Label>
               <Input
                 id="fullname"
                 {...register("fullname")}
@@ -137,7 +148,7 @@ export default function SignupPage() {
 
             {/* Email */}
             <div>
-              <Label htmlFor="email">Email address</Label>
+              <Label htmlFor="email" className="text-gray-700 dark:text-gray-300">Email address</Label>
               <Input
                 id="email"
                 {...register("email")}
@@ -156,7 +167,7 @@ export default function SignupPage() {
             {/* Username and Role */}
             <div className="flex gap-4">
               <div>
-                <Label htmlFor="username">Username (optional)</Label>
+                <Label htmlFor="username" className="text-gray-700 dark:text-gray-300">Username (optional)</Label>
                 <Input
                   id="username"
                   {...register("username")}
@@ -173,7 +184,7 @@ export default function SignupPage() {
               <div>
                 <Label
                   htmlFor="role"
-                  className="block text-sm font-medium text-gray-700"
+                  className="block text-sm font-medium text-gray-700 dark:text-gray-300"
                 >
                   Role ( *optional)
                 </Label>
@@ -183,17 +194,16 @@ export default function SignupPage() {
                   <option value="writer">Director</option>
                   <option value="writer">Storyboard Designer</option>
                 </select>
-               
+
                 <p className="text-red-600 self-start  text-sm">
                   {formState.errors.role && formState.errors.role.message}
                 </p>
               </div>
-             
             </div>
 
             {/* Password */}
             <div>
-              <Label htmlFor="password">Password</Label>
+              <Label htmlFor="password" className="text-gray-700 dark:text-gray-300">Password</Label>
               <Input
                 id="password"
                 {...register("password")}
@@ -211,7 +221,7 @@ export default function SignupPage() {
 
             {/* Confirm Password */}
             <div>
-              <Label htmlFor="confirmPassword">Confirm Password</Label>
+              <Label htmlFor="confirmPassword" className="text-gray-700 dark:text-gray-300">Confirm Password</Label>
               <Input
                 id="confirmPassword"
                 {...register("confirmPassword")}
@@ -236,5 +246,6 @@ export default function SignupPage() {
         </form>
       </div>
     </div>
-  );
+  </div>
+);
 }
