@@ -9,6 +9,7 @@ use App\Models\Script;
 use App\Models\Character;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 
  class SceneController extends Controller {
     
@@ -88,6 +89,41 @@ use Illuminate\Support\Facades\Auth;
                 ]);
             }
         }
+
+        $totalCharacters = 0;
+
+        $scenes = Scene::where('scriptID', $scriptID)->get();
+
+        foreach ($scenes as $scene) {
+            $totalCharacters += Str::length($scene->sceneHead['text'] ?? '');
+            $totalCharacters += Str::length($scene->sceneDesc['text'] ?? '');
+
+            foreach ($scene->lines as $line) {
+                if (!empty($line['character']['text'])) {
+                    $totalCharacters += Str::length($line['character']['text']);
+                }
+
+                if (!empty($line['emotion']['text'])) {
+                    $totalCharacters += Str::length($line['emotion']['text']);
+                }
+
+                if (!empty($line['dialogue']['text'])) {
+                    $totalCharacters += Str::length($line['dialogue']['text']);
+                }
+
+                if (!empty($line['action']['text'])) {
+                    $totalCharacters += Str::length($line['action']['text']);
+                }
+            }
+        }
+
+        // 1,462 characters = 1 page
+        $charactersPerPage = 1462;
+        $pages = (int) ceil($totalCharacters / $charactersPerPage);
+
+        Script::where('id', $scriptID)->update([
+            'pages' => $pages
+        ]);
     
         flash()->success('Scenes and Characters saved successfully!');
         return Inertia::location(url()->previous());

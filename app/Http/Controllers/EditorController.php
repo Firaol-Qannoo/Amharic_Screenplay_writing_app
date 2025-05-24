@@ -51,6 +51,8 @@ use App\Models\ScriptInvitation;
         }
 
         // dd($user);
+
+        
     
         return Inertia::render('writers/EditorPage', [
             'script' => $script,

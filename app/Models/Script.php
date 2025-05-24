@@ -19,6 +19,7 @@ class Script extends Model
         'type',
         'user_id',
         'thumbnail',
+        'pages',
         'collaborators', 
     ];
 

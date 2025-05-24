@@ -282,20 +282,41 @@ use Illuminate\Support\Facades\Log;
         return Inertia::location(route('login'));
     }
 
-    public function update(Request $request) {
+  public function update(Request $request)  {
     $request->validate([
         'first_name' => 'required|string|max:255',
-        // 'email' => 'required|email|max:255|unique:users,email,' . auth()->id(),
+         // 'email' => 'required|email|max:255|unique:users,email,' . auth()->id(),
+        'avatar' => 'nullable|image|max:2048',
     ]);
 
-    auth()->user()->update($request->only('first_name'));
+    $user = auth()->user();
 
-    flash()->success('Account Updated successfully!');
-       return Inertia::location(route('dashboard'));
+    $user->first_name = $request->first_name;
+
+    // If a new avatar is uploaded
+    if ($request->hasFile('avatar')) {
+        if ($user->avatar && file_exists(public_path($user->avatar))) {
+            unlink(public_path($user->avatar));
+        }
+
+        $file = $request->file('avatar');
+        $avatarName = time() . '_' . $file->getClientOriginalName();
+        $file->move(public_path('profile_pictures'), $avatarName);
+
+        $user->avatar = 'profile_pictures/' . $avatarName;
+    }
+
+    // If user requests to remove current avatar
+    if ($request->filled('remove_avatar')) {
+        if ($user->avatar && file_exists(public_path($user->avatar))) {
+            unlink(public_path($user->avatar));
+        }
+        $user->avatar = null;
+    }
+
+    $user->save();
+
+    flash()->success('Account updated successfully!');
+    return Inertia::location(route('dashboard'));
+   }
  }
-
-
- 
-
-
-}

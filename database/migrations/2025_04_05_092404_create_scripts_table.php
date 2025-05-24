@@ -16,7 +16,7 @@ class CreateScriptsTable extends Migration
             $table->binary('user_id');  // Use 'binary' type to store ObjectId (MongoDB's default unique identifier)
             $table->string('type'); 
             $table->string('thumbnail');  // Add image field to store the image URL or file path
-
+            $table->integer('pages');
             // Add the 'collaborators' field: This is an array of ObjectIds
             $table->json('collaborators'); // Store collaborator user IDs (ObjectIds)
 

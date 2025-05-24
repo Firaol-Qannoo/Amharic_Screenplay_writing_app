@@ -31,7 +31,8 @@ import {
 } from "lucide-react";
 import { ScheduleList } from "./schedule-list";
 import { ThemeToggle } from "@/components/theme-toggle";
-import { SettingsDialog } from "@/components/settings-dialog";
+import { SettingsDialog } from "@/components/settings-dialog";  
+import { ProfileDialog } from "@/components/profile_card"; 
 import { CreateDialog } from "@/components/create-dialog";
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
@@ -78,6 +79,16 @@ const templateCategories = [
         ],
     },
 ];
+
+ function getColorFromName(name) {
+  const colors = [
+    'bg-red-500', 'bg-blue-500', 'bg-green-500', 'bg-yellow-500',
+    'bg-purple-500', 'bg-pink-500', 'bg-indigo-500', 'bg-teal-500',
+    'bg-orange-500', 'bg-rose-500'
+  ];
+  const index = name.charCodeAt(0) % colors.length;
+  return colors[index];
+}
 
 export default function Dashboard({ myScripts, invitedScripts, user}) {
     const [searchQuery, setSearchQuery] = useState("");
@@ -199,11 +210,15 @@ useEffect(() => {
             <div className="flex min-h-screen w-[100vw] px-10 flex-col">
                 <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
                     <div className="container flex h-16 items-center justify-between">
-                    <div className="flex items-center gap-2">
-                        <Link href="/" className="text-lg font-bold hover:underline">
-                            Amharic Screenplay Tool
-                        </Link>
-                        </div>
+                   <div className="flex items-center gap-2">
+                    <Link
+                        href="/"
+                        className="text-xl font-extrabold hover:text-blue focus:outline-none" 
+                    >
+                         {/* text-3xl font-bold tracking-tight */}
+                        Amharic Screenplay Tool 
+                    </Link>
+                    </div>
                         <div className="flex items-center gap-2">
                             <div className="relative w-full max-w-sm mr-2">
                                 <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
@@ -253,17 +268,29 @@ useEffect(() => {
                             <SettingsDialog user={user} />
                             <DropdownMenu>
                                 <DropdownMenuTrigger asChild>
-                                    <Button variant="ghost" size="icon" className="rounded-full">
-                                        <User className="h-5 w-5" />
+                                   <Button variant="ghost" size="icon" className="rounded-full p-0 h-9 w-9 overflow-hidden">
+                                    {user.avatar ? (
+                                        <img
+                                        src={user.avatar.startsWith('http') ? user.avatar : `/${user.avatar}`}
+                                        alt={user.first_name}
+                                        className="object-cover object-center h-full w-full rounded-full"
+                                        />
+                                    ) : (
+                                        <span
+                                        className={`flex items-center justify-center h-full w-full text-white font-medium text-sm rounded-full ${getColorFromName(user.first_name)}`}
+                                        >
+                                        {user.first_name?.charAt(0).toUpperCase()}
+                                        </span>
+                                    )}
                                     </Button>
+
                                 </DropdownMenuTrigger>
                                 <DropdownMenuContent align="end">
                                     <DropdownMenuLabel>My Account</DropdownMenuLabel>
                                     <DropdownMenuSeparator />
-                                    <DropdownMenuItem>
-                                        <User className="mr-2 h-4 w-4" />
-                                        <span>Profile</span>
-                                    </DropdownMenuItem>
+                                    
+                                        <ProfileDialog user={user} />
+                                   
                                     <DropdownMenuSeparator />
                                     <DropdownMenuItem onClick={() => router.post('/logout')}>
                                         <span>Log out</span>
@@ -387,7 +414,7 @@ useEffect(() => {
                                                         </div>
                                                         <div className="flex items-center">
                                                         <BookOpen className="mr-1 h-3 w-3" />
-                                                        <span>{script.pages || '1 Pages'}</span>
+                                                        <span>{script.pages ? `${script.pages} Pages` : '222 Pages'}</span>
                                                         </div>
                                                     </CardFooter>
                                                     </Card>
@@ -435,7 +462,7 @@ useEffect(() => {
                                                         </div>
                                                         <div className="flex items-center">
                                                         <BookOpen className="mr-1 h-3 w-3" />
-                                                        <span>{script.pages || '23 Pages'} pages</span>
+                                                         <span>{script.pages ? `${script.pages} Pages` : '222 Pages'}</span>
                                                         </div>
                                                     </CardFooter>
                                                     </Card>
@@ -521,7 +548,7 @@ useEffect(() => {
                                                 </div>
                                                 <div className="flex items-center">
                                                 <BookOpen className="mr-1 h-3 w-3" />
-                                                <span>{script.pages || '23 Pages'} pages</span>
+                                                <span>{script.pages ? `${script.pages} Pages` : '222 Pages'}</span>
                                                 </div>
                                             </CardFooter>
                                             </Card>

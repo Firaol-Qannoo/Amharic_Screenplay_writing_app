@@ -1031,17 +1031,20 @@ export function EditorField({ script, scenes, scenecharacters, user }) {
 
                     <div className="flex items-center gap-1">
                         <Menubar className="border-none">
+                        {(!user?.invitation || user.invitation.role?.includes("Director")) && (
                             <MenubarMenu>
-    <Button
-        variant="ghost"
-        size="sm"
-        className="h-8 gap-1"
-        onClick={() => router.visit(`/scripts/${script.id}/storyboard`)}
-    >
-        <Save className="h-4 w-4" />
-        <span className="text-xs">Storyboard</span>
-    </Button>
-</MenubarMenu>
+                                <Button
+                                variant="ghost"
+                                size="sm"
+                                className="h-8 gap-1"
+                                onClick={() => router.visit(`/scripts/${script.id}/storyboard`)}
+                                >
+                                <Save className="h-4 w-4" />
+                                <span className="text-xs">Storyboard</span>
+                                </Button>
+                            </MenubarMenu>
+                                    )}
+                            {(!user?.invitation || user.invitation.role?.includes("Artist")) && (
                             <MenubarMenu>
                                 {" "}
                                 <Button
@@ -1056,6 +1059,7 @@ export function EditorField({ script, scenes, scenecharacters, user }) {
                                     </span>
                                 </Button>
                             </MenubarMenu>
+                            )}
                             <MenubarMenu>
                                 {" "}
                                 <Button
@@ -1069,6 +1073,7 @@ export function EditorField({ script, scenes, scenecharacters, user }) {
                                 </Button>
                             </MenubarMenu>
                             <MenubarMenu>
+                                 {!user.invitation && (
                                 <MenubarTrigger>
                                     <Button
                                         variant="ghost"
@@ -1079,6 +1084,7 @@ export function EditorField({ script, scenes, scenecharacters, user }) {
                                         <span className="text-xs">Export</span>
                                     </Button>
                                 </MenubarTrigger>
+                                 )}
                                 <MenubarContent>
                                     <MenubarItem>
                                         <Button

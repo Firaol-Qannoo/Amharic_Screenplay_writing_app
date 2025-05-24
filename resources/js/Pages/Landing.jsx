@@ -19,10 +19,14 @@ import {
 
 import { Link } from '@inertiajs/react';
 import { usePage } from "@inertiajs/react";
+import { LayoutDashboard } from 'lucide-react'
 
 
 export default function Landing() {
   const { url } = usePage(); 
+
+   const { auth } = usePage().props
+   const user = auth.user
 
   // State to track theme mode: true = dark, false = light
     const [isDarkMode, setIsDarkMode] = useState(false);
@@ -126,6 +130,16 @@ export default function Landing() {
               )}
             </button>
 
+             {user ? (
+          <a
+            href="/dashboard"
+            className="inline-flex items-center gap-2 btn btn-primary"
+          >
+            <LayoutDashboard className="w-4 h-4" />
+            Dashboard
+          </a>
+        ) : (
+          <>
             <Link href="/dashboard">
               <Button variant="outline" size="sm">
                 Login
@@ -134,6 +148,8 @@ export default function Landing() {
             <Link href="/signup">
               <Button size="sm">Register</Button>
             </Link>
+            </>
+        )}
           </div>
   </div>
 </header>

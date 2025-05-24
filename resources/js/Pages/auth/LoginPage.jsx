@@ -1,4 +1,4 @@
-import { Link, router, usePage } from '@inertiajs/react'; // Inertia Link + router
+import { Link, router, usePage } from '@inertiajs/react'; 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";

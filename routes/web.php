@@ -105,16 +105,16 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/logout', [RegisterController::class, 'logout'])->name('logout');
 });
 
-Route::post('/forgot-password', [RegisterController::class, 'sendResetOtp']);
-Route::post('/reset-password', [RegisterController::class, 'resetPassword']);
-Route::post('/verify-otp', [RegisterController::class, 'verifyOtp']);
+    Route::post('/forgot-password', [RegisterController::class, 'sendResetOtp']);
+    Route::post('/reset-password', [RegisterController::class, 'resetPassword']);
+    Route::post('/verify-otp', [RegisterController::class, 'verifyOtp']);
 
-Route::post('/scripts', [ScriptsController::class, 'store'])->name('scripts');
-Route::get('/production-schedule', [ProductionScheduleController::class, 'index'])->name('scenes.index');
-Route::post('/production-schedule', [ProductionScheduleController::class, 'showWithStaticData'])->name('scenes.update');
-Route::post('/production-schedule/save-locations', [ProductionScheduleController::class, 'saveShootLocations']);
-Route::get('/scripts/{scriptId}/storyboard', [StoryboardController::class, 'index'])->name('storyboard.index');
-Route::post('/storyboard/save', [StoryboardController::class, 'save']);
+    Route::post('/scripts', [ScriptsController::class, 'store'])->name('scripts');
+    Route::get('/production-schedule', [ProductionScheduleController::class, 'index'])->name('scenes.index');
+    Route::post('/production-schedule', [ProductionScheduleController::class, 'showWithStaticData'])->name('scenes.update');
+    Route::post('/production-schedule/save-locations', [ProductionScheduleController::class, 'saveShootLocations']);
+    Route::get('/scripts/{scriptId}/storyboard', [StoryboardController::class, 'index'])->name('storyboard.index');
+    Route::post('/storyboard/save', [StoryboardController::class, 'save']);
 
 
 

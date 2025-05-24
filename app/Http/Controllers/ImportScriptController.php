@@ -9,6 +9,8 @@ use App\Models\Character;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
+use Illuminate\Support\Str;
+
 
     class ImportScriptController extends Controller {
 
@@ -80,6 +82,42 @@ use Inertia\Inertia;
                     'inScene' => $characterData['inScene'] ?? [],
                 ]);
             }
+
+          
+            $totalCharacters = 0;
+
+            $scenes = Scene::where('scriptID', $script->id)->get();
+
+            foreach ($scenes as $scene) {
+                $totalCharacters += Str::length($scene->sceneHead['text'] ?? '');
+                $totalCharacters += Str::length($scene->sceneDesc['text'] ?? '');
+
+                foreach ($scene->lines as $line) {
+                    if (!empty($line['character']['text'])) {
+                        $totalCharacters += Str::length($line['character']['text']);
+                    }
+
+                    if (!empty($line['emotion']['text'])) {
+                        $totalCharacters += Str::length($line['emotion']['text']);
+                    }
+
+                    if (!empty($line['dialogue']['text'])) {
+                        $totalCharacters += Str::length($line['dialogue']['text']);
+                    }
+
+                    if (!empty($line['action']['text'])) {
+                        $totalCharacters += Str::length($line['action']['text']);
+                    }
+                }
+            }
+
+            // 1,462 characters = 1 page
+            $charactersPerPage = 1462;
+            $pages = (int) ceil($totalCharacters / $charactersPerPage);
+
+            Script::where('_id', $scriptID)->update([
+                'pages' => $pages
+            ]);
         
             flash()->success('Script, Scenes, and Characters imported successfully!');
             return Inertia::location(route('dashboard'));
