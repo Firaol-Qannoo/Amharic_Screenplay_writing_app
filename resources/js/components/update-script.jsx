@@ -13,8 +13,10 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import flasher from "@flasher/flasher";
 import { Pencil } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 export function UpdateScript({ script }) {
+  const { t } = useTranslation();
   const [open, setOpen] = useState(false);
 
   const { data, setData, processing, errors, reset } = useForm({
@@ -54,17 +56,17 @@ export function UpdateScript({ script }) {
       <DialogTrigger asChild>
         <Button variant="ghost">
           <Pencil className="mr-2 h-4 w-4" />
-          Edit
+         {t("edit_script.actions.edit")}
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[500px]">
         <DialogHeader>
-          <DialogTitle>Edit Script</DialogTitle>
+          <DialogTitle>{t("edit_script.script.edit_title")}</DialogTitle>
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-4 mt-4">
           <div className="space-y-2">
-            <Label htmlFor="title">Title</Label>
+            <Label htmlFor="title">{t("edit_script.form.title")}</Label>
             <Input
               id="title"
               value={data.title}
@@ -74,7 +76,7 @@ export function UpdateScript({ script }) {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="description">Description</Label>
+            <Label htmlFor="description">{t("edit_script.form.description")}</Label>
             <Input
               id="description"
               value={data.description}
@@ -86,7 +88,7 @@ export function UpdateScript({ script }) {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="genre">Genre</Label>
+            <Label htmlFor="genre">{t("edit_script.form.genre")}</Label>
             <Input
               id="genre"
               value={data.genre}
@@ -96,7 +98,7 @@ export function UpdateScript({ script }) {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="thumbnail">Thumbnail</Label>
+            <Label htmlFor="thumbnail">{t("edit_script.form.thumbnail")}</Label>
 
             <div className="rounded-md border p-2 w-40 h-40 flex items-center justify-center bg-muted">
               {data.thumbnail ? (
@@ -112,7 +114,7 @@ export function UpdateScript({ script }) {
                   className="object-cover rounded h-full w-full"
                 />
               ) : (
-                <span className="text-sm text-muted-foreground">No image</span>
+                <span className="text-sm text-muted-foreground">{t("edit_script.form.no_image")}</span>
               )}
             </div>
 
@@ -132,7 +134,7 @@ export function UpdateScript({ script }) {
 
           <DialogFooter>
             <Button type="submit" disabled={processing}>
-              Update
+             {t("edit_script.actions.update")}
             </Button>
           </DialogFooter>
         </form>

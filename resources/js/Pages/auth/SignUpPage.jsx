@@ -9,8 +9,10 @@ import { signupSchema } from "../../utils/validation/signup";
 import { useForm as useReactHookForm } from "react-hook-form";
 import { useState, useEffect } from "react";
 import flasher from '@flasher/flasher';
+import { useTranslation } from "react-i18next";
 
 export default function SignupPage() {
+  const { t } = useTranslation();
   const { data, setData, post, processing, errors } = useForm({
     profilePicture: null,
     fullname: "",
@@ -51,37 +53,33 @@ export default function SignupPage() {
  return (
   <div className="flex min-h-screen w-screen bg-background text-foreground transition-colors duration-300">
     {/* Left Promotional Panel */}
-    <div className="hidden lg:flex w-1/2 bg-gradient-to-br from-blue-500 to-indigo-600 text-white items-center justify-center p-4">
-      {/* Back to Home link */}
-      <Link
-        href="/"
-        className="absolute top-4 left-4 text-white font-medium hover:text-gray-200 transition"
-      >
-        ← Back to Home
-      </Link>
-      <div className="max-w-md space-y-6">
-        <h2 className="text-3xl font-bold leading-tight">Welcome to Amharic Screenplay Writing Tool 👋</h2>
-        <p className="text-lg">Discover opportunities, manage scripts, and streamline your creative workflow — all in one place.</p>
-        <img src="/images/login-illustration.gif" alt="Illustration" className="w-full h-auto mt-8 rounded-lg shadow-lg" />
+    <div className="hidden lg:flex w-1/2 bg-gradient-to-br from-blue-500 to-indigo-600 text-white items-center justify-center p-12">
+        <Link
+          href="/"
+          className="absolute top-4 left-4 text-white font-medium hover:text-gray-200 transition"
+        >
+          ← {t("login.back_home")}
+        </Link>
+        <div className="max-w-md space-y-6">
+          <h2 className="text-3xl font-bold leading-tight">{t("login.welcome_title")}</h2>
+          <p className="text-lg">{t("login.welcome_description")}</p>
+          <img src="/images/login-illustration.gif" alt="Illustration" className="w-full h-auto mt-8 rounded-lg shadow-lg" />
+        </div>
       </div>
-    </div>
 
     <div className="w-full lg:w-1/2 flex items-center justify-center bg-gray-50 dark:bg-gray-900 px-4 py-12 transition-colors duration-300">
       <div className="w-full max-w-md space-y-8">
         <div className="text-center">
           <h1 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-white">
-            Create your account
+            {t('signup.title')}
           </h1>
-          <p className="mt-2 text-sm text-gray-600 dark:text-gray-300">
-            Already have an account?{" "}
-            <Link
-              href={"/login"}
-              className="font-medium text-primary hover:text-primary/90"
-            >
-              Log in
-            </Link>
-          </p>
-        </div>
+         <p>
+          {t('signup.subtitle')}{" "}
+          <Link href="/login" className="font-medium text-primary hover:text-primary/90">
+            {t('signup.login')}
+          </Link>
+        </p>
+            </div>
 
         {/* Error message popup */}
         {showError && errors && Object.keys(errors).length > 0 && (
@@ -94,7 +92,7 @@ export default function SignupPage() {
           <div className="space-y-4">
          <div className="flex flex-col items-center justify-center">
   <Label htmlFor="profile-picture" className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
-    Profile Picture
+   {t('signup.profile_picture')}
   </Label>
   <div className="relative">
     <Avatar className="h-24 w-24">
@@ -131,7 +129,7 @@ export default function SignupPage() {
 
             {/* Full Name */}
             <div>
-              <Label htmlFor="fullname" className="text-gray-700 dark:text-gray-300">Full Name</Label>
+              <Label htmlFor="fullname" className="text-gray-700 dark:text-gray-300">{t('signup.fullname')}</Label>
               <Input
                 id="fullname"
                 {...register("fullname")}
@@ -139,7 +137,7 @@ export default function SignupPage() {
                 onChange={(e) => {
                   setData("fullname", e.target.value);
                 }}
-                placeholder="Full name"
+                placeholder={t('signup.fullname')}
               />
               <p className="text-red-600 text-sm">
                 {formState.errors.fullname?.message || errors.fullname}
@@ -148,7 +146,7 @@ export default function SignupPage() {
 
             {/* Email */}
             <div>
-              <Label htmlFor="email" className="text-gray-700 dark:text-gray-300">Email address</Label>
+              <Label htmlFor="email" className="text-gray-700 dark:text-gray-300">{t('login.email')}</Label>
               <Input
                 id="email"
                 {...register("email")}
@@ -157,7 +155,7 @@ export default function SignupPage() {
                   setData("email", e.target.value);
                 }}
                 type="email"
-                placeholder="Email address"
+                placeholder={t('login.email')}
               />
               <p className="text-red-600 text-sm">
                 {formState.errors.email?.message}
@@ -167,7 +165,7 @@ export default function SignupPage() {
             {/* Username and Role */}
             <div className="flex gap-4">
               <div>
-                <Label htmlFor="username" className="text-gray-700 dark:text-gray-300">Username (optional)</Label>
+                <Label htmlFor="username" className="text-gray-700 dark:text-gray-300">{t('signup.username')}</Label>
                 <Input
                   id="username"
                   {...register("username")}
@@ -175,7 +173,7 @@ export default function SignupPage() {
                   onChange={(e) => {
                     setData("username", e.target.value);
                   }}
-                  placeholder="Username"
+                  placeholder={t('signup.username')}
                 />
                 <p className="text-red-600 text-sm">
                   {formState.errors.username?.message}
@@ -186,13 +184,13 @@ export default function SignupPage() {
                   htmlFor="role"
                   className="block text-sm font-medium text-gray-700 dark:text-gray-300"
                 >
-                  Role ( *optional)
+                 {t('signup.role')}
                 </Label>
                 <select className="border-2 border-black/10 rounded-xl px-1 py-2"  {...register("role")} name="role" id="role">
-                  <option disabled value=""> - select -</option>
-                  <option value="writer">Writer</option>
-                  <option value="writer">Director</option>
-                  <option value="writer">Storyboard Designer</option>
+                  <option disabled value="">{t('signup.select_role')}</option>
+                  <option value="writer">{t('signup.writer')}</option>
+                  <option value="writer">{t('signup.director')}</option>
+                  <option value="writer">{t('signup.storyboard_designer')}</option>
                 </select>
 
                 <p className="text-red-600 self-start  text-sm">
@@ -203,7 +201,7 @@ export default function SignupPage() {
 
             {/* Password */}
             <div>
-              <Label htmlFor="password" className="text-gray-700 dark:text-gray-300">Password</Label>
+              <Label htmlFor="password" className="text-gray-700 dark:text-gray-300">{t('login.password')}</Label>
               <Input
                 id="password"
                 {...register("password")}
@@ -212,7 +210,7 @@ export default function SignupPage() {
                   setData("password", e.target.value);
                 }}
                 type="password"
-                placeholder="Password"
+                placeholder={t('login.password')}
               />
               <p className="text-red-600 text-sm">
                 {formState.errors.password?.message || errors.password}
@@ -221,7 +219,7 @@ export default function SignupPage() {
 
             {/* Confirm Password */}
             <div>
-              <Label htmlFor="confirmPassword" className="text-gray-700 dark:text-gray-300">Confirm Password</Label>
+              <Label htmlFor="confirmPassword" className="text-gray-700 dark:text-gray-300">{t('signup.confirm_password')}</Label>
               <Input
                 id="confirmPassword"
                 {...register("confirmPassword")}
@@ -230,7 +228,7 @@ export default function SignupPage() {
                   setData("confirmPassword", e.target.value);
                 }}
                 type="password"
-                placeholder="Confirm password"
+                placeholder={t('signup.confirm_password')}
               />
               <p className="text-red-600 text-sm">
                 {formState.errors.confirmPassword?.message}
@@ -240,7 +238,7 @@ export default function SignupPage() {
 
           <div>
             <Button type="submit" className="w-full" disabled={processing}>
-              Create Account
+               {t('signup.create_account')}
             </Button>
           </div>
         </form>

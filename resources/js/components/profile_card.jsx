@@ -13,6 +13,7 @@ import {
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { User } from "lucide-react"
+import { useTranslation } from "react-i18next";
 
 
 // Helper for avatar initials background color
@@ -27,6 +28,8 @@ function getColorFromName(name) {
 }
 
 export function ProfileDialog({ user }) {
+  const { t } = useTranslation();
+
   const [open, setOpen] = useState(false)
   const [first_name, setName] = useState(user?.first_name || "")
   const [avatarFile, setAvatarFile] = useState(null)
@@ -63,20 +66,20 @@ export function ProfileDialog({ user }) {
       <DialogTrigger asChild>
          <Button variant="ghost">
           <User className="mr-2 h-4 w-4" />
-          Profile
+          {t("manage-profile.profile")}
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[500px]">
         <DialogHeader>
-          <DialogTitle>Account Settings</DialogTitle>
+          <DialogTitle>{t("manage-profile.accountSettings")}</DialogTitle>
           <DialogDescription>
-            View and update your profile information.
+            {t("manage-profile.accountSettingsDescription")}
           </DialogDescription>
         </DialogHeader>
 
         <div className="space-y-4 py-4">
           <div className="space-y-2">
-            <Label htmlFor="first_name">Display Name</Label>
+            <Label htmlFor="first_name">{t("manage-profile.displayName")}</Label>
             <Input
               id="first_name"
               value={first_name}
@@ -85,7 +88,7 @@ export function ProfileDialog({ user }) {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="avatar">Profile Image</Label>
+            <Label htmlFor="avatar">{t("manage-profile.profileImage")}</Label>
             <Input
                 id="avatar"
                 type="file"
@@ -108,7 +111,7 @@ export function ProfileDialog({ user }) {
                         setAvatarPreview("")
                     }}
                     >
-                    Remove Image
+                   {t("manage-profile.removeImage")}
                     </Button>
                 </>
                 ) : (
@@ -118,13 +121,13 @@ export function ProfileDialog({ user }) {
                     {first_name?.charAt(0).toUpperCase()}
                 </div>
                 )}
-                <span className="text-sm text-muted-foreground">Preview</span>
+                <span className="text-sm text-muted-foreground"> {t("manage-profile.preview")}</span>
             </div>
             </div>
 
 
           <div className="space-y-2">
-            <Label htmlFor="email">Email</Label>
+            <Label htmlFor="email">{t("manage-profile.email")}</Label>
             <Input
               id="email"
               value={user?.email}
@@ -135,7 +138,7 @@ export function ProfileDialog({ user }) {
         </div>
 
         <DialogFooter>
-          <Button onClick={handleSave}>Save changes</Button>
+          <Button onClick={handleSave}>{t("manage-profile.saveChanges")}</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

@@ -13,8 +13,11 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { FilePlus } from "lucide-react";
 import flasher from '@flasher/flasher'
+import { useTranslation } from "react-i18next";
+
 
 export function CreateDialog() {
+  const { t } = useTranslation();
   const [open, setOpen] = useState(false);
 
   const { data, setData, post, processing, errors } = useForm({
@@ -51,17 +54,17 @@ export function CreateDialog() {
       <DialogTrigger asChild>
         <Button variant="default">
           <FilePlus className="mr-2 h-4 w-4" />
-          New Script
+          {t("create-script.newScript")}
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[500px]">
         <DialogHeader>
-          <DialogTitle>Create Empty Script</DialogTitle>
+          <DialogTitle>{t("create-script.createEmptyScript")}</DialogTitle>
         </DialogHeader>
 
         {/* Type Selector (Film / Theatre) */}
         <div className="space-y-2">
-          <Label>Type</Label>
+          <Label>{t("create-script.type")}</Label>
           <div className="flex items-center space-x-4">
             <div>
               <input
@@ -72,7 +75,7 @@ export function CreateDialog() {
                 checked={data.type === "film"}
                 onChange={() => setData("type", "film")}
               />
-              <Label htmlFor="film" className="ml-2">Film</Label>
+              <Label htmlFor="film" className="ml-2">{t("create-script.film")}</Label>
             </div>
             <div>
               <input
@@ -83,14 +86,14 @@ export function CreateDialog() {
                 checked={data.type === "theatre"}
                 onChange={() => setData("type", "theatre")}
               />
-              <Label htmlFor="theatre" className="ml-2">Theatre</Label>
+              <Label htmlFor="theatre" className="ml-2">{t("create-script.theatre")}</Label>
             </div>
           </div>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4 mt-4">
           <div className="space-y-2">
-            <Label htmlFor="title">Title</Label>
+            <Label htmlFor="title">{t("create-script.title")}</Label>
             <Input
               id="title"
               value={data.title}
@@ -100,7 +103,7 @@ export function CreateDialog() {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="description">Description</Label>
+            <Label htmlFor="description">{t("create-script.description")}</Label>
             <Input
               id="description"
               value={data.description}
@@ -109,7 +112,7 @@ export function CreateDialog() {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="genre">Genre</Label>
+            <Label htmlFor="genre">{t("create-script.genre")}</Label>
             <Input
               id="genre"
               value={data.genre}
@@ -118,7 +121,7 @@ export function CreateDialog() {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="thumbnail">Thumbnail</Label>
+            <Label htmlFor="thumbnail">{t("create-script.thumbnail")}</Label>
             <Input
               id="thumbnail"
               type="file"
@@ -133,7 +136,7 @@ export function CreateDialog() {
 
           <DialogFooter>
             <Button type="submit" disabled={processing}>
-              Create
+              {t("create-script.create")}
             </Button>
           </DialogFooter>
         </form>

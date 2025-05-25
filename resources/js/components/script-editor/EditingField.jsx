@@ -70,9 +70,11 @@ import { initScript } from "../../features/activeScriptSlice";
 import { router } from "@inertiajs/react";
 import { pdfstyle } from "../../../../public/data/pdfstyle";
 import { store } from "../../app/store";
+import { useTranslation } from "react-i18next";
+import { InviteCollaboratorDialog } from "@/components/invite-collaborator-dialog";
 
 export function EditorField({ script, scenes, scenecharacters, user }) {
-   
+   const { t } = useTranslation();
     const dispatch = useDispatch();
     const [selectedElement, setselectedElement] = useState("scene_heading");
 
@@ -787,7 +789,7 @@ export function EditorField({ script, scenes, scenecharacters, user }) {
                                 }
                                 value="scene_heading"
                             >
-                                Scene Heading
+                                {t("editor_field.tools.scene_heading")}
                             </SelectItem>
                             <SelectItem
                                 disabled={
@@ -798,7 +800,7 @@ export function EditorField({ script, scenes, scenecharacters, user }) {
                                 }
                                 value="scene_description"
                             >
-                                Scene Description
+                                 {t("editor_field.tools.scene_description")}
                             </SelectItem>
                             <SelectItem
                                 disabled={
@@ -810,7 +812,7 @@ export function EditorField({ script, scenes, scenecharacters, user }) {
                                 }
                                 value="action"
                             >
-                                Action
+                                {t("editor_field.tools.action")}
                             </SelectItem>
                             <SelectItem
                                 disabled={
@@ -819,7 +821,7 @@ export function EditorField({ script, scenes, scenecharacters, user }) {
                                 }
                                 value="character"
                             >
-                                Character
+                                {t("editor_field.tools.character")}
                             </SelectItem>
                             <SelectItem
                                 disabled={
@@ -831,7 +833,7 @@ export function EditorField({ script, scenes, scenecharacters, user }) {
                                 }
                                 value="dialogue"
                             >
-                                Dialogue
+                                {t("editor_field.tools.dialogue")}
                             </SelectItem>
                             <SelectItem
                                 disabled={
@@ -844,7 +846,7 @@ export function EditorField({ script, scenes, scenecharacters, user }) {
                                 }
                                 value="character_emotion"
                             >
-                                Emotion
+                                {t("editor_field.tools.emotion")}
                             </SelectItem>
                         </SelectContent>
                     </Select>
@@ -997,17 +999,7 @@ export function EditorField({ script, scenes, scenecharacters, user }) {
                     <TooltipProvider>
                         <Tooltip>
                             <TooltipTrigger asChild>
-                                <Button
-                                    variant="ghost"
-                                    size="sm"
-                                    className="h-8 gap-1"
-                                >
-                                    <Users className="h-4 w-4" />
-                                    <span className="text-xs">
-                                        Invite Collaborators
-                                    </span>
-                                    <Plus className="h-3 w-3 opacity-50" />
-                                </Button>
+                               <InviteCollaboratorDialog scriptId={script.id} />
                             </TooltipTrigger>
                             <TooltipContent>
                                 <p>Share Script</p>
@@ -1022,10 +1014,10 @@ export function EditorField({ script, scenes, scenecharacters, user }) {
                 <div className="flex items-center justify-between border-b px-4">
                     <TabsList className="h-9 w-auto">
                         <TabsTrigger value="write" className="text-xs">
-                            Write
+                           {t("editor_field.editor.write")}
                         </TabsTrigger>
                         <TabsTrigger value="preview" className="text-xs">
-                            Preview
+                           {t("editor_field.editor.preview")}
                         </TabsTrigger>
                     </TabsList>
 
@@ -1040,7 +1032,7 @@ export function EditorField({ script, scenes, scenecharacters, user }) {
                                 onClick={() => router.visit(`/scripts/${script.id}/storyboard`)}
                                 >
                                 <Save className="h-4 w-4" />
-                                <span className="text-xs">Storyboard</span>
+                                <span className="text-xs">{t("editor_field.editor.storyboard")}</span>
                                 </Button>
                             </MenubarMenu>
                                     )}
@@ -1055,7 +1047,7 @@ export function EditorField({ script, scenes, scenecharacters, user }) {
                                 >
                                     <Save className="h-4 w-4" />
                                     <span className="text-xs">
-                                        Production Schedule
+                                        {t("editor_field.editor.production_schedule")}
                                     </span>
                                 </Button>
                             </MenubarMenu>
@@ -1069,7 +1061,7 @@ export function EditorField({ script, scenes, scenecharacters, user }) {
                                     className="h-8 gap-1"
                                 >
                                     <Save className="h-4 w-4" />
-                                    <span className="text-xs">Save</span>
+                                    <span className="text-xs">{t("editor_field.editor.save")}</span>
                                 </Button>
                             </MenubarMenu>
                             <MenubarMenu>
@@ -1081,7 +1073,7 @@ export function EditorField({ script, scenes, scenecharacters, user }) {
                                         className="h-8 gap-1"
                                     >
                                         <Save className="h-4 w-4" />
-                                        <span className="text-xs">Export</span>
+                                        <span className="text-xs">{t("editor_field.editor.export")}</span>
                                     </Button>
                                 </MenubarTrigger>
                                  )}
@@ -1095,7 +1087,7 @@ export function EditorField({ script, scenes, scenecharacters, user }) {
                                         >
                                             <FileDown className="h-4 w-4" />
                                             <span className="text-xs">
-                                                as ASPF
+                                               {t("editor_field.editor.export_as_aspf")}
                                             </span>
                                         </Button>
                                     </MenubarItem>
@@ -1109,7 +1101,7 @@ export function EditorField({ script, scenes, scenecharacters, user }) {
                                             <FileDown clayssName="h-4 w-4" />
                                             <span className="text-xs">
                                                 {" "}
-                                                as PDF
+                                                {t("editor_field.editor.export_as_pdf")}
                                             </span>
                                         </Button>
                                     </MenubarItem>

@@ -10,8 +10,10 @@ import {
 import { Button } from "@/components/ui/button";
 import { Eye } from "lucide-react";
 import dayjs from 'dayjs';
+import { useTranslation } from "react-i18next";
 
 export function ScriptDetailsDialog({ script }) {
+    const { t } = useTranslation();
     const [open, setOpen] = useState(false);
 
     return (
@@ -27,12 +29,12 @@ export function ScriptDetailsDialog({ script }) {
                 </DialogHeader>
                 <DialogDescription>
                     <p>{script.description}</p>
-                    <p className="mt-2"> <b>Category: </b> {script.type}</p>
-                    <p> <b>Genre: </b> {script.genre}</p>
-                    <p> <b>Created At:</b> {dayjs(script.created_at).format('YYYY-MM-DD HH:mm:ss')}</p>
-                    {script.updated_at && <p> <b>Last Updated:</b> {dayjs(script.updated_at).format('YYYY-MM-DD HH:mm:ss')}</p>}
-                    <p> <b>Pages: </b> {script.pages || 'N/A'}</p>
-                    <p> <b>Shared by:</b> {script.user.first_name || script.user.email}</p>
+                    <p className="mt-2"> <b>{t("invited_script_detail.viewDetails")}: </b> {script.type}</p>
+                    <p> <b>{t("invited_script_detail.genre")}: </b> {script.genre}</p>
+                    <p> <b>{t("invited_script_detail.createdAt")}:</b> {dayjs(script.created_at).format('YYYY-MM-DD HH:mm:ss')}</p>
+                    {script.updated_at && <p> <b>{t("invited_script_detail.lastUpdated")}:</b> {dayjs(script.updated_at).format('YYYY-MM-DD HH:mm:ss')}</p>}
+                    <p> <b>{t("invited_script_detail.pages")}: </b> {script.pages || 'N/A'}</p>
+                    <p> <b>{t("invited_script_detail.sharedBy")}:</b> {script.user.first_name || script.user.email}</p>
                     {/* Add more details as needed */}
                 </DialogDescription>
             </DialogContent>

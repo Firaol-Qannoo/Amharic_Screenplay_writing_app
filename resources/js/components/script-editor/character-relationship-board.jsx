@@ -2,6 +2,7 @@ import { useState } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { ChevronDown, ChevronRight, ChevronUp, Users } from "lucide-react"
+import { useTranslation } from "react-i18next";
 
 
 const characters = [
@@ -60,6 +61,7 @@ const characters = [
 ]
 
 export function CharacterRelationshipBoard() {
+   const { t } = useTranslation();
   const [isMinimized, setIsMinimized] = useState(false)
   const [expandedCharacter, setExpandedCharacter] = useState("1") 
 
@@ -81,7 +83,7 @@ export function CharacterRelationshipBoard() {
       >
         <div className="flex items-center gap-2">
           <Users className="h-4 w-4" />
-          <CardTitle className="text-sm">የገጸ ባህሪዎች ግንኙነት</CardTitle>
+          <CardTitle className="text-sm">{t("character_relationship_board.title")}</CardTitle>
         </div>
         <Button variant="ghost" size="icon" className="h-6 w-6">
           {isMinimized ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
@@ -113,7 +115,7 @@ export function CharacterRelationshipBoard() {
                     <p className="text-xs text-muted-foreground">{character.description}</p>
 
                     <div className="space-y-1 mt-2">
-                      <h4 className="text-xs font-medium">ግንኙነቶች:</h4>
+                      <h4 className="text-xs font-medium">{t("character_relationship_board.relationships")}:</h4>
                       {character.relationships.map((rel) => {
                         const relatedChar = getCharacterById(rel.to)
                         return (

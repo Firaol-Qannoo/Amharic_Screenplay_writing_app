@@ -28,8 +28,11 @@ class ScriptInvitationController extends Controller
             $currentUser = Auth::user();
     
             if ($request->invitee_email === $currentUser->email) {
-                Flasher::addError('You cannot invite yourself to the script.');
-                return Inertia::location(url()->previous());
+               $locale = auth()->user()->lang_pref ?? 'en';
+                app()->setLocale($locale);
+
+                Flasher::addError(__('messages.self_invite_error'));
+                    return Inertia::location(url()->previous());
             }
     
             $script = Script::findOrFail($request->script_id);
@@ -50,7 +53,10 @@ class ScriptInvitationController extends Controller
                         ->exists();
 
                     if ($alreadyCollaborator) {
-                        Flasher::addError('User is already a collaborator on this script!');
+                      $locale = auth()->user()->lang_pref ?? 'en';
+                        app()->setLocale($locale);
+
+                        Flasher::addError(__('messages.already_collaborator'));
                         return Inertia::location(url()->previous());
                     }
                 }
@@ -62,7 +68,10 @@ class ScriptInvitationController extends Controller
             ])->first();
     
             if ($existingInvitation) {
-                Flasher::addInfo('This user has already been invited to this script.');
+               $locale = auth()->user()->lang_pref ?? 'en';
+                app()->setLocale($locale);
+
+                Flasher::addInfo(__('messages.already_invited'));
                 return Inertia::location(url()->previous());
             }
     
@@ -83,12 +92,18 @@ class ScriptInvitationController extends Controller
     
             Mail::to($request->invitee_email)->send(new ScriptInvitationMail($invitation));
     
-            Flasher::addSuccess('Invitation sent successfully.');
-            return Inertia::location(url()->previous());
+          $locale = auth()->user()->lang_pref ?? 'en';
+            app()->setLocale($locale);
+
+            Flasher::addSuccess(__('messages.invitation_sent'));
+                return Inertia::location(url()->previous());
     
         } catch (Exception $e) {
             Log::error("Error sending invitation: " . $e->getMessage());
-            Flasher::addError('Failed to send invitation. Please try again.');
+           $locale = auth()->user()->lang_pref ?? 'en';
+            app()->setLocale($locale);
+
+            Flasher::addError(__('messages.invitation_failed'));
             return Inertia::location(url()->previous());
         }
     }    
@@ -106,10 +121,13 @@ class ScriptInvitationController extends Controller
     
             // If already accepted, just redirect
             if ($invitation->accepted) {
-                Flasher::addInfo('Invitation already accepted.');
-                return Inertia::location(route('dashboard'));
-            }
-    
+               $locale = auth()->user()->lang_pref ?? 'en';
+                app()->setLocale($locale);
+
+                Flasher::addInfo(__('messages.invitation_accepted'));
+                        return Inertia::location(route('dashboard'));
+                    }
+            
             $userId = Auth::id();
             $script = Script::findOrFail($invitation->script_id);
     
@@ -120,14 +138,20 @@ class ScriptInvitationController extends Controller
             $invitation->invitee_id = Auth::id();
             $invitation->save();
     
-            Flasher::addSuccess('You have joined the script.');
+            $locale = auth()->user()->lang_pref ?? 'en';
+            app()->setLocale($locale);
+
+            Flasher::addSuccess(__('messages.joined_script'));
             return Inertia::location(route('dashboard'));
     
         } catch (Exception $e) {
             Log::error("Invitation error: " . $e->getMessage());
-            Flasher::addError('Invalid or expired invitation.');
-            return Inertia::location(route('dashboard'));
-        }
+            $locale = auth()->user()->lang_pref ?? 'en';
+            app()->setLocale($locale);
+
+            Flasher::addError(__('messages.invalid_invitation'));
+                return Inertia::location(route('dashboard'));
+            }
     }
 
     public function deleteCollaborator($scriptId, $userId) {
@@ -148,8 +172,11 @@ class ScriptInvitationController extends Controller
             ->where('script_id', $scriptId)
             ->delete();
     
-        flash()->success('Collaborator deleted successfully!');
-        return Inertia::location(route('dashboard'));
+       $locale = auth()->user()->lang_pref ?? 'en';
+        app()->setLocale($locale);
+
+        flash()->success(__('messages.collaborator_deleted'));
+             return Inertia::location(route('dashboard'));
     }
     
 
@@ -161,7 +188,10 @@ class ScriptInvitationController extends Controller
         ]);
 
         if (empty($validated['role'])) {
-            flash()->error('No roles assigned. Please select at least one role.');
+           $locale = auth()->user()->lang_pref ?? 'en';
+            app()->setLocale($locale);
+
+            flash()->error(__('messages.no_roles_assigned'));
             return Inertia::location(route('dashboard'));
         }
 
@@ -170,24 +200,36 @@ class ScriptInvitationController extends Controller
             ->first();
 
         if (!$collaborator) {
-            flash()->error('Collaborator not found.');
+           $locale = auth()->user()->lang_pref ?? 'en';
+            app()->setLocale($locale);
+
+            flash()->error(__('messages.collaborator_not_found'));
             return Inertia::location(route('dashboard'));
         }
 
         $collaborator->role = $validated['role'];
         $collaborator->save();
 
-        flash()->success('Collaborator role changed successfully!');
+        $locale = auth()->user()->lang_pref ?? 'en';
+        app()->setLocale($locale);
+
+        flash()->success(__('messages.collaborator_role_changed'));
         return Inertia::location(route('dashboard'));
     } catch (\Illuminate\Validation\ValidationException $e) {
         // flash()->error('Invalid input: ' . $e->getMessage());
-         flash()->info('User should have at least one role, or remove the user if not needed.');
-        return Inertia::location(route('dashboard'));
+        $locale = auth()->user()->lang_pref ?? 'en';
+            app()->setLocale($locale);
+
+            flash()->info(__('messages.user_role_required'));
+                    return Inertia::location(route('dashboard'));
     } catch (\Exception $e) {
-        flash()->error('Something went wrong while updating collaborator roles.');
-        return Inertia::location(route('dashboard'));
+       $locale = auth()->user()->lang_pref ?? 'en';
+        app()->setLocale($locale);
+
+        flash()->error(__('messages.update_collaborator_roles_error'));
+                return Inertia::location(route('dashboard'));
+            }
     }
-}
 
 
     

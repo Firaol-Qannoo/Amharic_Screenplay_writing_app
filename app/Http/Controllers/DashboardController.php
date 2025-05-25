@@ -11,6 +11,11 @@ use App\Models\User;
 
 
    class DashboardController extends Controller {
+    
+     public function home() {
+        return Inertia::render('Landing');
+     }
+
 
       public function index() {
        

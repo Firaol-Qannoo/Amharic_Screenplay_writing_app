@@ -119,7 +119,10 @@ use Illuminate\Support\Str;
                 'pages' => $pages
             ]);
         
-            flash()->success('Script, Scenes, and Characters imported successfully!');
+           $locale = auth()->user()->lang_pref ?? 'en';
+            app()->setLocale($locale);
+
+            flash()->success(__('messages.script_imported'));
             return Inertia::location(route('dashboard'));
         }
         

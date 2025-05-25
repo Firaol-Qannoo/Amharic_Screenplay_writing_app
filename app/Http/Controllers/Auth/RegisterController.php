@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Cache;
 use App\Models\Script;
 use App\Models\ScriptInvitation;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\App;
 
     class RegisterController extends Controller {
 
@@ -212,7 +213,10 @@ use Illuminate\Support\Facades\Log;
             }
         }
 
-        flash()->success('Logged in successfully!');
+       $locale = auth()->user()->lang_pref ?? 'en';
+        app()->setLocale($locale);
+
+        flash()->success(__('messages.login_success'));
         return Inertia::location(route('dashboard'));
     } else {
         $user = User::where('email', $validated['email'])->first();
@@ -234,7 +238,7 @@ use Illuminate\Support\Facades\Log;
         flash()->success(
             'Logged out successfully!'
         );
-        return Inertia::location(route('login'));
+        return Inertia::location(route('home'));
        }
 
 
@@ -282,16 +286,21 @@ use Illuminate\Support\Facades\Log;
         return Inertia::location(route('login'));
     }
 
-  public function update(Request $request)  {
+  public function update(Request $request)   {
     $request->validate([
         'first_name' => 'required|string|max:255',
-         // 'email' => 'required|email|max:255|unique:users,email,' . auth()->id(),
         'avatar' => 'nullable|image|max:2048',
+        'lang_pref' => 'nullable|in:en,am', // Add this line
     ]);
 
     $user = auth()->user();
 
     $user->first_name = $request->first_name;
+
+    // Update language preference if provided
+    if ($request->filled('lang_pref')) {
+        $user->lang_pref = $request->lang_pref;
+    }
 
     // If a new avatar is uploaded
     if ($request->hasFile('avatar')) {
@@ -314,9 +323,16 @@ use Illuminate\Support\Facades\Log;
         $user->avatar = null;
     }
 
-    $user->save();
+        $user->save();
 
-    flash()->success('Account updated successfully!');
-    return Inertia::location(route('dashboard'));
-   }
+    if ($user->lang_pref) {
+        App::setLocale($user->lang_pref) ?? 'en';
+    }
+
+           flash()->success(__('messages.account_updated'), [
+                'title' => __('messages.success_title'),
+            ]);
+        return Inertia::location(url()->previous());
+    }
+
  }

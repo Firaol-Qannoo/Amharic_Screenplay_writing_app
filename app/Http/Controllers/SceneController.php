@@ -125,7 +125,10 @@ use Illuminate\Support\Str;
             'pages' => $pages
         ]);
     
-        flash()->success('Scenes and Characters saved successfully!');
+       $locale = auth()->user()->lang_pref ?? 'en';
+        app()->setLocale($locale);
+
+        flash()->success(__('messages.scenes_saved'));
         return Inertia::location(url()->previous());
     }
 

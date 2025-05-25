@@ -46,8 +46,11 @@ class ScriptsController extends Controller
     
         session(['script' => $script]);
 
-       flash()->success('Your script has been created.');
-       return Inertia::location(route('dashboard'));
+      $locale = auth()->user()->lang_pref ?? 'en';
+        app()->setLocale($locale);
+
+        flash()->success(__('messages.script_created'));
+            return Inertia::location(route('dashboard'));
     }
 
 
@@ -69,8 +72,11 @@ class ScriptsController extends Controller
         $script->save();
     }
 
-    flash()->success('Your script has been updated successfully.');
-    return Inertia::location(route('dashboard'));
+       $locale = auth()->user()->lang_pref ?? 'en';
+        app()->setLocale($locale);
+
+        flash()->success(__('messages.script_updated'));
+            return Inertia::location(route('dashboard'));
 }
 
 
@@ -85,7 +91,9 @@ class ScriptsController extends Controller
     
         $script->delete(); 
     
-        flash()->success('Script deleted successfully!');
-        return Inertia::location(route('dashboard'));
-    }
+        $locale = auth()->user()->lang_pref ?? 'en';
+        app()->setLocale($locale);
+        flash()->success(__('messages.script_deleted'));
+                return Inertia::location(route('dashboard'));
+            }
 }

@@ -11,8 +11,8 @@ import {
    DropdownMenu,
     DropdownMenuContent,
     DropdownMenuItem,
-    DropdownMenuLabel, // Import DropdownMenuLabel
-    DropdownMenuSeparator, // Import DropdownMenuSeparator
+    DropdownMenuLabel,
+    DropdownMenuSeparator, 
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
@@ -39,10 +39,11 @@ import relativeTime from 'dayjs/plugin/relativeTime';
 import { InviteCollaboratorDialog } from "@/components/invite-collaborator-dialog";
 import { ScriptDetailsDialog } from "@/components/script-detail-dialog";
 import { CollaboratorsListDialog } from "@/components/collaborators-list.jsx";
-import { Button } from "@/components/ui/button"; // Ensure Button is imported  CollaboratorsListDialog 
+import { Button } from "@/components/ui/button"; 
 import flasher from '@flasher/flasher'
 import { UpdateScript } from "@/components/update-script";
 import { Link } from "@inertiajs/react";
+import { useTranslation } from 'react-i18next';
 
 dayjs.extend(relativeTime);
 
@@ -91,24 +92,12 @@ const templateCategories = [
 }
 
 export default function Dashboard({ myScripts, invitedScripts, user}) {
+    const { t } = useTranslation();
     const [searchQuery, setSearchQuery] = useState("");
     const [selectedTab, setSelectedTab] = useState("recent");
     const [successMessage, setSuccessMessage] = useState('');
     const [showSuccess, setShowSuccess] = useState(false);
 
-//     const { flash } = usePage().props;
-
-//    useEffect(() => {
-//         if (flash && flash.error) {
-//             toast.error(flash.error);
-//         }
-//         if (flash && flash.success) {
-//             toast.success(flash.success);
-//         }
-//     }, [flash]);
-
-
- // State to track theme mode: true = dark, false = light
  const [isDarkMode, setIsDarkMode] = useState(false);
 
 useEffect(() => {
@@ -126,7 +115,6 @@ useEffect(() => {
     }
   }, []);
 
-  // Toggle dark mode and save preference
   function toggleDarkMode() {
     if (isDarkMode) {
       document.documentElement.classList.remove("dark");
@@ -195,18 +183,6 @@ useEffect(() => {
 
     return (
         <div className="relative">
-           
-            {/* Success message popup at the top center
-            {showSuccess && successMessage && (
-                <div className="absolute top-4 left-1/2 transform -translate-x-1/2 p-4 bg-green-500 text-white rounded-lg shadow-lg z-100">
-                    <p>{successMessage}</p>
-                </div>
-            )}
-            {flash && flash.error && (
-                <div className="absolute top-4 left-1/2 transform -translate-x-1/2 p-4 bg-red-500 text-white rounded-lg shadow-lg z-100">
-                    {flash.error}
-                </div>
-            )} */}
             <div className="flex min-h-screen w-[100vw] px-10 flex-col">
                 <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
                     <div className="container flex h-16 items-center justify-between">
@@ -215,8 +191,7 @@ useEffect(() => {
                         href="/"
                         className="text-xl font-extrabold hover:text-blue focus:outline-none" 
                     >
-                         {/* text-3xl font-bold tracking-tight */}
-                        Amharic Screenplay Tool 
+                      {t("dashboard.header.toolName")}
                     </Link>
                     </div>
                         <div className="flex items-center gap-2">
@@ -224,20 +199,18 @@ useEffect(() => {
                                 <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
                                 <Input
                                     type="search"
-                                    placeholder="Search scripts..."
+                                    placeholder= {t("dashboard.header.searchPlaceholder")}
                                     className="w-full bg-background pl-8 md:w-[300px] lg:w-[300px]"
                                     value={searchQuery}
                                     onChange={(e) => setSearchQuery(e.target.value)}
                                 />
                             </div>
-                             {/* Dark/Light Mode Toggle Button */}
             <button
               onClick={toggleDarkMode}
               aria-label="Toggle Dark Mode"
               className="rounded-md border p-2 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
             >
               {isDarkMode ? (
-                // Sun icon for light mode
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   className="h-5 w-5 text-yellow-400"
@@ -253,7 +226,6 @@ useEffect(() => {
                   />
                 </svg>
               ) : (
-                // Moon icon for dark mode
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   className="h-5 w-5 text-gray-900"
@@ -286,14 +258,14 @@ useEffect(() => {
 
                                 </DropdownMenuTrigger>
                                 <DropdownMenuContent align="end">
-                                    <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                                    <DropdownMenuLabel>{t("dashboard.header.myAccount")}</DropdownMenuLabel>
                                     <DropdownMenuSeparator />
                                     
                                         <ProfileDialog user={user} />
                                    
                                     <DropdownMenuSeparator />
                                     <DropdownMenuItem onClick={() => router.post('/logout')}>
-                                        <span>Log out</span>
+                                        <span>{t("dashboard.header.logout")}</span>
                                     </DropdownMenuItem>
                                 </DropdownMenuContent>
                             </DropdownMenu>
@@ -305,18 +277,18 @@ useEffect(() => {
                         <div className="flex flex-col gap-6">
                             <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                                 <h1 className="text-3xl font-bold tracking-tight">
-                                    Your Scripts
+                                   {t("dashboard.main.yourScriptsTitle")}
                                 </h1>
                                 <div className="flex flex-wrap gap-2">
                                     <CreateDialog />
                                     <Button variant="outline" onClick={() => {}}>
                                         <LayoutTemplate className="mr-2 h-4 w-4" />
-                                        Templates
+                                        {t("dashboard.main.templatesButton")}
                                     </Button>
                                     <Button variant="outline" className="cursor-pointer relative" >
                                         <input type="file" onChange={handleImport} className="absolute top-0 cursor-pointer border-0 opacity-0 z-50 w-full h-full" name="" id="" />
                                         <FileUp className="mr-2 cursor-pointer  h-4 w-4" />
-                                        Import
+                                       {t("dashboard.main.importButton")}
                                     </Button>
                                 </div>
                             </div>
@@ -326,10 +298,10 @@ useEffect(() => {
                                     <Tabs defaultValue="recent" value={selectedTab} onValueChange={setSelectedTab}>
                                         <div className="flex items-center justify-between">
                                         <TabsList>
-                                            <TabsTrigger value="recent">Recent</TabsTrigger>
-                                            <TabsTrigger value="all">All Scripts</TabsTrigger>
-                                            <TabsTrigger value="templates">Templates</TabsTrigger>
-                                            <TabsTrigger value="invite">Invited</TabsTrigger>
+                                            <TabsTrigger value="recent">{t("dashboard.main.tabs.recent")}</TabsTrigger>
+                                            <TabsTrigger value="all">{t("dashboard.main.tabs.allScripts")}</TabsTrigger>
+                                            <TabsTrigger value="templates">{t("dashboard.main.tabs.templates")}</TabsTrigger>
+                                            <TabsTrigger value="invite">{t("dashboard.main.tabs.invited")}</TabsTrigger>
                                             </TabsList>
                                             </div>
 
@@ -342,9 +314,11 @@ useEffect(() => {
                                             {filteredMyScripts?.length === 0 ? (
                                                 <div className="flex h-[200px] flex-col items-center justify-center rounded-lg border border-dashed">
                                                 <FileText className="h-10 w-10 text-muted-foreground" />
-                                                <h3 className="mt-4 text-lg font-medium">No scripts found</h3>
+                                                <h3 className="mt-4 text-lg font-medium">{t("dashboard.main.noScriptsFound")}</h3>
                                                 <p className="mt-2 text-sm text-muted-foreground">
-                                                    {searchQuery ? "Try a different search term" : "Create a new script to get started"}
+                                                   {searchQuery 
+                                                    ? t("dashboard.main.tryDifferentSearch") 
+                                                    : t("dashboard.main.createNewScript")}
                                                 </p>
                                                 <div className="mt-4">
                                                     <CreateDialog />
@@ -372,7 +346,7 @@ useEffect(() => {
                                                             <InviteCollaboratorDialog scriptId={script.id} />
                                                             <DropdownMenuItem
                                                                 onClick={() => {
-                                                                if (window.confirm('Are you sure you want to delete this script?')) {
+                                                               if (window.confirm(t("dashboard.main.deleteConfirmation"))) {
                                                                     router.delete(`/delete-script/${script.id}`)
                                                                     .then(() => {
                                                                         console.log('Script deleted successfully');
@@ -388,7 +362,7 @@ useEffect(() => {
                                                                 }}
                                                             >
                                                                 <Trash2 className="mr-2 h-4 w-4" />
-                                                                <span>Delete</span>
+                                                                <span>{t("dashboard.main.deleteButton")}</span>
                                                             </DropdownMenuItem>
                                                             
                                                             <CollaboratorsListDialog collaborators={script.collaborators_full} script={script}/>
@@ -414,7 +388,10 @@ useEffect(() => {
                                                         </div>
                                                         <div className="flex items-center">
                                                         <BookOpen className="mr-1 h-3 w-3" />
-                                                        <span>{script.pages ? `${script.pages} Pages` : '222 Pages'}</span>
+                                                       <span>
+                                                        {script.pages ? `${script.pages} ${t("dashboard.main.pages")}` : `222 ${t("dashboard.main.pages")}`}
+                                                        </span>
+
                                                         </div>
                                                     </CardFooter>
                                                     </Card>
@@ -430,7 +407,7 @@ useEffect(() => {
                                             </div> */}
 
                                             {invitedScripts?.length === 0 ? (
-                                                <p className="text-muted-foreground mt-4">You haven’t been invited to any scripts yet.</p>
+                                                <p className="text-muted-foreground mt-4">{t("dashboard.main.noInvitedScripts")}</p>
                                             ) : (
                                                 <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
                                                 {invitedScripts.map((script) => (
@@ -462,7 +439,9 @@ useEffect(() => {
                                                         </div>
                                                         <div className="flex items-center">
                                                         <BookOpen className="mr-1 h-3 w-3" />
-                                                         <span>{script.pages ? `${script.pages} Pages` : '222 Pages'}</span>
+                                                        <span>
+                                                        {script.pages ? `${script.pages} ${t("dashboard.main.pages")}` : `222 ${t("dashboard.main.pages")}`}
+                                                        </span>
                                                         </div>
                                                     </CardFooter>
                                                     </Card>
@@ -479,7 +458,7 @@ useEffect(() => {
                                     {filteredMyScripts?.length === 0 ? (
                                         <div className="flex h-[200px] flex-col items-center justify-center rounded-lg border border-dashed">
                                         <FileText className="h-10 w-10 text-muted-foreground" />
-                                        <h3 className="mt-4 text-lg font-medium">No scripts found</h3>
+                                        <h3 className="mt-4 text-lg font-medium"> {t("dashboard.main.noScriptsFound")}</h3>
                                         <p className="mt-2 text-sm text-muted-foreground">
                                             {searchQuery ? "Try a different search term" : "Create a new script to get started"}
                                         </p>
@@ -509,7 +488,7 @@ useEffect(() => {
                                                     <InviteCollaboratorDialog scriptId={script.id} />
                                                     <DropdownMenuItem
                                                         onClick={() => {
-                                                        if (window.confirm('Are you sure you want to delete this script?')) {
+                                                        if (window.confirm(t("dashboard.main.deleteConfirmation"))) {
                                                             router.delete(`/delete/${script._id}`)
                                                             .then(() => {
                                                                 console.log('Script deleted successfully');
@@ -525,7 +504,7 @@ useEffect(() => {
                                                         }}
                                                     >
                                                         <Trash2 className="mr-2 h-4 w-4" />
-                                                        <span>Delete</span>
+                                                        <span>{t("dashboard.main.deleteButton")}</span>
                                                     </DropdownMenuItem>
                                                     <CollaboratorsListDialog collaborators={script.collaborators} />
                                                     </DropdownMenuContent>
@@ -548,7 +527,9 @@ useEffect(() => {
                                                 </div>
                                                 <div className="flex items-center">
                                                 <BookOpen className="mr-1 h-3 w-3" />
-                                                <span>{script.pages ? `${script.pages} Pages` : '222 Pages'}</span>
+                                                 <span>
+                                                        {script.pages ? `${script.pages} ${t("dashboard.main.pages")}` : `222 ${t("dashboard.main.pages")}`}
+                                                        </span>
                                                 </div>
                                             </CardFooter>
                                             </Card>
