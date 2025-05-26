@@ -389,7 +389,7 @@ useEffect(() => {
                                                         <div className="flex items-center">
                                                         <BookOpen className="mr-1 h-3 w-3" />
                                                        <span>
-                                                        {script.pages ? `${script.pages} ${t("dashboard.main.pages")}` : `222 ${t("dashboard.main.pages")}`}
+                                                        {script.pages ? `${script.pages} ${t("dashboard.main.pages")}` : `0 ${t("dashboard.main.pages")}`}
                                                         </span>
 
                                                         </div>
@@ -440,7 +440,7 @@ useEffect(() => {
                                                         <div className="flex items-center">
                                                         <BookOpen className="mr-1 h-3 w-3" />
                                                         <span>
-                                                        {script.pages ? `${script.pages} ${t("dashboard.main.pages")}` : `222 ${t("dashboard.main.pages")}`}
+                                                        {script.pages ? `${script.pages} ${t("dashboard.main.pages")}` : `0 ${t("dashboard.main.pages")}`}
                                                         </span>
                                                         </div>
                                                     </CardFooter>
@@ -528,7 +528,7 @@ useEffect(() => {
                                                 <div className="flex items-center">
                                                 <BookOpen className="mr-1 h-3 w-3" />
                                                  <span>
-                                                        {script.pages ? `${script.pages} ${t("dashboard.main.pages")}` : `222 ${t("dashboard.main.pages")}`}
+                                                        {script.pages ? `${script.pages} ${t("dashboard.main.pages")}` : `0 ${t("dashboard.main.pages")}`}
                                                         </span>
                                                 </div>
                                             </CardFooter>
