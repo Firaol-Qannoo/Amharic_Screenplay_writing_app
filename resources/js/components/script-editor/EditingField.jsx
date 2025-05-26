@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { FileDown, Save } from "lucide-react";
+import { FileDown, MessageCircle, Save } from "lucide-react";
 import { useSelector } from "react-redux";
 import { useMemo } from "react";
 import {
@@ -610,7 +610,7 @@ export function EditorField({ script, scenes, scenecharacters, user }) {
     saveBtn.onclick = () => {
         console.log("Comment saved for ID:", ele.id);
         console.log("Comment:", input.value);
-         dispatch(editSceneMeta({ sceneId: ele.id, comment: input.value, userId: user.id }));
+         dispatch(editSceneMeta({ sceneId: ele.id, comment: input.value, user: user }));
         commentBox.classList.add("hidden");
     };
 
@@ -1043,23 +1043,7 @@ document.addEventListener("focusout", (e) => {
                 </div>
 
                 <div className="flex items-center border-l pl-2 ml-auto">
-                    <TooltipProvider>
-                        <Tooltip>
-                            <TooltipTrigger asChild>
-                                <Button
-                                    variant="ghost"
-                                    size="icon"
-                                    className="h-8 w-8"
-                                >
-                                    <MessageSquare className="h-4 w-4" />
-                                </Button>
-                            </TooltipTrigger>
-                            <TooltipContent>
-                                <p>Add Comment</p>
-                            </TooltipContent>
-                        </Tooltip>
-                    </TooltipProvider>
-
+                  
                     {!user.invitation && (
                         <TooltipProvider>
                             <Tooltip>
@@ -1085,18 +1069,12 @@ document.addEventListener("focusout", (e) => {
                 </div>
             </div>
 
-            <Tabs defaultValue="write" className="flex-1">
                 <div className="flex items-center justify-between border-b px-4">
-                    <TabsList className="h-9 w-auto">
-                        <TabsTrigger value="write" className="text-xs">
-                            Write
-                        </TabsTrigger>
-                        <TabsTrigger value="preview" className="text-xs">
-                            Preview
-                        </TabsTrigger>
-                    </TabsList>
+                   
+                     
 
-                    <div className="flex items-center gap-1">
+                    <div className="flex w-full justify-end self-end items-center gap-2">
+                        <div className="flex items-center gap-1">
                         <Menubar className="border-none">
                             <MenubarMenu>
     <Button
@@ -1123,6 +1101,60 @@ document.addEventListener("focusout", (e) => {
                                     </span>
                                 </Button>
                             </MenubarMenu>
+                            <MenubarMenu>
+  {/* Button to open Comments Preview */}
+  <MenubarTrigger asChild>
+    <Button
+      variant="ghost"
+      size="sm"
+      className="h-8 gap-1"
+    >
+      <MessageCircle className="h-4 w-4" />
+      <span className="text-xs">Comments</span>
+    </Button>
+  </MenubarTrigger>
+
+  {/* Dropdown Content */}
+  <MenubarContent className="w-64 max-h-72 overflow-y-auto">
+    
+  {scenes.map((scene,index) => {
+    
+  return (
+    scene.comments &&
+    scene.comments.length > 0 && (
+      <div key={scene.id} className="border-b last:border-b-0">
+        {/* Scene Heading */}
+        <div className="bg-muted px-3 py-2">
+          <p className="text-xs font-semibold text-muted-foreground">
+          {"SCENE: "  +scene.sceneHead.text} 
+          </p>
+        </div>
+
+        {/* Comments */}
+        {scene.comments.map((cmt) => (
+            
+          <div key={cmt.id} style={{
+  color: script.user_id === cmt.user.id
+    ? "#000000"
+    : `#${cmt.user.userColor}`
+}}
+ className={`py-2 border-t`}>
+            <p className="text-xs font-semibold ">
+              {cmt.user.first_name}
+            </p>
+            <p className="text-sm">{cmt.comment}</p>
+          </div>
+        ))}
+      </div>
+    )
+  );
+})}
+
+
+
+  </MenubarContent>
+</MenubarMenu>
+
                             <MenubarMenu>
                                 {" "}
                                 <Button
@@ -1178,9 +1210,9 @@ document.addEventListener("focusout", (e) => {
                             </MenubarMenu>
                         </Menubar>
                     </div>
+                    </div>
                 </div>
 
-                <TabsContent value="write" className="flex-1 p-0 m-0">
                     <div
                         id="suggestions-box"
                         className="absolute bg-white border rounded-md shadow-md z-50 max-h-40 overflow-auto hidden"
@@ -1193,25 +1225,7 @@ document.addEventListener("focusout", (e) => {
                         id="suggestion-box"
                         className="absolute bg-white border border-gray-300 rounded shadow-md z-50 hidden text-sm max-h-40 overflow-auto"
                     ></div>
-                </TabsContent>
-
-                <TabsContent value="preview" className="flex-1 p-0 m-0">
-                    <div className="h-full overflow-auto p-4">
-                        <div
-                            className="max-w-[600px] mx-auto p-8 bg-white dark:bg-black border rounded-md"
-                            style={{
-                                fontFamily:
-                                    'Nyala, "Abyssinica SIL", sans-serif',
-                            }}
-                        >
-                            <pre
-                                className="whitespace-pre-wrap"
-                                dangerouslySetInnerHTML={{ __html: content }}
-                            ></pre>
-                        </div>
-                    </div>
-                </TabsContent>
-            </Tabs>
+             
         </div>
     );
 }

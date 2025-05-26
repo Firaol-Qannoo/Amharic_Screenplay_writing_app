@@ -15,6 +15,7 @@ class Scene extends Model
         'scene_num',
         'sceneHead',
         'sceneDesc',
+        'comments',
         'lines',
         'user', 
     ];

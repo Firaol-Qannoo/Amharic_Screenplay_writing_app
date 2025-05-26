@@ -1,4 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
+import { nanoid } from 'nanoid';
 
 const initialState = {
   scenes: []
@@ -23,14 +24,17 @@ export const activeScript = createSlice({
     },
 
     editSceneMeta: (state, action) => {
-      const { sceneId, sceneHead, sceneDesc,comment,userId } = action.payload;
-      console.log({ sceneId,comment,userId })
-      const scene = state.scenes.find(s =>   console.log(s.id));
+      const { sceneId, sceneHead, sceneDesc,comment,user } = action.payload;
+  
+      const scene = state.scenes.find(s =>  s.sceneHead.id === sceneId || s.id === sceneId);
     
       if (scene) {
        
         if (sceneHead) scene.sceneHead = { id: sceneHead?.id || null, text: sceneHead?.text|| null };
-        if (sceneHead) scene.comment = { comment, userId};
+        if (comment) {
+         scene.comments = scene.comments || []; 
+          scene.comments.push({id:nanoid(), comment, user});
+        }
         if (sceneDesc) scene.sceneDesc = { id: sceneDesc?.id|| null, text: sceneDesc?.text|| null };
       }
     },
