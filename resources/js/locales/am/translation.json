@@ -369,9 +369,33 @@
         "placeholder": "የ አበበ ሚስት ማን ነበረች?",
         "generating": "በመፍጠር ላይ...",
         "generate": "ምክር ይፍጠሩ"
-    }
+    },
 
-
-
-   
+     "storyboard": {
+        "back": "← ተመለስ",
+        "scenes": "ትዕይንቶች",
+        "draw_for_scene": "ለትዕይንቱ ስዕል ይሳሉ፡፡",
+        "brush_color": "የቀለም ብሩሽ",
+        "brush_size": "የብሩሽ መጠን",
+        "tool": "መሳሪያ",
+        "brush": "ብሩሽ",
+        "eraser_on": "መሰረዣ (ተነስቷል)",
+        "clear_canvas": "ካንቫስን አጽዳ",
+        "add_notes_placeholder": "ማስታወሻዎችን እዚህ ያክሉ...",
+        "save_frame": "ትዕይንቱን አስቀምጥ",
+        "save_all": "ሁሉንም አስቀምጥ",
+        "scene_details": "ዝርዝር መረጃ",
+        "no_description": "መግለጫ አልተሰጠም።",
+        "ai_reference": "የAI አስተዳደር ምሳሌ",
+        "generating": "ምስል በመፍጠር ላይ...",
+        "polling": "ሁኔታ በመከታተል ላይ...",
+        "generate_reference": "ምሳሌ ፍጠር",
+        "error_generating": "የAI ምሳሌ ምስል መፍጠር አልተቻለም። ለበለጠ መረጃ ኮንሶልን ይመልከቱ።",
+        "no_scene_description": "ለዚህ ትዕይንት መግለጫ የለም።",
+        "error_save": "ማስቀመጥ አልተሳካም።",
+        "error_saving_frame": "ትዕይንቱን ማስቀመጥ በተሳካ ሁኔታ አልተሰራም።",
+        "saved": "ተቀምጧል!",
+        "all_saved": "ሁሉም ስዕሎች ተቀምጠዋል!",
+        "error_saving_all": "ማስቀመጥ አልተሳካም።"
+      }   
 }

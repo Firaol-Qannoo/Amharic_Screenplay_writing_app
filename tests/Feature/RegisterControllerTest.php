@@ -4,38 +4,59 @@ namespace Tests\Feature;
 
 use Tests\TestCase;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\SignupOtpMail;
 use App\Models\User;
 
 class RegisterControllerTest extends TestCase
 {
+
     protected function setUp(): void
     {
         parent::setUp();
         User::truncate(); // Clean users collection before each test
+        Mail::fake();     // Prevent actual email sending during test
+        Cache::flush();   // Clean cache
     }
 
     public function test_user_can_register()
     {
         $data = [
-            'fullname' => 'John Doe',
-            'email' => 'john@example.com',
+            'fullname' => 'Abebe Lema',
+            'email' => 'abebe@example.com',
             'password' => 'password123',
         ];
 
+        // Step 1: Submit registration
         $response = $this->post(route('register'), $data);
+        $response->assertStatus(200);
+        $response->assertSee('verify_otp_signup'); // Ensure OTP page is rendered
 
-        $this->assertDatabaseHas('users', ['email' => 'john@example.com']);
-        $response->assertRedirect(route('login'));
+        // Step 2: Check cached OTP data
+        $cached = Cache::get('otp_' . $data['email']);
+        $this->assertNotNull($cached);
+        $this->assertEquals($data['email'], $cached['email']);
+
+        // Step 3: Submit OTP verification
+        $verifyResponse = $this->post(route('verify-signup-otp'), [
+            'email' => $data['email'],
+            'otp' => $cached['otp'],
+        ]);
+
+        // Step 4: Assert user is created and redirected to login
+        $this->assertDatabaseHas('users', ['email' => $data['email']]);
+        $verifyResponse->assertRedirect(route('login'));
     }
 
     public function test_user_cannot_register_with_invalid_data()
     {
-        $data = [
-            'fullname' => 'John Doe',
-            'email' => 'john@example.com',
-        ];
+        $response = $this->post(route('register'), [
+           'fullname' => 'Abebe Lema',
+            'email' => 'abebe@example.com',
+            // missing password
+        ]);
 
-        $response = $this->post(route('register'), $data);
         $response->assertSessionHasErrors('password');
     }
 
@@ -47,25 +68,24 @@ class RegisterControllerTest extends TestCase
             'password' => Hash::make('password123'),
         ]);
 
-        $data = [
+        $response = $this->post(route('login'), [
             'email' => 'john@example.com',
             'password' => 'password123',
-        ];
+        ]);
 
-        $response = $this->post(route('login'), $data);
         $response->assertRedirect(route('dashboard'));
         $this->assertAuthenticatedAs($user);
     }
 
     public function test_user_cannot_login_with_invalid_credentials()
     {
-        $data = [
-            'email' => 'john@example.com',
+        $response = $this->post(route('login'), [
+            'email' => 'nonexistent@example.com',
             'password' => 'wrongpassword',
-        ];
+        ]);
 
-        $response = $this->post(route('login'), $data);
-        $response->assertSessionHasErrors('email');
+        $this->assertGuest();
+        $response->assertRedirect(route('login'));
     }
 
     public function test_user_can_logout()
@@ -78,7 +98,7 @@ class RegisterControllerTest extends TestCase
 
         $this->actingAs($user);
         $response = $this->post(route('logout'));
-        $response->assertRedirect(route('login'));
+        $response->assertRedirect(route('home'));
         $this->assertGuest();
     }
 }

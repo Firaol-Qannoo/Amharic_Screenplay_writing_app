@@ -27,7 +27,7 @@ use App\Http\Controllers\ContactController;
 Route::post('/invitations', [ScriptInvitationController::class, 'store']); // Invite user
 Route::get('/invitation/accept/{token}', [ScriptInvitationController::class, 'accept'])->name('invitation.accept');
 
-Route::post('/scenes', [SceneController::class, 'store']);
+Route::post('/scenes', [SceneController::class, 'store'])->name('scenes.store');
 Route::get('/scenes/{id}', [SceneController::class, 'show']);
 
 Route::get('/auth/google', [SocialAuthController::class, 'redirectToGoogle'])->name('google.login');
@@ -102,18 +102,20 @@ Route::middleware(['auth'])->group(function () {
 
     Route::post('/import-script', [ImportScriptController::class, 'store'])->name('import-script');
     Route::post('/logout', [RegisterController::class, 'logout'])->name('logout');
+    Route::post('/scripts', [ScriptsController::class, 'store'])->name('scripts');
+
+    Route::get('/production-schedule', [ProductionScheduleController::class, 'index'])->name('scenes.index');
+    Route::post('/production-schedule', [ProductionScheduleController::class, 'showWithStaticData'])->name('scenes.update');
+    Route::post('/production-schedule/save-locations', [ProductionScheduleController::class, 'saveShootLocations']);
+    Route::get('/scripts/{scriptId}/storyboard', [StoryboardController::class, 'index'])->name('storyboard.index');
+    Route::post('/storyboard/save', [StoryboardController::class, 'save']);
 });
 
     Route::post('/forgot-password', [RegisterController::class, 'sendResetOtp']);
     Route::post('/reset-password', [RegisterController::class, 'resetPassword']);
     Route::post('/verify-otp', [RegisterController::class, 'verifyOtp']);
 
-    Route::post('/scripts', [ScriptsController::class, 'store'])->name('scripts');
-    Route::get('/production-schedule', [ProductionScheduleController::class, 'index'])->name('scenes.index');
-    Route::post('/production-schedule', [ProductionScheduleController::class, 'showWithStaticData'])->name('scenes.update');
-    Route::post('/production-schedule/save-locations', [ProductionScheduleController::class, 'saveShootLocations']);
-    Route::get('/scripts/{scriptId}/storyboard', [StoryboardController::class, 'index'])->name('storyboard.index');
-    Route::post('/storyboard/save', [StoryboardController::class, 'save']);
+   
 
 
 

@@ -371,6 +371,33 @@
             "placeholder": "Who was Abebe’s wife?",
             "generating": "Generating...",
             "generate": "Generate Tip"
-        }
+        },
+     "storyboard": {
+        "back": "← Back",
+        "scenes": "Scenes",
+        "draw_for_scene": "Draw for Scene",
+        "brush_color": "Brush Color",
+        "brush_size": "Brush Size",
+        "tool": "Tool",
+        "brush": "Brush",
+        "eraser_on": "Eraser (ON)",
+        "clear_canvas": "Clear Canvas",
+        "add_notes_placeholder": "Add notes here...",
+        "save_frame": "Save Frame",
+        "save_all": "Save All",
+        "scene_details": "Scene Details",
+        "no_description": "No description available.",
+        "ai_reference": "AI Reference",
+        "generating": "Generating image...",
+        "polling": "Polling status...",
+        "generate_reference": "Generate Reference",
+        "error_generating": "Failed to generate AI reference image. Check console for details.",
+        "no_scene_description": "No description available for this scene.",
+        "error_save": "Failed to save",
+        "error_saving_frame": "Error saving frame:",
+        "saved": "Saved!",
+        "all_saved": "All sketches saved!",
+        "error_saving_all": "Failed to save"
+      }
 
  }

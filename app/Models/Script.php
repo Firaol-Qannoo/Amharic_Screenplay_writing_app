@@ -6,9 +6,11 @@ use MongoDB\Laravel\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Script extends Model
 {
+    use HasFactory;
     protected $connection = 'mongodb';
     protected $collection = 'scripts';
 

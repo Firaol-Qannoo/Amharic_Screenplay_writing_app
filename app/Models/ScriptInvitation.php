@@ -6,9 +6,11 @@ use MongoDB\Laravel\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class ScriptInvitation extends Model
-{
+class ScriptInvitation extends Model {
+    
+    use HasFactory;
     protected $connection = 'mongodb'; // Ensure it's using MongoDB connection
     protected $collection = 'script_invitations';
  

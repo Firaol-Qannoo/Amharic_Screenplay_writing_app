@@ -8,9 +8,11 @@ use Illuminate\Notifications\Notifiable;
 use MongoDB\Laravel\Eloquent\Model; // Use MongoDB model
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class User extends Model implements Authenticatable
 {
+    use HasFactory;
     use Notifiable;
     use AuthenticatableTrait;
 
