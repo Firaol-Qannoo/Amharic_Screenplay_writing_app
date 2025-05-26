@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from '@inertiajs/react';
+import { useTranslation } from 'react-i18next';
 
 export default function StoryboardPage({ scriptId, frames }) {
+    const { t } = useTranslation();
     const [localFrames, setLocalFrames] = useState(frames || []);
     const [brushColor, setBrushColor] = useState('#000000');
 const [brushSize, setBrushSize] = useState(5);
@@ -94,10 +96,10 @@ const handleMouseMove = (e) => {
                 })
             });
 
-            if (!response.ok) throw new Error("Failed to save");
+            if (!response.ok) throw new Error(t('storyboard.error_save'));
             alert("Saved!");
         } catch (error) {
-            console.error("Error saving frame:", error);
+           console.error(t('storyboard.error_saving_frame'), error);
         }
     };
 
@@ -123,17 +125,17 @@ const handleMouseMove = (e) => {
             });
 
             if (!response.ok) throw new Error("Save failed");
-            alert("All sketches saved!");
+            alert(t('storyboard.all_saved'));
         } catch (error) {
             console.error("Error saving storyboard:", error);
-            alert("Failed to save");
+             alert(t('storyboard.error_saving_all'));
         }
     };
 
 
 const generateAIReference = async () => {
     if (!selectedScene?.description) {
-        alert("No description available for this scene.");
+       alert(t('storyboard.no_scene_description'));
         return;
     }
 
@@ -175,7 +177,7 @@ const generateAIReference = async () => {
         }
     } catch (error) {
         console.error("Error calling FastAPI:", error.message);
-        alert("Failed to generate AI reference image. Check console for details.");
+       alert(t('storyboard.ai_generation_failed'));
     } finally {
         setGenerating(false);
     }
@@ -191,7 +193,7 @@ const generateAIReference = async () => {
         <div className="p-6 max-w-7xl mx-auto flex gap-6">
             {/* Scene List Sidebar */}
             <div className="w-1/4 bg-white border rounded shadow-sm p-4 h-fit sticky top-6">
-                <h2 className="font-semibold mb-4">Scenes</h2>
+                <h2 className="font-semibold mb-4">{t('storyboard.scenes')}</h2>
                 <ul className="space-y-2">
                     {localFrames.map((frame, index) => (
                         <li key={index}>
@@ -218,20 +220,20 @@ const generateAIReference = async () => {
         type="button"
         className="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-gray-100 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-400"
     >
-        ← Back
+        {t('storyboard.back')}
     </button>
 
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                     {/* Canvas */}
 <div className="lg:col-span-2 border rounded shadow-sm p-4 bg-white">
     <h3 className="font-medium mb-2">
-        Draw for Scene: {selectedScene?.heading || 'Untitled'}
+        {t('storyboard.draw_for_scene')}: {selectedScene?.heading || 'Untitled'}
     </h3>
 
     {/* Canvas Tools */}
 <div className="flex flex-wrap gap-4 mb-4">
     <div>
-        <label className="block text-xs text-gray-600">Brush Color</label>
+        <label className="block text-xs text-gray-600">{t('storyboard.brush_color')}</label>
         <input
             type="color"
             value={brushColor}
@@ -242,7 +244,7 @@ const generateAIReference = async () => {
     </div>
 
     <div>
-        <label className="block text-xs text-gray-600">Brush Size: {brushSize}px</label>
+        <label className="block text-xs text-gray-600">{t('storyboard.brush_size')}: {brushSize}px</label>
         <input
             type="range"
             min="1"
@@ -254,14 +256,15 @@ const generateAIReference = async () => {
     </div>
 
     <div>
-        <label className="block text-xs text-gray-600">Tool</label>
+        <label className="block text-xs text-gray-600">{t('storyboard.tool')}</label>
         <button
             onClick={() => setIsErasing(!isErasing)}
             className={`px-3 py-1 rounded-md text-sm ${
                 isErasing ? 'bg-red-100 text-red-700' : 'bg-green-100 text-green-700'
             }`}
         >
-            {isErasing ? "Eraser (ON)" : "Brush"}
+            {isErasing ? t('storyboard.eraser_on') : t('storyboard.brush')}
+
         </button>
     </div>
 
@@ -271,7 +274,7 @@ const generateAIReference = async () => {
             onClick={clearCanvas}
             className="px-3 py-1 bg-gray-200 hover:bg-gray-300 text-gray-800 rounded-md"
         >
-            Clear Canvas
+           {t('storyboard.clear_canvas')}
         </button>
     </div>
 </div>
@@ -288,7 +291,7 @@ const generateAIReference = async () => {
     />
 
     <textarea
-        placeholder="Add notes here..."
+        placeholder={t('storyboard.add_notes_placeholder')}
         value={selectedScene?.notes || ''}
         onChange={(e) => handleNotesChange(e.target.value)}
         className="mt-3 w-full border rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -298,22 +301,22 @@ const generateAIReference = async () => {
         onClick={() => handleSaveSingle(selectedScene)}
         className="mt-3 bg-black text-white px-4 py-1 rounded text-sm"
     >
-        Save Frame
+         {t('storyboard.save_frame')}
     </button>
 </div>
 
                     {/* Scene Info + AI Image Preview */}
                     <div className="bg-white border rounded shadow-sm p-4 space-y-6">
                         <div>
-                            <h3 className="font-medium mb-2">Scene Details</h3>
+                            <h3 className="font-medium mb-2">{t('storyboard.scene_details')}</h3>
                             <div className="text-sm text-gray-700 whitespace-pre-line">
-                                {selectedScene?.description || "No description available."}
+                               {selectedScene?.description || t('storyboard.no_description')}
                             </div>
                         </div>
 
                         {/* AI Generated Image */}
                         <div>
-                            <h3 className="font-medium mb-2">AI Reference</h3>
+                            <h3 className="font-medium mb-2">{t('storyboard.ai_reference')}</h3>
                             <div className="relative border border-dashed border-gray-300 rounded p-4 min-h-[200px] bg-gray-50 flex items-center justify-center">
                                 {generating && (
     <div className="flex items-center gap-2">
@@ -321,10 +324,10 @@ const generateAIReference = async () => {
             <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
             <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
         </svg>
-        <span>Generating image...</span>
+        <span>{t('storyboard.generating')}</span>
     </div>
 )}
-                                {polling && <span>🔄 Polling status...</span>}
+                                {polling && <span>🔄 {t('storyboard.polling')}</span>}
                                 {generatedImageStatus === "COMPLETED" && generatedImageUrl && (
     <img
         src={generatedImageUrl.trim()}  // <-- Important again
@@ -343,7 +346,7 @@ const generateAIReference = async () => {
                                         disabled={generating}
                                         className="px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-800 rounded-md"
                                     >
-                                        Generate Reference
+                                         {t('storyboard.generate_reference')}
                                     </button>
                                 )}
                             </div>
@@ -357,7 +360,7 @@ const generateAIReference = async () => {
                         onClick={handleSaveAll}
                         className="bg-black hover:bg-gray-900 text-white px-4 py-2 rounded-md"
                     >
-                        Save All
+                        {t('storyboard.save_all')}
                     </button>
                 </div>
             </div>
