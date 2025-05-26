@@ -24,7 +24,7 @@ use App\Http\Controllers\ContactController;
 
 
 
-Route::post('/invitations', [ScriptInvitationController::class, 'store']); // Invite user
+Route::post('/invitations', [ScriptInvitationController::class, 'store'])->name('invitations.store'); // Invite user
 Route::get('/invitation/accept/{token}', [ScriptInvitationController::class, 'accept'])->name('invitation.accept');
 
 Route::post('/scenes', [SceneController::class, 'store'])->name('scenes.store');

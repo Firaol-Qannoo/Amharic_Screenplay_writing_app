@@ -12,8 +12,6 @@ use App\Http\Controllers\ProductionScheduleController;
 
 class ProductionSceneControllerTest extends TestCase
 {
-    use RefreshDatabase;
-
     /** @test */
     public function it_parses_and_saves_scenes_from_json_and_renders_inertia_view()
     {
