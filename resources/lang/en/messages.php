@@ -1,0 +1,30 @@
+<?php
+    return [
+        'account_updated' => 'Account updated successfully!',
+        'success_title' => 'Success',
+        'error_title' => 'Error',
+        'info_title' => 'Info',
+        'login_success' => 'Logged in successfully!',
+        'message_sent' => 'Message sent successfully!',
+        'script_imported' => 'Script imported successfully!',
+        'scenes_saved' => 'Scenes and Characters saved successfully!',
+        'self_invite_error' => 'You cannot invite yourself to the script.',
+        'already_collaborator' => 'User is already a collaborator on this script!',
+        'already_invited' => 'This user has already been invited to this script.',
+        'invitation_sent' => 'Invitation sent successfully.',
+        'invitation_failed' => 'Failed to send invitation. Please try again.',
+        'invitation_accepted' => 'Invitation already accepted.',
+        'joined_script' => 'You have joined the script.',
+        'invalid_invitation' => 'Invalid or expired invitation.',
+        'collaborator_deleted' => 'Collaborator deleted successfully!',
+        'no_roles_assigned' => 'No roles assigned. Please select at least one role.',
+        'collaborator_not_found' => 'Collaborator not found.',
+        'collaborator_role_changed' => 'Collaborator role changed successfully!',
+        'user_role_required' => 'User should have at least one role, or remove the user if not needed.',
+        'update_collaborator_roles_error' => 'Something went wrong while updating collaborator roles.',
+        'script_created' => 'Your script has been created.',
+        'script_updated' => 'Your script has been updated successfully.',
+        'script_deleted' => 'Script deleted successfully!',
+
+    ];
+

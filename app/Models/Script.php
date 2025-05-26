@@ -17,13 +17,15 @@ class Script extends Model
         'description',
         'genre',
         'type',
+        
+        'template',
         'user_id',
         'thumbnail',
+        'pages',
         'collaborators', 
     ];
 
-    public function user()
-    {
+    public function user()  {
         return $this->belongsTo(User::class, 'user_id', '_id');
     }
 
@@ -39,15 +41,13 @@ class Script extends Model
     }
 
 
-    // The owner of the script
-    public function owner(): BelongsTo
-    {
+    
+    public function owner(): BelongsTo {
         return $this->belongsTo(User::class, 'user_id');
     }
 
-    // All invitations related to this script
-    public function invitations(): HasMany
-    {
+
+    public function invitations(): HasMany {
         return $this->hasMany(ScriptInvitation::class, 'script_id');
     }
 
@@ -56,6 +56,6 @@ class Script extends Model
     return $this->belongsToMany(User::class, 'script_invitations', 'script_id', 'invitee_id')
         ->withPivot('role', 'accepted')
         ->withTimestamps();
-}
+    }
 
-}
+    }

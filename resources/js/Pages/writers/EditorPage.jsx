@@ -11,11 +11,13 @@ import { selectcharacters } from "../../features/Characters"
 import { EditorField } from "../../components/script-editor/EditingField"
 import { CharacterRelationships } from "../../components/script-editor/CharacterRelationships"
 import AiAssistantDialog from '@/components/aiassistancedialog'
-
-
 import { Link, usePage } from "@inertiajs/react"
+import { useTranslation } from "react-i18next";
+
+
 
 export default function EditorPage({ script, user, scenecharacters, scenes }) {
+    const { t } = useTranslation();
     const [showNetworkView, setShowNetworkView] = useState(false)
     const [editorContent, setEditorContent] = useState("");
     const [isAiOpen, setIsAiOpen] = useState(false);
@@ -87,7 +89,7 @@ export default function EditorPage({ script, user, scenecharacters, scenes }) {
                                     className="text-xs"
                                     onClick={() => setShowNetworkView(!showNetworkView)}
                                 >
-                                    {showNetworkView ? "ስክሪፕት አሳይ" : "ግንኙነት ኔትወርክ አሳይ"}
+                                   {showNetworkView ? t("editor_page.editor.show_script") : t("editor_page.editor.show_network")}
                                 </Button>
                                 <button
               onClick={toggleDarkMode}
@@ -137,7 +139,7 @@ export default function EditorPage({ script, user, scenecharacters, scenes }) {
                         {showNetworkView ? (
                             <Card className="h-[600px]">
                                 <CardHeader className="pb-2">
-                                    <CardTitle className="text-lg">የገጸ ባህሪዎች ግንኙነት ኔትወርክ</CardTitle>
+                                    <CardTitle className="text-lg">{t("editor_page.editor.network_title")}</CardTitle>
                                 </CardHeader>
                                 <CardContent className="h-[540px]">
                                     <CharacterNetwork />
@@ -160,7 +162,7 @@ export default function EditorPage({ script, user, scenecharacters, scenes }) {
                             onClick={() => setIsAiOpen(true)}
                             className="bg-black text-white p-3 rounded-full shadow-lg hover:bg-gray-800 transition duration-200"
                         >
-                            🤖 AI
+                            🤖{t("editor_page.editor.ai_button")}
                         </button>
                     </div>
 
@@ -173,7 +175,7 @@ export default function EditorPage({ script, user, scenecharacters, scenes }) {
                                     onChange={(e) => setIncludeScriptContext(e.target.checked)}
                                     className="rounded text-purple-600"
                                 />
-                                <span>የስክሪፕቱን መረጃ ያካትቱ</span>
+                                <span>{t("editor_page.editor.include_context")}</span>
                             </label>
                         </div>
                     )}

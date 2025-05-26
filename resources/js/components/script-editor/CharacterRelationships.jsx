@@ -33,7 +33,10 @@ import { charRelSchema } from "../../utils/validation/charrel"
 import { charSchema } from "../../utils/validation/char"
 import { addRelationship, selectcharacters } from "../../features/Characters"
 import { relations } from "../../../../public/data/relations"
+import { useTranslation } from "react-i18next";
+
 export function CharacterRelationships() {
+   const { t } = useTranslation();
   const characters = useSelector(selectcharacters)
 const dispatch = useDispatch()
   const [isOpen, setIsOpen] = useState(true)
@@ -107,7 +110,7 @@ const [openmain, setopenmain] = useState(false)
         <div className="flex h-14 items-center justify-between border-b px-4">
           <div className="flex items-center gap-2">
             <Users className="h-5 w-5" />
-            <h2 className="font-medium">የገጸ ባህሪዎች ግንኙነት</h2>
+            <h2 className="font-medium">{t("character_relationship_network.title")}</h2>
           </div>
           <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => setIsOpen(!isOpen)}>
             <X className="h-4 w-4" />
@@ -117,8 +120,8 @@ const [openmain, setopenmain] = useState(false)
         <div className="p-4">
           <Tabs defaultValue="tree" className="w-full">
             <TabsList className="grid w-full grid-cols-2">
-              <TabsTrigger value="tree">ግንኙነት ዛፍ</TabsTrigger>
-              <TabsTrigger value="list">ገጸ ባህሪዎች</TabsTrigger>
+              <TabsTrigger value="tree">{t("character_relationship_network.tabs.tree")}</TabsTrigger>
+              <TabsTrigger value="list">{t("character_relationship_network.tabs.list")}</TabsTrigger>
             </TabsList>
             <TabsContent value="tree" className="mt-4 space-y-4">
               <Card>
@@ -129,7 +132,7 @@ const [openmain, setopenmain] = useState(false)
                   <p className="text-xs text-muted-foreground mb-2">{selectedCharacter?.description}</p>
 
                   <div className="my-4 space-y-2">
-                    <h4 className="text-xs font-medium">ግንኙነቶች:</h4>
+                    <h4 className="text-xs font-medium">{t("character_relationship_network.count_relationships")}:</h4>
                     <div className="space-y-2">
                       {selectedCharacter?.relationships?.map((rel) => {
                         const relatedChar = getCharacterById(rel.to)
@@ -154,11 +157,11 @@ const [openmain, setopenmain] = useState(false)
       <DialogTrigger asChild>
        
 
-      <Button>የገጸ ባህሪያት ማስተካከያ</Button>
+      <Button>{t("character_relationship_network.edit_character_button")}</Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>የገጸ ባህሪያት ማስተካከያ</DialogTitle>
+          <DialogTitle>{t("character_relationship_network.edit_character_button")}</DialogTitle>
        
         </DialogHeader>
         <div className="grid gap-4 py-4">
@@ -201,7 +204,7 @@ const [openmain, setopenmain] = useState(false)
     {tobeRelate !="none" &&  <div className="w-full  py-4">
        <div className="items-center  w-full flex flex-col gap-4">
         <div className="flex gap-2 items-center  text-nowrap" >{watch("name")} ለ {tobeRelate} <Input {...register("type")}></Input></div>
-        <div className="flex gap-2 items-center  text-nowrap" >የግንኙነት ገለጻ<Input {...register("description")}></Input></div>
+        <div className="flex gap-2 items-center  text-nowrap" >{t("character_relationship_network.relationship.description")}<Input {...register("description")}></Input></div>
      </div>
      </div>}
         
@@ -210,7 +213,7 @@ const [openmain, setopenmain] = useState(false)
           </div>
         </div>
         <DialogFooter>
-          <Button type="submit" onClick={handleSubmit(saveRelHandler)}>Save changes</Button>
+          <Button type="submit" onClick={handleSubmit(saveRelHandler)}>{t("character_relationship_network.save")}</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
@@ -223,7 +226,7 @@ const [openmain, setopenmain] = useState(false)
           </div>
         </div>
         <DialogFooter>
-          <Button onClick={()=>setopenmain(p=>!p)} type="submit">Save changes</Button>
+          <Button onClick={()=>setopenmain(p=>!p)} type="submit">{t("character_relationship_network.save")}</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
@@ -236,7 +239,7 @@ const [openmain, setopenmain] = useState(false)
                   <span className="w-full border-t" />
                 </div>
                 <div className="relative flex justify-center text-xs uppercase">
-                  <span className="bg-background px-2 text-muted-foreground">ሁሉም ግንኙነቶች</span>
+                  <span className="bg-background px-2 text-muted-foreground">{t("character_relationship_network.all_relationships")}</span>
                 </div>
               </div>
 
@@ -273,7 +276,7 @@ const [openmain, setopenmain] = useState(false)
                     <CardContent className="p-3 pt-0">
                       <p className="text-xs text-muted-foreground">{char.description}</p>
                       <p className="text-xs font-medium mt-1">{char.role}</p>
-                      <p className="text-xs text-muted-foreground mt-1">{char?.relationships?.length} ግንኙነቶች</p>
+                      <p className="text-xs text-muted-foreground mt-1">{char?.relationships?.length}{t("character_relationship_network.count_relationships")}</p>
                     </CardContent>
                   </Card>
                        </DialogTrigger>
@@ -285,8 +288,8 @@ const [openmain, setopenmain] = useState(false)
                      
                       <div className="w-full  py-4">
                         <div className="items-center  w-full flex flex-col gap-4">
-                         <div className="flex gap-2 items-center  text-nowrap" >ሚና <Input {...updateRegister("role")}></Input></div>
-                         <div className="flex gap-2 items-center  text-nowrap" >ገለጻ<Input {...updateRegister("description")}></Input></div>
+                         <div className="flex gap-2 items-center  text-nowrap" >{t("character_relationship_network.fields.role")} <Input {...updateRegister("role")}></Input></div>
+                         <div className="flex gap-2 items-center  text-nowrap" >{t("character_relationship_network.fields.description")}<Input {...updateRegister("description")}></Input></div>
                       </div>
                       </div>
                          
@@ -295,7 +298,7 @@ const [openmain, setopenmain] = useState(false)
                            </div>
                          </div>
                          <DialogFooter>
-                           <Button type="submit" onClick={updateHandler(saveCharHandler)}>Save changes</Button>
+                           <Button type="submit" onClick={updateHandler(saveCharHandler)}>{t("character_relationship_network.save")}</Button>
                          </DialogFooter>
                        </DialogContent>
                      </Dialog>

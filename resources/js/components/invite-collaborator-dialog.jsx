@@ -14,8 +14,12 @@ import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox"; 
 import { Share } from "lucide-react";
 import flasher from "@flasher/flasher";
+import { useTranslation } from "react-i18next";
+
+
 
 export function InviteCollaboratorDialog({ scriptId }) {
+  const { t } = useTranslation();
   const [open, setOpen] = useState(false);
   
 
@@ -44,17 +48,17 @@ export function InviteCollaboratorDialog({ scriptId }) {
       <DialogTrigger asChild>
         <Button variant="ghost">
           <Share className="mr-2 h-4 w-4" />
-          Invite Collaborators
+         {t("invite-collaborators.inviteCollaborators")}
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[500px]">
         <DialogHeader>
-          <DialogTitle>Invite a Collaborator</DialogTitle>
+          <DialogTitle>{t("invite-collaborators.inviteCollaboratorTitle")}</DialogTitle>
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-4 mt-2">
           <div className="space-y-2">
-            <Label htmlFor="invitee_email">Email Address</Label>
+            <Label htmlFor="invitee_email">{t("invite-collaborators.emailAddress")}</Label>
             <Input
               id="invitee_email"
               type="email"
@@ -68,7 +72,7 @@ export function InviteCollaboratorDialog({ scriptId }) {
           </div>
 
           <div className="space-y-2">
-            <Label>Roles</Label>
+            <Label>{t("invite-collaborators.roles")}</Label>
             <div className="space-y-2">
             {availableRoles.map((role) => (
   <div key={role} className="flex items-center space-x-2">
@@ -99,7 +103,7 @@ export function InviteCollaboratorDialog({ scriptId }) {
 
           <DialogFooter>
             <Button type="submit" disabled={processing}>
-              {processing ? "Sending..." : "Send Invitation"}
+              {processing ? t("invite-collaborators.sending") : t("invite-collaborators.sendInvitation")}
             </Button>
           </DialogFooter>
         </form>

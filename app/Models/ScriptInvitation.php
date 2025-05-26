@@ -29,9 +29,7 @@ class ScriptInvitation extends Model
         'role' => 'array',
     ];
 
-    /**
-     * The script that this invitation belongs to.
-     */
+    // The script that this invitation belongs to.
     public function script(): BelongsTo {
         return $this->belongsTo(Script::class, 'script_id');
     }

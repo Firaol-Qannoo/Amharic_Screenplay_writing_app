@@ -2,13 +2,7 @@ import { z } from 'zod'
 export const signupSchema = z.object({
     fullname: z.string().regex(/([a-zA-Z])+\s([a-zA-Z])+/, "Please enter your full name"),
     email: z.string().email("Invalid email address"),
-    username: z.string().refine((val) => {
-        if (val === "" || val === null) return true;
-        return /(^[a-zA-Z])([a-zA-Z0-9-]){3,}/.test(val);
-    }, {
-        message: "Username must start with a letter and be at least 4 characters.",
-    }),
-    role: z.string().optional(),
+   
     password: z.string().min(8, "Password is too short.").max(20, "Password is too long."),
     confirmPassword: z.string(),
     profilePicture: z.instanceof(File, { message: "Invalid Image" }).refine(profilePicture =>

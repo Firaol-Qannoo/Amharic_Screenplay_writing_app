@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 export default function SceneTable({ scenes, onBack }) {
+    const { t } = useTranslation();
     const [localScenes, setLocalScenes] = useState(scenes);
     const [savingIndex, setSavingIndex] = useState(null);
 
@@ -41,13 +43,13 @@ export default function SceneTable({ scenes, onBack }) {
             <table className="min-w-full divide-y divide-gray-200">
                 <thead className="bg-gray-50">
                     <tr>
-                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Scene</th>
-                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">I/E</th>
-                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Scene Setting</th>
-                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">D/N</th>
-                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Characters</th>
-                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Shoot Location</th>
-                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{t("scene-table.scene")}</th>
+                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{t("scene-table.interiorExterior")}</th>
+                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{t("scene-table.sceneSetting")}</th>
+                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{t("scene-table.dayNight")}</th>
+                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{t("scene-table.characters")}</th>
+                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{t("scene-table.shootLocation")}</th>
+                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{t("scene-table.actions")}</th>
                     </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
@@ -68,7 +70,7 @@ export default function SceneTable({ scenes, onBack }) {
                                     className="border rounded px-2 py-1 w-full text-sm focus:outline-none focus:ring-2 focus:ring-black"
                                     value={scene.shoot_location || ''}
                                     onChange={(e) => handleLocationChange(index, e.target.value)}
-                                    placeholder="Set location"
+                                   placeholder={t("scene-table.setLocationPlaceholder")}
                                 />
                             </td>
 
@@ -82,7 +84,7 @@ export default function SceneTable({ scenes, onBack }) {
                                             : 'bg-black hover:bg-black'
                                     }`}
                                 >
-                                    {savingIndex === index ? 'Saving...' : 'Save'}
+                                   {savingIndex === index ? t("scene-table.saving") : t("scene-table.save")}
                                 </button>
                             </td>
                         </tr>
@@ -96,7 +98,7 @@ export default function SceneTable({ scenes, onBack }) {
         type="button"
         className="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-gray-100 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-400"
     >
-        ← Back
+        ← {t("scene-table.back")}
     </button>
 </div>
         </div>

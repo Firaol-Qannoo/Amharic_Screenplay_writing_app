@@ -6,31 +6,29 @@ use App\Models\ProductionScene;
 use Inertia\Inertia;
 use Illuminate\Http\Request;
 
-class ProductionScheduleController extends Controller
-{
-    public function index()
-    {
-        $productionScenes = ProductionScene::all();
+    class ProductionScheduleController extends Controller {
+       
+        public function index() {
+            $productionScenes = ProductionScene::all();
 
-        if ($productionScenes->isEmpty()) {
+            if ($productionScenes->isEmpty()) {
+                return Inertia::render('ScenesPage', [
+                    'scenes' => [],
+                    'title' => 'No Script Loaded',
+                    'author' => ''
+                ]);
+            }
+
+            $firstScene = $productionScenes->first();
+
             return Inertia::render('ScenesPage', [
-                'scenes' => [],
-                'title' => 'No Script Loaded',
-                'author' => ''
+                'scenes' => $productionScenes,
+                'title' => $firstScene->script_title ?? 'Untitled Script',
+                'author' => $firstScene->script_author ?? 'Unknown Author'
             ]);
         }
 
-        $firstScene = $productionScenes->first();
-
-        return Inertia::render('ScenesPage', [
-            'scenes' => $productionScenes,
-            'title' => $firstScene->script_title ?? 'Untitled Script',
-            'author' => $firstScene->script_author ?? 'Unknown Author'
-        ]);
-    }
-
-    public function showWithStaticData(Request $request)
-    {
+    public function showWithStaticData(Request $request) {
         $request->validate(['scenes' => 'required|array']);
         $scriptData = $request->all();
         $parsedScenes = [];

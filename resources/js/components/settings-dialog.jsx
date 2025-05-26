@@ -1,5 +1,5 @@
-import { useState } from "react"
-import { router } from "@inertiajs/react"
+import { useState, useEffect } from "react"
+import { router, usePage } from "@inertiajs/react"
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
@@ -15,15 +15,45 @@ import { Label } from "@/components/ui/label"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Switch } from "@/components/ui/switch"
 import { Settings } from "lucide-react"
+import i18n from "@/i18n"; 
+import { useTranslation } from "react-i18next";
+
 
 export function SettingsDialog({ user }) {
+  const { flash } = usePage().props;
+  const { t } = useTranslation();
   const [open, setOpen] = useState(false)
   const [first_name, setName] = useState(user?.first_name || "")
+ const [langPref, setLangPref] = useState(user?.lang_pref || "en");
 
-  const handleSave = () => {
-    router.post("/settings/update", { first_name })
-    setOpen(false)
+
+
+ const handleSave = () => {
+  router.post("/settings/update", {
+    first_name,
+    lang_pref: langPref,
+  });
+
+  // Apply change on frontend
+  i18n.changeLanguage(langPref);
+  localStorage.setItem("lang", langPref);
+
+  setOpen(false);
+};
+
+
+ const handleLangChange = (lang) => {
+  setLangPref(lang); // just store selected lang
+};
+
+
+
+ useEffect(() => {
+  if (user?.lang_pref) {
+    i18n.changeLanguage(user.lang_pref);
+    localStorage.setItem("lang", user.lang_pref);
   }
+ }, []);
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -34,29 +64,33 @@ export function SettingsDialog({ user }) {
       </DialogTrigger>
       <DialogContent className="sm:max-w-[500px]">
         <DialogHeader>
-          <DialogTitle>Settings</DialogTitle>
+          <DialogTitle>{t("setting_mgt.settings.title")}</DialogTitle>
           <DialogDescription>
-            Customize your screenplay writing experience
+           {t("setting_mgt.settings.description")}
           </DialogDescription>
         </DialogHeader>
         <Tabs defaultValue="general">
           <TabsList className="grid w-full grid-cols-3">
-            <TabsTrigger value="general">General</TabsTrigger>
-            <TabsTrigger value="editor">Editor</TabsTrigger>
-            <TabsTrigger value="account">Account</TabsTrigger>
+            <TabsTrigger value="general">{t("setting_mgt.settings.tabs.general")}</TabsTrigger>
+            <TabsTrigger value="editor">{t("setting_mgt.settings.tabs.editor")}</TabsTrigger>
+            <TabsTrigger value="account">{t("setting_mgt.settings.tabs.account")}</TabsTrigger>
           </TabsList>
 
           {/* General Tab */}
           <TabsContent value="general" className="space-y-4 py-4">
             <div className="space-y-2">
-              <Label htmlFor="language">Interface Language</Label>
-              <select
-                id="language"
-                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-              >
-                <option value="amharic">አማርኛ (Amharic)</option>
-                <option value="english">English</option>
-              </select>
+              <Label htmlFor="language">{t("setting_mgt.settings.interface_language")}</Label>
+            <select
+              id="language"
+              value={langPref}
+              onChange={(e) => handleLangChange(e.target.value)}
+              className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+            >
+              <option value="am">አማርኛ (Amharic)</option>
+              <option value="en">English</option>
+            </select>
+
+
             </div>
             {/* <div className="flex items-center justify-between">
               <div className="space-y-0.5">
@@ -81,20 +115,20 @@ export function SettingsDialog({ user }) {
           {/* Editor Tab */}
           <TabsContent value="editor" className="space-y-4 py-4">
             <div className="space-y-2">
-              <Label htmlFor="font-size">Font Size</Label>
+              <Label htmlFor="font-size">{t("setting_mgt.settings.font_size")}</Label>
               <select
                 id="font-size"
                 className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
               >
-                <option value="small">Small</option>
+                <option value="small">{t("setting_mgt.font.size.small")}</option>
                 <option value="medium" selected>
-                  Medium
+                 {t("setting_mgt.font.size.medium")}
                 </option>
-                <option value="large">Large</option>
+                <option value="large">{t("setting_mgt.font.size.large")}</option>
               </select>
             </div>
             <div className="space-y-2">
-              <Label htmlFor="font-family">Font Family</Label>
+              <Label htmlFor="font-family">{t("setting_mgt.settings.font_family")}</Label>
               <select
                 id="font-family"
                 className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
@@ -109,7 +143,7 @@ export function SettingsDialog({ user }) {
           {/* Account Tab */}
           <TabsContent value="account" className="space-y-4 py-4">
             <div className="space-y-2">
-              <Label htmlFor="first_name">Display Name</Label>
+              <Label htmlFor="first_name">{t("setting_mgt.settings.display_name")}</Label>
               <Input
                 id="first_name"
                 value={first_name}
@@ -119,7 +153,7 @@ export function SettingsDialog({ user }) {
           </TabsContent>
         </Tabs>
         <DialogFooter>
-          <Button onClick={handleSave}>Save changes</Button>
+          <Button onClick={handleSave}>{t("setting_mgt.actions.save_changes")}</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

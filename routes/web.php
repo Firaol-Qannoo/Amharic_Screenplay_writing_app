@@ -15,6 +15,7 @@ use App\Http\Controllers\SceneController;
 use App\Http\Controllers\ScriptInvitationController;
 use App\Http\Controllers\ImportScriptController;
 use App\Http\Controllers\StoryboardController;
+use App\Http\Controllers\ContactController;
 
 // Route::get('/', function () {
 //     return view('welcome');
@@ -33,9 +34,7 @@ Route::get('/auth/google', [SocialAuthController::class, 'redirectToGoogle'])->n
 Route::get('/auth/google/callback', [SocialAuthController::class, 'handleGoogleCallback']);
 
 
-    Route::get('/', function () {
-        return Inertia::render('Landing');
-    });
+    Route::get('/', [DashboardController::class, 'home'])->name('home');
 
     Route::get('/about', function () {
         return Inertia::render('about');
@@ -105,29 +104,32 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/logout', [RegisterController::class, 'logout'])->name('logout');
 });
 
-Route::post('/forgot-password', [RegisterController::class, 'sendResetOtp']);
-Route::post('/reset-password', [RegisterController::class, 'resetPassword']);
-Route::post('/verify-otp', [RegisterController::class, 'verifyOtp']);
+    Route::post('/forgot-password', [RegisterController::class, 'sendResetOtp']);
+    Route::post('/reset-password', [RegisterController::class, 'resetPassword']);
+    Route::post('/verify-otp', [RegisterController::class, 'verifyOtp']);
 
-Route::post('/scripts', [ScriptsController::class, 'store'])->name('scripts');
-Route::get('/production-schedule', [ProductionScheduleController::class, 'index'])->name('scenes.index');
-Route::post('/production-schedule', [ProductionScheduleController::class, 'showWithStaticData'])->name('scenes.update');
-Route::post('/production-schedule/save-locations', [ProductionScheduleController::class, 'saveShootLocations']);
-Route::get('/scripts/{scriptId}/storyboard', [StoryboardController::class, 'index'])->name('storyboard.index');
-Route::post('/storyboard/save', [StoryboardController::class, 'save']);
-
-
-
-Route::post('/verify-signup-otp', [RegisterController::class, 'verifySignupOtp'])->name('verify-signup-otp');
-
-Route::get('/verify-otp-signup', function () {
-    return Inertia::render('verify_otp_signup'); // Make sure this is the correct Inertia component
-})->name('verify-otp-signup');
+    Route::post('/scripts', [ScriptsController::class, 'store'])->name('scripts');
+    Route::get('/production-schedule', [ProductionScheduleController::class, 'index'])->name('scenes.index');
+    Route::post('/production-schedule', [ProductionScheduleController::class, 'showWithStaticData'])->name('scenes.update');
+    Route::post('/production-schedule/save-locations', [ProductionScheduleController::class, 'saveShootLocations']);
+    Route::get('/scripts/{scriptId}/storyboard', [StoryboardController::class, 'index'])->name('storyboard.index');
+    Route::post('/storyboard/save', [StoryboardController::class, 'save']);
 
 
-Route::post('/scripts/{scriptID}/scenes', [SceneController::class, 'store'])->name('scenes.store');
-Route::post('/settings/update', [RegisterController::class, 'update'])->name('settings.update');
-Route::put('/scripts/{id}', [ScriptsController::class, 'update'])->name('scripts.update');
 
-Route::delete('/delete-collab/{scriptID}/{userID}', [ScriptInvitationController::class, 'deleteCollaborator'])->name('delete-script.deleteCollaborator');
-Route::put('/update-collaborator-role/{scriptId}/{userId}', [ScriptInvitationController::class, 'updateCollaboratorRole']);
+    Route::post('/verify-signup-otp', [RegisterController::class, 'verifySignupOtp'])->name('verify-signup-otp');
+
+    Route::get('/verify-otp-signup', function () {
+        return Inertia::render('verify_otp_signup'); // Make sure this is the correct Inertia component
+    })->name('verify-otp-signup');
+
+
+    Route::post('/scripts/{scriptID}/scenes', [SceneController::class, 'store'])->name('scenes.store');
+    Route::post('/settings/update', [RegisterController::class, 'update'])->name('settings.update');
+    Route::put('/scripts/{id}', [ScriptsController::class, 'update'])->name('scripts.update');
+
+    Route::delete('/delete-collab/{scriptID}/{userID}', [ScriptInvitationController::class, 'deleteCollaborator'])->name('delete-script.deleteCollaborator');
+    Route::put('/update-collaborator-role/{scriptId}/{userId}', [ScriptInvitationController::class, 'updateCollaboratorRole']);
+
+    Route::post('/contact-msg', [ContactController::class, 'send'])->name('contact-msg.send');
+

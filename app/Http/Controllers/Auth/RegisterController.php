@@ -15,55 +15,32 @@ use Illuminate\Support\Facades\Cache;
 use App\Models\Script;
 use App\Models\ScriptInvitation;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\App;
 
-class RegisterController extends Controller
-{
+    class RegisterController extends Controller {
 
-   public function register() {
-     // // Validate incoming data
-        // $validated = $request->validate([
-        //     'fullname' => 'required|string',
-        //     'email' => 'required|email|unique:users,email',
-        //     'password' => 'required|min:6',
-        // ]);
+    public function generateRandomCode() {
 
-        // // Create user
-        // $user = User::create([
-        //     'first_name' => $validated['fullname'],
-        //     'email' => $validated['email'],
-        //     'password' => Hash::make($validated['password']),
-        // ]);
+        $characters = array_merge(range('1', '9'), range('A', 'F'));
 
-        // $user->save();
+        $code = '';
+        for ($i = 0; $i < 6; $i++) {
+            $code .= $characters[array_rand($characters)];
+        }
 
-        // // Redirect to dashboard or login
-        // return redirect()->route('login');
-
-         // Validate signup data
-   }
-
-   public function generateRandomCode() {
-    // Characters: 1-9 and A-F
-    $characters = array_merge(range('1', '9'), range('A', 'F'));
-
-    $code = '';
-    for ($i = 0; $i < 6; $i++) {
-        $code .= $characters[array_rand($characters)];
+        return $code;
     }
 
-    return $code;
-}
-
    public function store(Request $request) {
-    // Validate the input
-    $validated = $request->validate([
-        'fullname' => ['required', 'string', 'regex:/^[a-zA-Z\s]+$/'],
-        'email' => 'required|email',
-        'password' => 'required|string|min:6',
-        'profilePicture' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
-    ], [
-        'fullname.regex' => 'The full name must contain only letters and spaces.',
-    ]);
+
+        $validated = $request->validate([
+            'fullname' => ['required', 'string', 'regex:/^[a-zA-Z\s]+$/'],
+            'email' => 'required|email',
+            'password' => 'required|string|min:6',
+            'profilePicture' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+        ], [
+            'fullname.regex' => 'The full name must contain only letters and spaces.',
+        ]);
 
     // Check if the email already exists
     $existingUser = User::where('email', $validated['email'])->first();
@@ -76,28 +53,28 @@ class RegisterController extends Controller
         return Inertia::location(route('signup'));
     }
 
+
+    // we use try catch block to avoid any inconvinence, if something fails [best/graceful approch of error handling]
     try {
         $otp = rand(100000, 999999);
 
-         // Handle profile picture upload
          $profilePicturePath = null;
 
          if ($request->hasFile('profilePicture')) {
              $file = $request->file('profilePicture');
          
-             // Generate unique name
+             // Generate unique name for the user image
              $profilePictureName = time() . '_' . $file->getClientOriginalName();
          
-             // Ensure the folder exists
              $destinationPath = public_path('profile_pictures');
              if (!file_exists($destinationPath)) {
-                 mkdir($destinationPath, 0755, true); // Create folder if it doesn't exist
+                 mkdir($destinationPath, 0755, true); // it create folder if it doesn't exist
              }
          
              // Move file to public/profile_pictures
              $file->move($destinationPath, $profilePictureName);
          
-             // Store relative path to DB or use as needed
+             // Store relative path to DB
              $profilePicturePath = 'profile_pictures/' . $profilePictureName;
          }
 
@@ -109,9 +86,9 @@ class RegisterController extends Controller
             'email' => $validated['email'],
             'password' => bcrypt($validated['password']),
             'otp' => $otp,
-            'avatar' => $profilePicturePath, // Save path to cache
+            'avatar' => $profilePicturePath,
             'userColor' => $this->generateRandomCode(),
-        ], now()->addMinutes(10));
+        ], now()->addMinutes(10));  // we give lifetime for otp 10 mins, after 10 min it will expire
 
         Mail::to($validated['email'])->send(new SignupOtpMail($otp));
 
@@ -129,73 +106,68 @@ class RegisterController extends Controller
 
 
 
-public function verifySignupOtp(Request $request) {
-    // Validate the incoming request
-    $request->validate([
-        'email' => 'required|email',  // Ensure email is valid
-        'otp' => 'required|numeric',  // Ensure OTP is numeric
-    ]);
+    public function verifySignupOtp(Request $request) {
 
-    // Retrieve the OTP data stored in cache for this email
-    $data = Cache::get('otp_' . $request->email);
+            $request->validate([
+                'email' => 'required|email',  
+                'otp' => 'required|numeric', 
+            ]);
 
-    // If no data is found in cache, it means OTP is expired or invalid
-    if (!$data) {
-        return Inertia::render('verify_otp_signup', [
-            'email' => $request->email,
-            'errors' => ['otp' => 'OTP expired or invalid.']
-        ]);
-    }
+            // Retrieving the OTP data stored in cache for this email
+            $data = Cache::get('otp_' . $request->email);
 
-    // If the OTP entered doesn't match the stored OTP
-    if ($data['otp'] != $request->otp) {
-        return Inertia::render('verify_otp_signup', [
-            'email' => $request->email,
-            'errors' => ['otp' => 'Incorrect OTP entered. Please try again.']
-        ]);
-    }
+            // If no data is found in cache, it means OTP is expired or invalid
+            if (!$data) {
+                return Inertia::render('verify_otp_signup', [
+                    'email' => $request->email,
+                    'errors' => ['otp' => 'OTP expired or invalid.']
+                ]);
+            }
 
-    // Create the user after successful OTP verification
+        if ($data['otp'] != $request->otp) {
+            return Inertia::render('verify_otp_signup', [
+                'email' => $request->email,
+                'errors' => ['otp' => 'Incorrect OTP entered. Please try again.']
+            ]);
+        }
+
+    // after successful OTP verification
     $user = User::create([
         'first_name' => $data['fullname'],
         'email' => $data['email'],
-        'password' => $data['password'],  // Password should be hashed (bcrypt) in model
+        'password' => $data['password'],  // Password hashed (bcrypt) in model
         'avatar' => $data['avatar'],
         'userColor' => $data['userColor'],
     ]);
 
-    // Get the user's unique ID
     $userId = $user->_id;
 
-    // Check if this user was invited to any script
-    $invitation = ScriptInvitation::where('invitee_email', $data['email'])->first();
+        // Checking if this user was invited to any script
+        $invitation = ScriptInvitation::where('invitee_email', $data['email'])->first();
 
-    // If an invitation exists, update the invitation but do not add to collaborators
-    if ($invitation) {
-        // Retrieve the associated script for the invitation
-        $script = Script::findOrFail($invitation->script_id);
+        // If an invitation exists, update the invitation
+        if ($invitation) {
 
-        $script->collaborators()->syncWithoutDetaching([$userId]);
+            // Retrieving the associated script for the invitation
+            $script = Script::findOrFail($invitation->script_id);
 
-        // Mark the invitation as accepted and assign the invitee_id (user ID)
-        $invitation->accepted = true;
-        $invitation->invitee_id = $userId;
-        $invitation->save();
+            $script->collaborators()->syncWithoutDetaching([$userId]);
 
-        // Log that the user has been added to the script
-        Log::info("User accepted invitation for script", [
-            'user_id' => $userId,
-            'script_id' => $script->_id
-        ]);
-    }
+            $invitation->accepted = true;
+            $invitation->invitee_id = $userId;
+            $invitation->save();
 
-    // Save the new user record
+            Log::info("User accepted invitation for script", [
+                'user_id' => $userId,
+                'script_id' => $script->_id
+            ]);
+        }
+
     $user->save();
 
-    // Remove the OTP from the cache now that the user has been verified
+    // Removing the OTP from the cache now that the user has been verified
     Cache::forget('otp_' . $request->email);
 
-    // Flash success message and redirect to the login page
     flash()->success('Account verified. You may now log in.');
     return Inertia::location(route('login'));
 }
@@ -241,7 +213,10 @@ public function verifySignupOtp(Request $request) {
             }
         }
 
-        flash()->success('Logged in successfully!');
+       $locale = auth()->user()->lang_pref ?? 'en';
+        app()->setLocale($locale);
+
+        flash()->success(__('messages.login_success'));
         return Inertia::location(route('dashboard'));
     } else {
         $user = User::where('email', $validated['email'])->first();
@@ -263,7 +238,7 @@ public function verifySignupOtp(Request $request) {
         flash()->success(
             'Logged out successfully!'
         );
-        return Inertia::location(route('login'));
+        return Inertia::location(route('home'));
        }
 
 
@@ -311,20 +286,53 @@ public function verifySignupOtp(Request $request) {
         return Inertia::location(route('login'));
     }
 
-    public function update(Request $request) {
+  public function update(Request $request)   {
     $request->validate([
         'first_name' => 'required|string|max:255',
-        // 'email' => 'required|email|max:255|unique:users,email,' . auth()->id(),
+        'avatar' => 'nullable|image|max:2048',
+        'lang_pref' => 'nullable|in:en,am', // Add this line
     ]);
 
-    auth()->user()->update($request->only('first_name'));
+    $user = auth()->user();
 
-    flash()->success('Account Updated successfully!');
-       return Inertia::location(route('dashboard'));
+    $user->first_name = $request->first_name;
+
+    // Update language preference if provided
+    if ($request->filled('lang_pref')) {
+        $user->lang_pref = $request->lang_pref;
+    }
+
+    // If a new avatar is uploaded
+    if ($request->hasFile('avatar')) {
+        if ($user->avatar && file_exists(public_path($user->avatar))) {
+            unlink(public_path($user->avatar));
+        }
+
+        $file = $request->file('avatar');
+        $avatarName = time() . '_' . $file->getClientOriginalName();
+        $file->move(public_path('profile_pictures'), $avatarName);
+
+        $user->avatar = 'profile_pictures/' . $avatarName;
+    }
+
+    // If user requests to remove current avatar
+    if ($request->filled('remove_avatar')) {
+        if ($user->avatar && file_exists(public_path($user->avatar))) {
+            unlink(public_path($user->avatar));
+        }
+        $user->avatar = null;
+    }
+
+        $user->save();
+
+    if ($user->lang_pref) {
+        App::setLocale($user->lang_pref) ?? 'en';
+    }
+
+           flash()->success(__('messages.account_updated'), [
+                'title' => __('messages.success_title'),
+            ]);
+        return Inertia::location(url()->previous());
+    }
+
  }
-
-
- 
-
-
-}

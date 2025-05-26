@@ -33,7 +33,7 @@ class User extends Model implements Authenticatable
     ];
 
     protected $attributes = [
-        'role' => 'Writer', // Default role
+        'role' => 'Owner', 
     ];
 
     public function scripts() {

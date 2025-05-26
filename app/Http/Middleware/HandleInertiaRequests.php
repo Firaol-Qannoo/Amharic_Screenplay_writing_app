@@ -34,18 +34,15 @@ class HandleInertiaRequests extends Middleware
      *
      * @return array<string, mixed>
      */
-    public function share(Request $request): array
-    {
-        return array_merge(parent::share($request), [
-            // Add flash messages to Inertia shared data
-            'flash' => fn () => [
-            'messages' => Flasher::all(), // For PHP-Flasher
+   public function share(Request $request): array
+{
+    return array_merge(parent::share($request), [
+        'flash' => [
+            'success' => fn () => $request->session()->get('success'),
+            'error'   => fn () => $request->session()->get('error'),
+            'info'    => fn () => $request->session()->get('info'),
+            'warning' => fn () => $request->session()->get('warning'),
         ],
-
-            // You can include other shared data here
-            // 'auth' => [
-            //     'user' => $request->user(),
-            // ],
-        ]);
-    }
+    ]);
+}
 }

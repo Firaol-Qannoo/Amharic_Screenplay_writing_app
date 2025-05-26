@@ -11,8 +11,8 @@ import {
    DropdownMenu,
     DropdownMenuContent,
     DropdownMenuItem,
-    DropdownMenuLabel, // Import DropdownMenuLabel
-    DropdownMenuSeparator, // Import DropdownMenuSeparator
+    DropdownMenuLabel,
+    DropdownMenuSeparator, 
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
@@ -31,16 +31,20 @@ import {
 } from "lucide-react";
 import { ScheduleList } from "./schedule-list";
 import { ThemeToggle } from "@/components/theme-toggle";
-import { SettingsDialog } from "@/components/settings-dialog";
+import { SettingsDialog } from "@/components/settings-dialog";  
+import { ProfileDialog } from "@/components/profile_card"; 
 import { CreateDialog } from "@/components/create-dialog";
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import { InviteCollaboratorDialog } from "@/components/invite-collaborator-dialog";
 import { ScriptDetailsDialog } from "@/components/script-detail-dialog";
 import { CollaboratorsListDialog } from "@/components/collaborators-list.jsx";
-import { Button } from "@/components/ui/button"; // Ensure Button is imported  CollaboratorsListDialog 
+import { Button } from "@/components/ui/button"; 
 import flasher from '@flasher/flasher'
 import { UpdateScript } from "@/components/update-script";
+import { Link } from "@inertiajs/react";
+import { useTranslation } from 'react-i18next';
+import { CreateDialogTemplate } from "@/components/create-dialogue-template";
 
 dayjs.extend(relativeTime);
 
@@ -55,48 +59,25 @@ export function getRelativeDate(dateString) {
     return `${diffInDays} days ago`;
 }
 
-const templateCategories = [
-    {
-        name: "Film",
-        templates: [
-            {
-                id: "f1",
-                name: "film script Template",
-                description: "Gives standard layout of sample script for film.",
-            },
-        ],
-    },
-    {
-        name: "Theatre",
-        templates: [
-            {
-                id: "t1",
-                name: "theatre script Template",
-                description: "Gives standard layout of sample script for theatre.",
-            },
-        ],
-    },
-];
+
+
+ function getColorFromName(name) {
+  const colors = [
+    'bg-red-500', 'bg-blue-500', 'bg-green-500', 'bg-yellow-500',
+    'bg-purple-500', 'bg-pink-500', 'bg-indigo-500', 'bg-teal-500',
+    'bg-orange-500', 'bg-rose-500'
+  ];
+  const index = name.charCodeAt(0) % colors.length;
+  return colors[index];
+}
 
 export default function Dashboard({ myScripts, invitedScripts, user}) {
+    const { t } = useTranslation();
     const [searchQuery, setSearchQuery] = useState("");
     const [selectedTab, setSelectedTab] = useState("recent");
     const [successMessage, setSuccessMessage] = useState('');
     const [showSuccess, setShowSuccess] = useState(false);
 
-//     const { flash } = usePage().props;
-
-//    useEffect(() => {
-//         if (flash && flash.error) {
-//             toast.error(flash.error);
-//         }
-//         if (flash && flash.success) {
-//             toast.success(flash.success);
-//         }
-//     }, [flash]);
-
-
- // State to track theme mode: true = dark, false = light
  const [isDarkMode, setIsDarkMode] = useState(false);
 
 useEffect(() => {
@@ -114,7 +95,6 @@ useEffect(() => {
     }
   }, []);
 
-  // Toggle dark mode and save preference
   function toggleDarkMode() {
     if (isDarkMode) {
       document.documentElement.classList.remove("dark");
@@ -183,43 +163,34 @@ useEffect(() => {
 
     return (
         <div className="relative">
-           
-            {/* Success message popup at the top center
-            {showSuccess && successMessage && (
-                <div className="absolute top-4 left-1/2 transform -translate-x-1/2 p-4 bg-green-500 text-white rounded-lg shadow-lg z-100">
-                    <p>{successMessage}</p>
-                </div>
-            )}
-            {flash && flash.error && (
-                <div className="absolute top-4 left-1/2 transform -translate-x-1/2 p-4 bg-red-500 text-white rounded-lg shadow-lg z-100">
-                    {flash.error}
-                </div>
-            )} */}
             <div className="flex min-h-screen w-[100vw] px-10 flex-col">
                 <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
                     <div className="container flex h-16 items-center justify-between">
-                        <div className="flex items-center gap-2">
-                            <span className="text-lg font-bold">Amharic Screenplay Tool</span>
-                        </div>
+                   <div className="flex items-center gap-2">
+                    <Link
+                        href="/"
+                        className="text-xl font-extrabold hover:text-blue focus:outline-none" 
+                    >
+                      {t("dashboard.header.toolName")}
+                    </Link>
+                    </div>
                         <div className="flex items-center gap-2">
                             <div className="relative w-full max-w-sm mr-2">
                                 <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
                                 <Input
                                     type="search"
-                                    placeholder="Search scripts..."
+                                    placeholder= {t("dashboard.header.searchPlaceholder")}
                                     className="w-full bg-background pl-8 md:w-[300px] lg:w-[300px]"
                                     value={searchQuery}
                                     onChange={(e) => setSearchQuery(e.target.value)}
                                 />
                             </div>
-                             {/* Dark/Light Mode Toggle Button */}
             <button
               onClick={toggleDarkMode}
               aria-label="Toggle Dark Mode"
               className="rounded-md border p-2 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
             >
               {isDarkMode ? (
-                // Sun icon for light mode
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   className="h-5 w-5 text-yellow-400"
@@ -235,7 +206,6 @@ useEffect(() => {
                   />
                 </svg>
               ) : (
-                // Moon icon for dark mode
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   className="h-5 w-5 text-gray-900"
@@ -250,20 +220,32 @@ useEffect(() => {
                             <SettingsDialog user={user} />
                             <DropdownMenu>
                                 <DropdownMenuTrigger asChild>
-                                    <Button variant="ghost" size="icon" className="rounded-full">
-                                        <User className="h-5 w-5" />
+                                   <Button variant="ghost" size="icon" className="rounded-full p-0 h-9 w-9 overflow-hidden">
+                                    {user.avatar ? (
+                                        <img
+                                        src={user.avatar.startsWith('http') ? user.avatar : `/${user.avatar}`}
+                                        alt={user.first_name}
+                                        className="object-cover object-center h-full w-full rounded-full"
+                                        />
+                                    ) : (
+                                        <span
+                                        className={`flex items-center justify-center h-full w-full text-white font-medium text-sm rounded-full ${getColorFromName(user.first_name)}`}
+                                        >
+                                        {user.first_name?.charAt(0).toUpperCase()}
+                                        </span>
+                                    )}
                                     </Button>
+
                                 </DropdownMenuTrigger>
                                 <DropdownMenuContent align="end">
-                                    <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                                    <DropdownMenuLabel>{t("dashboard.header.myAccount")}</DropdownMenuLabel>
                                     <DropdownMenuSeparator />
-                                    <DropdownMenuItem>
-                                        <User className="mr-2 h-4 w-4" />
-                                        <span>Profile</span>
-                                    </DropdownMenuItem>
+                                    
+                                        <ProfileDialog user={user} />
+                                   
                                     <DropdownMenuSeparator />
                                     <DropdownMenuItem onClick={() => router.post('/logout')}>
-                                        <span>Log out</span>
+                                        <span>{t("dashboard.header.logout")}</span>
                                     </DropdownMenuItem>
                                 </DropdownMenuContent>
                             </DropdownMenu>
@@ -275,18 +257,15 @@ useEffect(() => {
                         <div className="flex flex-col gap-6">
                             <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                                 <h1 className="text-3xl font-bold tracking-tight">
-                                    Your Scripts
+                                   {t("dashboard.main.yourScriptsTitle")}
                                 </h1>
                                 <div className="flex flex-wrap gap-2">
                                     <CreateDialog />
-                                    <Button variant="outline" onClick={() => {}}>
-                                        <LayoutTemplate className="mr-2 h-4 w-4" />
-                                        Templates
-                                    </Button>
+                                    <CreateDialogTemplate/>
                                     <Button variant="outline" className="cursor-pointer relative" >
                                         <input type="file" onChange={handleImport} className="absolute top-0 cursor-pointer border-0 opacity-0 z-50 w-full h-full" name="" id="" />
                                         <FileUp className="mr-2 cursor-pointer  h-4 w-4" />
-                                        Import
+                                       {t("dashboard.main.importButton")}
                                     </Button>
                                 </div>
                             </div>
@@ -296,10 +275,10 @@ useEffect(() => {
                                     <Tabs defaultValue="recent" value={selectedTab} onValueChange={setSelectedTab}>
                                         <div className="flex items-center justify-between">
                                         <TabsList>
-                                            <TabsTrigger value="recent">Recent</TabsTrigger>
-                                            <TabsTrigger value="all">All Scripts</TabsTrigger>
-                                            <TabsTrigger value="templates">Templates</TabsTrigger>
-                                            <TabsTrigger value="invite">Invited</TabsTrigger>
+                                            <TabsTrigger value="recent">{t("dashboard.main.tabs.recent")}</TabsTrigger>
+                                            <TabsTrigger value="all">{t("dashboard.main.tabs.allScripts")}</TabsTrigger>
+                                        
+                                            <TabsTrigger value="invite">{t("dashboard.main.tabs.invited")}</TabsTrigger>
                                             </TabsList>
                                             </div>
 
@@ -312,9 +291,11 @@ useEffect(() => {
                                             {filteredMyScripts?.length === 0 ? (
                                                 <div className="flex h-[200px] flex-col items-center justify-center rounded-lg border border-dashed">
                                                 <FileText className="h-10 w-10 text-muted-foreground" />
-                                                <h3 className="mt-4 text-lg font-medium">No scripts found</h3>
+                                                <h3 className="mt-4 text-lg font-medium">{t("dashboard.main.noScriptsFound")}</h3>
                                                 <p className="mt-2 text-sm text-muted-foreground">
-                                                    {searchQuery ? "Try a different search term" : "Create a new script to get started"}
+                                                   {searchQuery 
+                                                    ? t("dashboard.main.tryDifferentSearch") 
+                                                    : t("dashboard.main.createNewScript")}
                                                 </p>
                                                 <div className="mt-4">
                                                     <CreateDialog />
@@ -329,7 +310,7 @@ useEffect(() => {
                                                         src={`/${script.thumbnail}`}
                                                         alt={script.title}
                                                         fill
-                                                        className="object-cover object-center h-60 w-full"
+                                                        className="object-cover object-center h-50 w-full"
                                                         />
                                                         <div className="absolute top-2 right-2">
                                                         <DropdownMenu>
@@ -342,7 +323,7 @@ useEffect(() => {
                                                             <InviteCollaboratorDialog scriptId={script.id} />
                                                             <DropdownMenuItem
                                                                 onClick={() => {
-                                                                if (window.confirm('Are you sure you want to delete this script?')) {
+                                                               if (window.confirm(t("dashboard.main.deleteConfirmation"))) {
                                                                     router.delete(`/delete-script/${script.id}`)
                                                                     .then(() => {
                                                                         console.log('Script deleted successfully');
@@ -358,7 +339,7 @@ useEffect(() => {
                                                                 }}
                                                             >
                                                                 <Trash2 className="mr-2 h-4 w-4" />
-                                                                <span>Delete</span>
+                                                                <span>{t("dashboard.main.deleteButton")}</span>
                                                             </DropdownMenuItem>
                                                             
                                                             <CollaboratorsListDialog collaborators={script.collaborators_full} script={script}/>
@@ -377,14 +358,21 @@ useEffect(() => {
                                                         </CardTitle>
                                                         <CardDescription className="line-clamp-2">{script.description}</CardDescription>
                                                     </CardHeader>
-                                                    <CardFooter className="p-4 pt-0 flex justify-between text-sm text-muted-foreground">
-                                                        <div className="flex items-center">
+                                                    <CardFooter className="p-4 pt-0 flex justify-between flex-col w-full text-sm text-muted-foreground">
+                                                     {script.template&& <h1 className="self-end text-nowrap bg-[#262626] py-2 px-2 rounded-2xl text-md text-gray-100 my-4">Template used: <span className="font-bold text-nowrap">{script.template}</span></h1>
+                                                       }
+                                                      <div className="flex items-center justify-between w-full mb-2">
+                                                            <div className="flex items-center">
                                                         <Calendar className="mr-1 h-3 w-3" />
                                                         <span>{getRelativeDate(script.created_at)}</span>
                                                         </div>
                                                         <div className="flex items-center">
                                                         <BookOpen className="mr-1 h-3 w-3" />
-                                                        <span>{script.pages || '1 Pages'}</span>
+                                                       <span>
+                                                        {script.pages ? `${script.pages} ${t("dashboard.main.pages")}` : `222 ${t("dashboard.main.pages")}`}
+                                                        </span>
+
+                                                        </div>
                                                         </div>
                                                     </CardFooter>
                                                     </Card>
@@ -400,7 +388,7 @@ useEffect(() => {
                                             </div> */}
 
                                             {invitedScripts?.length === 0 ? (
-                                                <p className="text-muted-foreground mt-4">You haven’t been invited to any scripts yet.</p>
+                                                <p className="text-muted-foreground mt-4">{t("dashboard.main.noInvitedScripts")}</p>
                                             ) : (
                                                 <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
                                                 {invitedScripts.map((script) => (
@@ -432,7 +420,9 @@ useEffect(() => {
                                                         </div>
                                                         <div className="flex items-center">
                                                         <BookOpen className="mr-1 h-3 w-3" />
-                                                        <span>{script.pages || '23 Pages'} pages</span>
+                                                        <span>
+                                                        {script.pages ? `${script.pages} ${t("dashboard.main.pages")}` : `222 ${t("dashboard.main.pages")}`}
+                                                        </span>
                                                         </div>
                                                     </CardFooter>
                                                     </Card>
@@ -449,7 +439,7 @@ useEffect(() => {
                                     {filteredMyScripts?.length === 0 ? (
                                         <div className="flex h-[200px] flex-col items-center justify-center rounded-lg border border-dashed">
                                         <FileText className="h-10 w-10 text-muted-foreground" />
-                                        <h3 className="mt-4 text-lg font-medium">No scripts found</h3>
+                                        <h3 className="mt-4 text-lg font-medium"> {t("dashboard.main.noScriptsFound")}</h3>
                                         <p className="mt-2 text-sm text-muted-foreground">
                                             {searchQuery ? "Try a different search term" : "Create a new script to get started"}
                                         </p>
@@ -479,7 +469,7 @@ useEffect(() => {
                                                     <InviteCollaboratorDialog scriptId={script.id} />
                                                     <DropdownMenuItem
                                                         onClick={() => {
-                                                        if (window.confirm('Are you sure you want to delete this script?')) {
+                                                        if (window.confirm(t("dashboard.main.deleteConfirmation"))) {
                                                             router.delete(`/delete/${script._id}`)
                                                             .then(() => {
                                                                 console.log('Script deleted successfully');
@@ -495,7 +485,7 @@ useEffect(() => {
                                                         }}
                                                     >
                                                         <Trash2 className="mr-2 h-4 w-4" />
-                                                        <span>Delete</span>
+                                                        <span>{t("dashboard.main.deleteButton")}</span>
                                                     </DropdownMenuItem>
                                                     <CollaboratorsListDialog collaborators={script.collaborators} />
                                                     </DropdownMenuContent>
@@ -518,7 +508,9 @@ useEffect(() => {
                                                 </div>
                                                 <div className="flex items-center">
                                                 <BookOpen className="mr-1 h-3 w-3" />
-                                                <span>{script.pages || '23 Pages'} pages</span>
+                                                 <span>
+                                                        {script.pages ? `${script.pages} ${t("dashboard.main.pages")}` : `222 ${t("dashboard.main.pages")}`}
+                                                        </span>
                                                 </div>
                                             </CardFooter>
                                             </Card>
@@ -526,39 +518,7 @@ useEffect(() => {
                                         </div>
                                     )}
                                 </TabsContent>
-                                    <TabsContent value="templates" className="mt-6">
-                                        <div className="space-y-8">
-                                            {templateCategories.map((category) => (
-                                                <div key={category.name} className="space-y-4">
-                                                    <h3 className="text-lg font-medium">
-                                                        {category.name}
-                                                    </h3>
-                                                    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                                                        {category.templates.map((template) => (
-                                                            <Card
-                                                                key={template.id}
-                                                                className="cursor-pointer hover:bg-muted/50"
-                                                            >
-                                                                <CardHeader>
-                                                                    <CardTitle className="text-base">
-                                                                        {template.name}
-                                                                    </CardTitle>
-                                                                    <CardDescription>
-                                                                        {template.description}
-                                                                    </CardDescription>
-                                                                </CardHeader>
-                                                                <CardFooter>
-                                                                    <Button variant="outline" size="sm">
-                                                                        Use Template
-                                                                    </Button>
-                                                                </CardFooter>
-                                                            </Card>
-                                                        ))}
-                                                    </div>
-                                                </div>
-                                            ))}
-                                        </div>
-                                    </TabsContent>
+                                   
                                 </Tabs>
                             </div>
                             {/* <div className="md:col-span-1">

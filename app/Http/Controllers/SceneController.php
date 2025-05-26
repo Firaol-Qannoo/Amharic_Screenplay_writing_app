@@ -9,9 +9,10 @@ use App\Models\Script;
 use App\Models\Character;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 
-class SceneController extends Controller
-{
+ class SceneController extends Controller {
+    
     public function index() {
         $script = session('script');  // Retrieve the script from the session
         $script = Script::with('scenes')->findOrFail($script->id);
@@ -27,11 +28,9 @@ class SceneController extends Controller
             $scenes = Scene::where('scriptID', $scriptID)->get();
             $sceneCharacters = Character::where('sceneID', $scriptID)->get();
 
-            // Delete them
             $scenes->each->delete();
             $sceneCharacters->each->delete();
     
-        // Save the scenes
         foreach ($request->input('scenes') as $sceneData) {
             $cleanedLines = [];
             $sceneId = $sceneData['id'] ?? null;
@@ -45,19 +44,19 @@ class SceneController extends Controller
                     }
     
                     if (!empty($line['character'])) {
-                        $cleanedLine['character'] = $line['character']; // contains both id & text
+                        $cleanedLine['character'] = $line['character']; 
                     }
     
                     if (!empty($line['emotion'])) {
-                        $cleanedLine['emotion'] = $line['emotion']; // contains both id & text
+                        $cleanedLine['emotion'] = $line['emotion']; 
                     }
     
                     if (!empty($line['dialogue'])) {
-                        $cleanedLine['dialogue'] = $line['dialogue']; // contains both id & text
+                        $cleanedLine['dialogue'] = $line['dialogue']; 
                     }
     
                     if (!empty($line['action'])) {
-                        $cleanedLine['action'] = $line['action']; // contains both id & text
+                        $cleanedLine['action'] = $line['action']; 
                     }
     
                     $cleanedLines[] = $cleanedLine;
@@ -72,13 +71,13 @@ class SceneController extends Controller
                 'sceneHead' => $sceneData['sceneHead'] ?? null, 
                 'sceneDesc' => $sceneData['sceneDesc'] ?? null, 
                 'comments' => $sceneData['comments'] ?? null, 
+                'template' => $sceneData['template'] ?? null, 
                 'lines' => $cleanedLines,
                 'user' => $sceneData['user'],
             ]);
             
         }
     
-        // Save character data
         if (!empty($request->input('characters'))) {
             foreach ($request->input('characters') as $characterData) {
                 Character::create([
@@ -92,16 +91,53 @@ class SceneController extends Controller
                 ]);
             }
         }
+
+        $totalCharacters = 0;
+
+        $scenes = Scene::where('scriptID', $scriptID)->get();
+
+        foreach ($scenes as $scene) {
+            $totalCharacters += Str::length($scene->sceneHead['text'] ?? '');
+            $totalCharacters += Str::length($scene->sceneDesc['text'] ?? '');
+
+            foreach ($scene->lines as $line) {
+                if (!empty($line['character']['text'])) {
+                    $totalCharacters += Str::length($line['character']['text']);
+                }
+
+                if (!empty($line['emotion']['text'])) {
+                    $totalCharacters += Str::length($line['emotion']['text']);
+                }
+
+                if (!empty($line['dialogue']['text'])) {
+                    $totalCharacters += Str::length($line['dialogue']['text']);
+                }
+
+                if (!empty($line['action']['text'])) {
+                    $totalCharacters += Str::length($line['action']['text']);
+                }
+            }
+        }
+
+        // 1,462 characters = 1 page
+        $charactersPerPage = 1462;
+        $pages = (int) ceil($totalCharacters / $charactersPerPage);
+
+        Script::where('id', $scriptID)->update([
+            'pages' => $pages
+        ]);
     
-        flash()->success('Scenes and Characters saved successfully!');
+       $locale = auth()->user()->lang_pref ?? 'en';
+        app()->setLocale($locale);
+
+        flash()->success(__('messages.scenes_saved'));
         return Inertia::location(url()->previous());
     }
 
 
     
 
-    public function updateCharacters(array $characters, $scriptID)
-    {
+    public function updateCharacters(array $characters, $scriptID)  {
         foreach ($characters as $characterData) {
             if (empty($characterData['_id'])) {
                 continue; 

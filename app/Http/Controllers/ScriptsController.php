@@ -13,8 +13,7 @@ class ScriptsController extends Controller
     public function store(Request $request)
     {
 
-       
-
+    
         // $validated = $request->validate([
         //     'title' => 'required|string|max:255',
         //     'description' => 'required|string',
@@ -23,17 +22,12 @@ class ScriptsController extends Controller
         //     'thumbnail' => 'nullable|image|mimes:jpg,jpeg,png,gif|max:2048', // Validate image
         //     'user_id' => Auth::id(),
         // ]);
-    
-        // $script = new Script();
-        // $script->title = $validated['title'];
-        // $script->description = $validated['description'];
-        // $script->genre = $validated['genre'];
-        // $script->type = $validated['type'];
 
         $script = Script::create([
             'title' => $request->title,
             'description' => $request->description,
             'genre' => $request->genre,
+            'template' => $request->template,
             'type' => $request->type,
             'user_id' => Auth::id(), 
         ]);
@@ -52,21 +46,20 @@ class ScriptsController extends Controller
     
         session(['script' => $script]);
 
-       flash()->success('Your script has been created.');
-       return Inertia::location(route('dashboard'));
+      $locale = auth()->user()->lang_pref ?? 'en';
+        app()->setLocale($locale);
+
+        flash()->success(__('messages.script_created'));
+            return Inertia::location(route('dashboard'));
     }
 
 
-    public function update(Request $request, $id)
-{
+    public function update(Request $request, $id) {
     $script = Script::findOrFail($id);
 
-    // Update text fields
     $script->update($request->only(['title', 'description', 'genre']));
 
-    // Handle new thumbnail upload
     if ($request->hasFile('thumbnail')) {
-        // Delete old thumbnail if it exists
         if ($script->thumbnail && file_exists(public_path($script->thumbnail))) {
             unlink(public_path($script->thumbnail));
         }
@@ -79,8 +72,11 @@ class ScriptsController extends Controller
         $script->save();
     }
 
-    flash()->success('Your script has been updated successfully.');
-    return Inertia::location(route('dashboard'));
+       $locale = auth()->user()->lang_pref ?? 'en';
+        app()->setLocale($locale);
+
+        flash()->success(__('messages.script_updated'));
+            return Inertia::location(route('dashboard'));
 }
 
 
@@ -95,7 +91,9 @@ class ScriptsController extends Controller
     
         $script->delete(); 
     
-        flash()->success('Script deleted successfully!');
-        return Inertia::location(route('dashboard'));
-    }
+        $locale = auth()->user()->lang_pref ?? 'en';
+        app()->setLocale($locale);
+        flash()->success(__('messages.script_deleted'));
+                return Inertia::location(route('dashboard'));
+            }
 }

@@ -1,4 +1,4 @@
-import { Link, router, usePage } from '@inertiajs/react'; // Inertia Link + router
+import { Link, router, usePage } from '@inertiajs/react'; 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -6,135 +6,106 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { loginSchema } from '../../utils/validation/login';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import flasher from '@flasher/flasher';
 import { GoogleOAuthProvider, GoogleLogin } from "@react-oauth/google";
+import { useTranslation } from 'react-i18next';
 
 export default function LoginPage() {
+  const { t } = useTranslation();
   const { handleSubmit, register, formState } = useForm({
     resolver: zodResolver(loginSchema),
     mode: "onChange",
   });
 
-  // const { errors } = usePage().props;
-
-  // // State to control visibility of error popup
-  // const [showError, setShowError] = useState(false);
-
-  // Show error popup for 3 seconds after receiving errors
-  // useEffect(() => {
-  //   if (errors && Object.keys(errors).length > 0) { // Ensure errors exist before checking keys
-  //     setShowError(true);
-  //     setTimeout(() => {
-  //       setShowError(false);
-  //     }, 3000); // Hide after 3 seconds
-  //   }
-  // }, [errors]);
-
   const handleGoogleLogin = () => {
     window.location.href = "/auth/google"; 
-};
+  };
 
-   const { messages } = usePage().props;
+  const { messages } = usePage().props;
   
-          useEffect(() => {
-          if (messages) {
-              flasher.render(messages);
-          }
-          }, [messages]);
-                  
-          // console.log(messages);
+  useEffect(() => {
+    if (messages) {
+      flasher.render(messages);
+    }
+  }, [messages]);
 
   const loginHandler = (data) => {
     router.post('/login', data);
   };
 
   return (
-    <div className="relative">
-      {/* Error message popup at the top center
-      {showError && errors && Object.keys(errors).length > 0 && (
-        <div className="absolute top-4 left-1/2 transform -translate-x-1/2 p-4 bg-red-600 text-white rounded-lg shadow-lg">
-          <p>{errors.email || errors.password}</p>
+    <div className="flex min-h-screen w-screen bg-background text-foreground transition-colors duration-300">
+      {/* Left Promotional Panel */}
+      <div className="hidden lg:flex w-1/2 bg-gradient-to-br from-blue-500 to-indigo-600 text-white items-center justify-center p-12">
+        <Link
+          href="/"
+          className="absolute top-4 left-4 text-white font-medium hover:text-gray-200 transition"
+        >
+          ← {t("login.back_home")}
+        </Link>
+        <div className="max-w-md space-y-6">
+          <h2 className="text-3xl font-bold leading-tight">{t("login.welcome_title")}</h2>
+          <p className="text-lg">{t("login.welcome_description")}</p>
+          <img src="/images/login-illustration.gif" alt="Illustration" className="w-full h-auto mt-8 rounded-lg shadow-lg" />
         </div>
-      )} */}
-      <div className="flex min-h-screen items-center w-[100vw] justify-center bg-gray-50 px-4 py-12 sm:px-6 lg:px-8">
+      </div>
+
+      {/* Right Login Form Panel */}
+      <div className="w-full lg:w-1/2 flex items-center justify-center bg-gray-50 dark:bg-gray-900 px-4 py-12 transition-colors duration-300">
         <div className="w-full max-w-md space-y-8">
           <div className="text-center">
-            <h1 className="text-3xl font-bold tracking-tight text-gray-900">Sign in to your account</h1>
-            <p className="mt-2 text-sm text-gray-600">
-              Or{" "}
+            <h1 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-white">
+              {t("login.sign_in")}
+            </h1>
+            <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
+              {t("login.or")}{" "}
               <Link href="/signup" className="font-medium text-primary hover:text-primary/90">
-                create a new account
+                {t("login.create_account")}
               </Link>
             </p>
           </div>
+
           <form className="mt-8 space-y-6" onSubmit={handleSubmit(loginHandler)}>
-            <div className="space-y-4 rounded-md py-8 px-8 shadow-sm">
+            <div className="space-y-4 rounded-md py-8 px-8 shadow-sm bg-white dark:bg-gray-800">
+              {/* Email */}
               <div>
-                <Label htmlFor="email-address" className="block text-sm font-medium text-gray-700">
-                  Email address
-                </Label>
-                <Input
-                  {...register("email")}
-                  id="email-address"
-                  name="email"
-                  type="email"
-                  autoComplete="email"
-                  required
-                  className="mt-1"
-                  placeholder="Email address"
-                />
-                <p className="text-red-600 self-start text-sm">
-                  {formState.errors.email && formState.errors.email.message}
-                </p>
+                <Label htmlFor="email-address" className="mb-2 block">{t("login.email")}</Label>
+                <Input {...register("email")} id="email-address" type="email" placeholder={t("login.email")} />
+                <p className="text-red-600 text-sm">{formState.errors.email?.message}</p>
               </div>
+
+              {/* Password */}
               <div>
-                <Label htmlFor="password" className="block text-sm font-medium text-gray-700">
-                  Password
-                </Label>
-                <Input
-                  {...register("password")}
-                  id="password"
-                  name="password"
-                  type="password"
-                  autoComplete="current-password"
-                  required
-                  className="mt-1"
-                  placeholder="Password"
-                />
-                <p className="text-red-600 self-start text-sm">
-                  {formState.errors.password && formState.errors.password.message}
-                </p>
+                <Label htmlFor="password" className="mb-2 block">{t("login.password")}</Label>
+                <Input {...register("password")} id="password" type="password" placeholder={t("login.password")} />
+                <p className="text-red-600 text-sm">{formState.errors.password?.message}</p>
               </div>
             </div>
 
             <div className="flex items-center justify-between">
               <div className="flex items-center">
                 <Checkbox id="remember-me" />
-                <Label htmlFor="remember-me" className="ml-2 block text-sm text-gray-900">
-                  Remember me
+                <Label htmlFor="remember-me" className="ml-2 text-sm text-gray-900 dark:text-gray-300">
+                  {t("login.remember_me")}
                 </Label>
               </div>
-
-              <div className="text-sm">
-                <Link href="/forgot-password" className="font-medium text-primary hover:text-primary/90">
-                  Forgot your password?
-                </Link>
-              </div>
+              <Link href="/forgot-password" className="text-sm font-medium text-primary hover:text-primary/90">
+                {t("login.forgot_password")}
+              </Link>
             </div>
 
-            <div>
-              <Button type="submit" className="w-full">
-                Sign in
-              </Button>
-            </div>        
+            <Button type="submit" className="w-full">{t("login.sign_in_button")}</Button>
           </form>
-          <GoogleOAuthProvider clientId="304333585377-5llja3fa2fdhkkm02sgo5u4ng0je7su1.apps.googleusercontent.com">
-                <GoogleLogin
-                    onSuccess={handleGoogleLogin}
-                    onError={() => console.log("Google Login Failed")}
-                />
+
+          <div className="text-center">
+           <GoogleOAuthProvider clientId="304333585377-5llja3fa2fdhkkm02sgo5u4ng0je7su1.apps.googleusercontent.com">
+              <GoogleLogin
+                onSuccess={handleGoogleLogin}
+                onError={() => console.log("Google Login Failed")}
+              />
             </GoogleOAuthProvider>
+          </div>
         </div>
       </div>
     </div>

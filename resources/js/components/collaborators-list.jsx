@@ -10,8 +10,12 @@ import {
 import { User, Pencil, Trash, Eye, X } from "lucide-react";
 import dayjs from "dayjs";
 import { router } from "@inertiajs/react";
+import { useTranslation } from "react-i18next";
+
+
 
 export function CollaboratorsListDialog({ collaborators = [], script }) {
+  const { t } = useTranslation();
   const [open, setOpen] = useState(false);
   const [viewUser, setViewUser] = useState(null);
   const [editUser, setEditUser] = useState(null);
@@ -81,12 +85,12 @@ export function CollaboratorsListDialog({ collaborators = [], script }) {
         <DialogTrigger asChild>
           <Button variant="ghost">
             <User className="mr-2 h-4 w-4" />
-            Collaborators
+            {t("collaborator-list.collaborators")}
           </Button>
         </DialogTrigger>
         <DialogContent className="sm:max-w-[700px]">
           <DialogHeader>
-            <DialogTitle className="text-xl font-semibold">Collaborators</DialogTitle>
+            <DialogTitle className="text-xl font-semibold"> {t("collaborator-list.collaborators")}</DialogTitle>
           </DialogHeader>
 
           <div className="mt-4 overflow-x-auto">
@@ -95,12 +99,12 @@ export function CollaboratorsListDialog({ collaborators = [], script }) {
                 <thead className="bg-gray-100">
                   <tr className="text-left text-sm font-medium text-gray-700">
                     <th className="px-4 py-2 border-b">#</th>
-                    <th className="px-4 py-2 border-b">Name</th>
-                    <th className="px-4 py-2 border-b">Email</th>
-                    <th className="px-4 py-2 border-b">Role(s)</th>
-                    <th className="px-4 py-2 border-b">Joined</th>
-                    <th className="px-4 py-2 border-b">Last Updated</th>
-                    <th className="px-4 py-2 border-b">Action</th>
+                    <th className="px-4 py-2 border-b">{t("collaborator-list.name")}</th>
+                    <th className="px-4 py-2 border-b">{t("collaborator-list.email")}</th>
+                    <th className="px-4 py-2 border-b">{t("collaborator-list.roles")}</th>
+                    <th className="px-4 py-2 border-b">{t("collaborator-list.joined")}</th>
+                    <th className="px-4 py-2 border-b">{t("collaborator-list.lastUpdated")}</th>
+                    <th className="px-4 py-2 border-b">{t("collaborator-list.action")}</th>
                   </tr>
                 </thead>
                 <tbody className="text-sm text-gray-800">
@@ -145,13 +149,13 @@ export function CollaboratorsListDialog({ collaborators = [], script }) {
                                   onClick={saveEdit}
                                   className="px-3 py-1 bg-green-500 text-white rounded text-sm"
                                 >
-                                  Save
+                                  {t("collaborator-list.save")}
                                 </button>
                                 <button
                                   onClick={cancelEdit}
                                   className="px-3 py-1 bg-gray-300 rounded text-sm"
                                 >
-                                  Cancel
+                                   {t("collaborator-list.cancel")}
                                 </button>
                               </div>
                             </div>
@@ -194,7 +198,7 @@ export function CollaboratorsListDialog({ collaborators = [], script }) {
                             className="cursor-pointer text-red-500 hover:text-red-700"
                             onClick={() => {
                               if (
-                                window.confirm("Are you sure you want to delete this Collaborator?")
+                               (window.confirm(t("collaborator-list.confirmDelete")))
                               ) {
                                 router
                                   .delete(`/delete-collab/${script.id}/${user.id}`)
@@ -218,7 +222,7 @@ export function CollaboratorsListDialog({ collaborators = [], script }) {
                 </tbody>
               </table>
             ) : (
-              <p className="text-sm text-gray-500">No collaborators found.</p>
+              <p className="text-sm text-gray-500"> {t("collaborator-list.noCollaboratorsFound")}</p>
             )}
           </div>
         </DialogContent>

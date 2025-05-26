@@ -1,0 +1,377 @@
+{
+  "app_title": "Amharic Screenplay Writing Tool",
+  "footer": {
+    "rights": "All rights reserved."
+  },
+  "nav": {
+    "home": "Home",
+    "about": "About",
+    "services": "Services",
+    "contact": "Contact Us"
+  },
+  "landing": {
+  "title": "Amharic Screenplay Writing Tool",
+  "home": "Home",
+  "about": "About",
+  "services": "Services",
+  "contact": "Contact Us",
+  "dashboard": "Dashboard",
+  "login": "Login",
+  "register": "Register",
+
+  "hero_title": "Amharic Screenplay Writing Tool",
+  "hero_description": "A specialized tool designed for Ethiopian screenwriters to draft, collaborate, and format scripts in Amharic.",
+  "hero_caption": "Bridging the gap in digital tools for Amharic storytelling.",
+
+  "features_label": "Features",
+  "features_title": "Empowering Ethiopian Screenplay Writers",
+  "features_description": "Our tool provides comprehensive support for scriptwriting, collaboration, and formatting in Amharic.",
+
+ "card1_title": "Amharic Script Support",
+  "card1_description": "Full support for Amharic script with proper text placing and formatting.",
+  "card1_content": "Seamless input, editing, and display of Amharic text with proper character encoding and font support.",
+
+  "card2_title": "Collaboration Tools",
+  "card2_description": "Work together with other writers and track changes efficiently.",
+  "card2_content": "Comment on scripts, invite collaborators, track edit history, and manage versions.",
+
+  "card3_title": "Script Templates",
+  "card3_description": "Pre-designed templates for Ethiopian storytelling types.",
+  "card3_content": "Choose from various templates tailored to different storytelling styles and types common in Ethiopian cinema.",
+
+  "card4_title": "Formatting Tools",
+  "card4_description": "Professional screenplay formatting with industry standards.",
+  "card4_content": "Tools to manage content placement, scene numbering, character dialogues, and other screenplay elements.",
+
+  "card5_title": "Import/Export",
+  "card5_description": "Seamless file conversion and compatibility.",
+  "card5_content": "Export scripts to custom extensions or common formats like PDF, ensuring compatibility with other tools.",
+
+  "card6_title": "Production Scheduling",
+  "card6_description": "Schedule main events with the help of an automatic tracking system.",
+  "card6_content": "Create a scheduling calendar to manage events and tasks with the help of an auto-tracking system, enabling efficient production management.",
+
+  "card7_title": "Character List Extractor",
+  "card7_description": "Easily track and manage all characters in your script.",
+  "card7_content": "This tool automatically extracts and organizes a list of all characters appearing in your script, helping you maintain consistency. Writers can use this list to establish character relationships, track interactions, and manage conflicts, ensuring a well-structured and engaging story.",
+
+  "cta_title": "Ready to Transform Ethiopian Screenwriting?",
+  "cta_description": "Join us in bridging the gap in creative technology for local storytellers.",
+  "cta_button": "Get Started"
+    },
+  "about": {
+    "title": "About Us",
+    "description": "The Amharic Screenplay Writing Tool is a modern, intuitive platform tailored for Ethiopian storytellers. Our mission is to empower writers with the tools they need to draft, collaborate, and produce scripts in their native language.",
+    "vision_title": "Our Vision",
+    "vision_body": "We envision a creative ecosystem where Ethiopian screenwriters have access to world-class digital tools that respect and support Amharic culture and storytelling formats.",
+    "why_title": "Why We Built This",
+    "why_body": "The lack of tools for writing and formatting Amharic screenplays has limited creativity. Our tool addresses this gap with native Amharic support and production features.",
+    "features_title": "Our Features",
+    "features_body": "From character extraction to production scheduling and collaboration, our tool provides everything you need to go from idea to final script — in one place.",
+    "who_title": "Who We Serve",
+    "who_body": "Independent writers, film schools, production studios, and anyone passionate about storytelling in Amharic."
+  }, 
+   "contact": {
+    "title": "Contact Us",
+    "description": "We'd love to hear from you. Whether you're a writer, director, educator, or enthusiast — drop us a message!",
+    "form": {
+      "name": "Your Name",
+      "email": "Your Email",
+      "subject": "Subject",
+      "message": "Your Message...",
+      "submit": "Send Message"
+    }
+  },
+  "services": {
+    "title": "Our Services",
+    "description": "Our platform is tailored for Ethiopian screenwriters, offering powerful tools to write, collaborate, format, and manage screenplays in Amharic.",
+    "collaboration": {
+      "title": "Collaboration",
+      "desc": "Write together in real-time.",
+      "body": "Invite co-writers, share comments, track edits, and manage revisions seamlessly in a collaborative environment."
+    },
+    "templates": {
+      "title": "Script Templates",
+      "desc": "Start fast with industry-based formats.",
+      "body": "Templates designed for Ethiopian storytelling, drama structures, and cinematic formatting."
+    },
+    "formatting": {
+      "title": "Professional Formatting",
+      "desc": "Auto-format your screenplays correctly.",
+      "body": "Automatically handle scene headers, dialogue blocks, actions, and transitions according to screenwriting norms."
+    },
+    "io": {
+      "title": "Import/Export Options",
+      "desc": "Work with different file types easily.",
+      "body": "Export to PDF or Word, and import content from other editors to continue your script without formatting issues."
+    },
+    "production": {
+      "title": "Production Tools",
+      "desc": "Keep your production on schedule.",
+      "body": "Manage your production timeline with scheduling tools for casting, shooting dates, and location planning."
+    },
+    "characters": {
+      "title": "Character Management",
+      "desc": "Track every character in your script.",
+      "body": "Extract characters automatically and use the character list to track dialogue, relationships, and roles."
+    }
+  },
+   "login": {
+    "back_home": "Back to Home",
+    "welcome_title": "Welcome to Amharic Screenplay Writing Tool 👋",
+    "welcome_description": "Discover opportunities, manage scripts, and streamline your creative workflow — all in one place.",
+    "sign_in": "Sign in to your account",
+    "or": "Or",
+    "create_account": "create a new account",
+    "email": "Email address",
+    "password": "Password",
+    "remember_me": "Remember me",
+    "forgot_password": "Forgot your password?",
+    "sign_in_button": "Sign in"
+  },
+   "signup": {
+    "title": "Create your account",
+    "subtitle": "Already have an account?",
+    "login": " Log in",
+    "profile_picture": "Profile Picture",
+    "fullname": "Full Name",
+    "username": "Username (optional)",
+    "role": "Role (*optional)",
+    "select_role": "- select -",
+    "writer": "Writer",
+    "director": "Director",
+    "storyboard_designer": "Storyboard Designer",
+    "confirm_password": "Confirm Password",
+    "create_account": "Create Account"
+  },
+  "common": {
+    "welcome": "Welcome to Amharic Screenplay Writing Tool 👋",
+    "description": "Discover opportunities, manage scripts, and streamline your creative workflow — all in one place."
+  },
+  "dashboard": {
+    "header": {
+        "toolName": "Amharic Screenplay Tool",
+        "searchPlaceholder": "Search scripts...",
+        "toggleDarkMode": "Toggle Dark Mode",
+        "myAccount": "My Account",
+        "logout": "Log out"
+    },
+    "main": {
+        "yourScriptsTitle": "Your Scripts",
+        "templatesButton": "Templates",
+        "importButton": "Import",
+        "tabs": {
+        "recent": "Recent",
+        "allScripts": "All Scripts",
+        "templates": "Templates",
+        "invited": "Invited"
+        },
+        "noScriptsFound": "No scripts found",
+        "tryDifferentSearch": "Try a different search term",
+        "createNewScript": "Create a new script to get started",
+        "deleteConfirmation": "Are you sure you want to delete this script?",
+        "deleteButton": "Delete",
+        "pages": "Pages",
+        "noInvitedScripts": "You haven’t been invited to any scripts yet.",
+        "useTemplate": "Use Template"
+    }
+    },
+  "collaborator-list": {
+    "collaborators": "Collaborators",
+    "name": "Name",
+    "email": "Email",
+    "roles": "Role(s)",
+    "joined": "Joined",
+    "lastUpdated": "Last Updated",
+    "action": "Action",
+    "noCollaboratorsFound": "No collaborators found.",
+    "save": "Save",
+    "cancel": "Cancel",
+    "userDetails": "User Details",
+    "notAvailable": "N/A",
+    "confirmDelete": "Are you sure you want to delete this Collaborator?"
+    },
+
+    "create-script":{
+        "newScript": "New Script",
+        "createEmptyScript": "Create Empty Script",
+          "useTemplate": "Create new script using template",
+        "type": "Type",
+        "film": "Film",
+        "theatre": "Theatre",
+        "title": "Title",
+        "description": "Description",
+        "genre": "Genre",
+        "thumbnail": "Thumbnail",
+        "create": "Create"
+        },
+    "invite-collaborators": {
+        "inviteCollaborators": "Invite Collaborators",
+        "inviteCollaboratorTitle": "Invite a Collaborator",
+        "emailAddress": "Email Address",
+        "roles": "Roles",
+        "sendInvitation": "Send Invitation",
+        "sending": "Sending..."
+        },
+    "manage-profile": {
+        "profile": "Profile",
+        "accountSettings": "Account Settings",
+        "accountSettingsDescription": "View and update your profile information.",
+        "displayName": "Display Name",
+        "profileImage": "Profile Image",
+        "removeImage": "Remove Image",
+        "preview": "Preview",
+        "email": "Email",
+        "saveChanges": "Save changes"
+        },
+    "scene-table": {
+        "scene": "Scene",
+        "interiorExterior": "I/E",
+        "sceneSetting": "Scene Setting",
+        "dayNight": "D/N",
+        "characters": "Characters",
+        "shootLocation": "Shoot Location",
+        "actions": "Actions",
+        "setLocationPlaceholder": "Set location",
+        "save": "Save",
+        "saving": "Saving...",
+        "back": "Back"
+        },
+    "invited_script_detail": {
+        "viewDetails": "View Details",
+        "category": "Category",
+        "genre": "Genre",
+        "createdAt": "Created At",
+        "lastUpdated": "Last Updated",
+        "pages": "Pages",
+        "sharedBy": "Shared by"
+        },
+    "setting_mgt": {
+        "settings": {
+            "title": "Settings",
+            "description": "Customize your screenplay writing experience",
+            "tabs": {
+            "general": "General",
+            "editor": "Editor",
+            "account": "Account"
+            },
+            "interface_language": "Interface Language",
+            "font_size": "Font Size",
+            "font_family": "Font Family",
+            "display_name": "Display Name"
+        },
+            "font": {
+                "size": {
+                "small": "Small",
+                "medium": "Medium",
+                "large": "Large"
+                }
+            },
+            "actions": {
+                "save_changes": "Save changes"
+            }
+        },
+    "edit_script": {
+        "actions": {
+            "edit": "Edit",
+            "update": "Update"
+        },
+        "script": {
+            "edit_title": "Edit Script"
+        },
+        "form": {
+            "title": "Title",
+            "description": "Description",
+            "genre": "Genre",
+            "thumbnail": "Thumbnail",
+            "no_image": "No image"
+        }
+        },
+    "editor_page": {
+        "editor": {
+            "show_network": "Show Character Network",
+            "show_script": "Show Script",
+            "network_title": "Character Relationship Network",
+            "include_context": "Include Script Context",
+            "toggle_theme": "Toggle Dark Mode",
+            "ai_button": "AI"
+        }
+        },
+    "editor_field": {
+        "editor": {
+            "write": "Write",
+            "preview": "Preview",
+            "storyboard": "Storyboard",
+            "production_schedule": "Production Schedule",
+            "save": "Save",
+            "export": "Export",
+            "export_as_aspf": "Export as ASPF",
+            "export_as_pdf": "Export as PDF"
+        },
+         "tools": {
+            "scene_heading": "Scene Heading",
+            "scene_description": "Scene Description",
+            "action": "Action",
+            "character": "Character",
+            "dialogue": "Dialogue",
+            "emotion": "Emotion"
+        }
+     },
+     "character_relationship_board": {
+            "title": "Character Relationships",
+            "relationships": "Relationships",
+            "roles": {
+            "main_character": "Main Character",
+            "secondary_character": "Secondary Character",
+            "antagonist": "Antagonist"
+            },
+            "professions": {
+            "teacher": "Teacher",
+            "nurse": "Nurse",
+            "student": "Student",
+            "business_owner": "Business Owner",
+            "trader": "Trader"
+            },
+            "relationship_types": {
+            "husband": "Husband",
+            "wife": "Wife",
+            "father": "Father",
+            "mother": "Mother",
+            "child": "Child",
+            "brother": "Brother",
+            "friend": "Friend",
+            "enemy": "Enemy"
+            }
+        },
+    "character_relationship_network": {
+        "title": "Character Relationships",
+        "tabs": {
+        "tree": "Relationship Tree",
+        "list": "Characters"
+        },
+        "edit_character_button": "Edit Characters",
+        "select_relation_prompt": "Relate to",
+        "relationship": {
+        "with": "to",
+        "type": "Relationship Type",
+        "description": "Relationship Description"
+        },
+        "save": "Save changes",
+        "all_relationships": "All Relationships",
+        "fields": {
+        "role": "Role",
+        "description": "Description"
+        },
+        "count_relationships": "Relationships"
+    },
+
+    "ai_assistant": {
+            "title": "AI Assistant",
+            "description": "Get suggestions and improvements for your script",
+            "ask": "Ask a question",
+            "placeholder": "Who was Abebe’s wife?",
+            "generating": "Generating...",
+            "generate": "Generate Tip"
+        }
+
+ }

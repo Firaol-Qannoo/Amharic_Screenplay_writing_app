@@ -10,17 +10,16 @@ use App\Models\Character;
 use App\Models\Scene;
 use App\Models\ScriptInvitation;
 
-class EditorController extends Controller
-{
-    public function index(Request $request)
-    {
-        $user = Auth::user();  
-        $script = session('script');  
-        return Inertia::render('writers/EditorPage', [
-            'script' => $script,  
-            'user' => $user,
-        ]);
-    }
+    class EditorController extends Controller {
+
+        public function index(Request $request)  {
+            $user = Auth::user();  
+            $script = session('script');  
+            return Inertia::render('writers/EditorPage', [
+                'script' => $script,  
+                'user' => $user,
+            ]);
+        }
 
     public function edit($id) {
         $user = Auth::user();  
@@ -52,6 +51,8 @@ class EditorController extends Controller
         }
 
         // dd($user);
+
+        
     
         return Inertia::render('writers/EditorPage', [
             'script' => $script,

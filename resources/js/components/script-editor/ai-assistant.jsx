@@ -4,11 +4,11 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Textarea } from "@/components/ui/textarea"
 import { BotIcon, X, Zap } from "lucide-react"
-
-
+import { useTranslation } from "react-i18next"; 
 
 
 export function AiAssistant() {
+  const { t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false)
   const [prompt, setPrompt] = useState("")
   const [isGenerating, setIsGenerating] = useState(false)
@@ -43,13 +43,13 @@ export function AiAssistant() {
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <BotIcon  className="h-4 w-4 text-primary" />
-                <CardTitle className="text-base">AI አጋዥ</CardTitle>
+                <CardTitle className="text-base">{t("ai_assistant.title")}</CardTitle>
               </div>
               <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => setIsOpen(false)}>
                 <X className="h-4 w-4" />
               </Button>
             </div>
-            <CardDescription>ለስክሪፕትዎ የአጻጻፍ ምክሮችን እና ማሻሻያዎችን ያግኙ</CardDescription>
+            <CardDescription>{t("ai_assistant.description")}</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="space-y-2">
@@ -59,9 +59,9 @@ export function AiAssistant() {
               </div>
             </div>
             <div className="space-y-2">
-              <h3 className="text-sm font-medium">ጥያቄ ይጠይቁ</h3>
+              <h3 className="text-sm font-medium">{t("ai_assistant.ask")}</h3>
               <Textarea
-                placeholder="የ አበበ ሚስት ማን ነበረች?"
+                placeholder={t("ai_assistant.placeholder")}
                 className="min-h-[80px]"
                 value={prompt}
                 onChange={(e) => setPrompt(e.target.value)}
@@ -71,7 +71,7 @@ export function AiAssistant() {
           <CardFooter>
             <Button className="w-full gap-2" onClick={handleGenerate} disabled={!prompt.trim() || isGenerating}>
               <Zap className="h-4 w-4" />
-              {isGenerating ? "በመፍጠር ላይ..." : "ምክር ይፍጠሩ"}
+             <Button>{isGenerating ? t("ai_assistant.generating") : t("ai_assistant.generate")}</Button>
             </Button>
           </CardFooter>
         </Card>
