@@ -69,14 +69,14 @@ export default function LoginPage() {
           <form className="mt-8 space-y-6" onSubmit={handleSubmit(loginHandler)}>
             <div className="space-y-4 rounded-md py-8 px-8 shadow-sm bg-white dark:bg-gray-800">
               {/* Email */}
-              <div>
+              <div className='flex flex-col gap-3'>
                 <Label htmlFor="email-address" className="mb-2 block">{t("login.email")}</Label>
                 <Input {...register("email")} id="email-address" type="email" placeholder={t("login.email")} />
                 <p className="text-red-600 text-sm">{formState.errors.email?.message}</p>
               </div>
 
               {/* Password */}
-              <div>
+              <div className='flex flex-col gap-3'>
                 <Label htmlFor="password" className="mb-2 block">{t("login.password")}</Label>
                 <Input {...register("password")} id="password" type="password" placeholder={t("login.password")} />
                 <p className="text-red-600 text-sm">{formState.errors.password?.message}</p>

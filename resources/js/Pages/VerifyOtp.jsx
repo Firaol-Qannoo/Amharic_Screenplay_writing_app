@@ -38,7 +38,7 @@ const VerifyOtp = () => {
     return (
         <div className="flex min-h-screen w-full items-center justify-center px-4 py-12 sm:px-6 lg:px-8">
             <div className="w-full max-w-md space-y-8">
-            <h1 className="text-3xl font-bold tracking-tight text-gray-900">
+            <h1 className="text-3xl font-bold text-gray-900">
                      Verify OTP</h1>
                                <p className="text-sm text-gray-600">Enter the OTP sent to your email: <strong>{email}</strong></p>
             {message && <p className="success">{message}</p>}

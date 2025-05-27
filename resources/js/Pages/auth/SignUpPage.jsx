@@ -17,8 +17,6 @@ export default function SignupPage() {
     profilePicture: null,
     fullname: "",
     email: "",
-    username: "",
-    role: "",
     password: "",
     confirmPassword: "",
   });
@@ -95,7 +93,7 @@ export default function SignupPage() {
    {t('signup.profile_picture')}
   </Label>
   <div className="relative">
-    <Avatar className="h-24 w-24">
+    <Avatar className="h-15 w-15">
       <AvatarImage src={previewImage || "/placeholder.svg"} alt="Profile picture" />
       <AvatarFallback>
         <Upload className="h-8 w-8 text-gray-400" />
@@ -128,7 +126,7 @@ export default function SignupPage() {
 
 
             {/* Full Name */}
-            <div>
+            <div className="flex flex-col gap-3">
               <Label htmlFor="fullname" className="text-gray-700 dark:text-gray-300">{t('signup.fullname')}</Label>
               <Input
                 id="fullname"
@@ -145,7 +143,7 @@ export default function SignupPage() {
             </div>
 
             {/* Email */}
-            <div>
+           <div className="flex flex-col gap-3">
               <Label htmlFor="email" className="text-gray-700 dark:text-gray-300">{t('login.email')}</Label>
               <Input
                 id="email"
@@ -162,45 +160,9 @@ export default function SignupPage() {
               </p>
             </div>
 
-            {/* Username and Role */}
-            <div className="flex gap-4">
-              <div>
-                <Label htmlFor="username" className="text-gray-700 dark:text-gray-300">{t('signup.username')}</Label>
-                <Input
-                  id="username"
-                  {...register("username")}
-                  value={data.username}
-                  onChange={(e) => {
-                    setData("username", e.target.value);
-                  }}
-                  placeholder={t('signup.username')}
-                />
-                <p className="text-red-600 text-sm">
-                  {formState.errors.username?.message}
-                </p>
-              </div>
-              <div>
-                <Label
-                  htmlFor="role"
-                  className="block text-sm font-medium text-gray-700 dark:text-gray-300"
-                >
-                 {t('signup.role')}
-                </Label>
-                <select className="border-2 border-black/10 rounded-xl px-1 py-2"  {...register("role")} name="role" id="role">
-                  <option disabled value="">{t('signup.select_role')}</option>
-                  <option value="writer">{t('signup.writer')}</option>
-                  <option value="writer">{t('signup.director')}</option>
-                  <option value="writer">{t('signup.storyboard_designer')}</option>
-                </select>
-
-                <p className="text-red-600 self-start  text-sm">
-                  {formState.errors.role && formState.errors.role.message}
-                </p>
-              </div>
-            </div>
 
             {/* Password */}
-            <div>
+            <div className="flex flex-col gap-3">
               <Label htmlFor="password" className="text-gray-700 dark:text-gray-300">{t('login.password')}</Label>
               <Input
                 id="password"
@@ -218,7 +180,7 @@ export default function SignupPage() {
             </div>
 
             {/* Confirm Password */}
-            <div>
+            <div className="flex flex-col gap-3">
               <Label htmlFor="confirmPassword" className="text-gray-700 dark:text-gray-300">{t('signup.confirm_password')}</Label>
               <Input
                 id="confirmPassword"
