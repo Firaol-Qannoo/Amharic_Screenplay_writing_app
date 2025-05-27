@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-const API_BASE_URL = "https://aspw-ai-assist.onrender.com ";
+const API_BASE_URL = "http://localhost:4800";
 
 export default function AiAssistantDialog({ isOpen, onClose, initialContext = "", includeScriptContext = true }) {
     const [message, setMessage] = useState('');

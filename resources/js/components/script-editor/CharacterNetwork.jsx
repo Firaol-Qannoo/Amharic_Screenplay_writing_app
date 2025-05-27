@@ -1,13 +1,13 @@
-import { useEffect, useRef } from "react"
+import { useEffect, useRef, useState } from "react"
 import { useSelector } from "react-redux"
 import { selectcharacters } from "../../features/Characters"
 import React from 'react';
 import ReactFlow, { Background, Controls } from 'reactflow';
 import 'reactflow/dist/style.css';
-
+import { MoveHorizontal } from "lucide-react";
 
 // {
-//   id: "1",
+  //   id: "1",
 //   name: "አበበ",
 //   role: "ዋና ገጸ ባህሪ",
 //   relationships: [
@@ -31,7 +31,8 @@ import 'reactflow/dist/style.css';
 export function CharacterNetwork() {
   const characters = useSelector(selectcharacters)
   const canvasRef = useRef(null);
-
+  
+  const [type, settype] = useState("reverseId")
   const nodes = characters.map((char, index) => ({
     id: char.id,
     data: { label: char.name },
@@ -64,7 +65,7 @@ export function CharacterNetwork() {
           labelBgBorderRadius: 4,
           labelBgStyle: { fill: 'white', color: '#1d4ed8' }
         });
-        edgeMap.add(forwardId);
+        edgeMap.add(type);
       }
 
       if (!edgeMap.has(reverseId)) {
@@ -87,9 +88,11 @@ export function CharacterNetwork() {
     <div style={{ width: '100%', height: '90vh', position: 'relative' }}>
       <canvas ref={canvasRef} style={{ position: 'absolute', top: 0, left: 0, zIndex: 0 }} />
       <ReactFlow nodes={nodes} edges={edges} fitView style={{ position: 'relative', zIndex: 1 }}>
+     
         <Background />
         <Controls />
       </ReactFlow>
+      <MoveHorizontal  onClick={()=> {type=="forwardId" && settype("reverseId"); type=="forwardId" &&  settype("reverseId")}}/>
     </div>
   );
 }

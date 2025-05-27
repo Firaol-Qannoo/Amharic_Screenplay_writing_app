@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { FileDown, Save } from "lucide-react";
+import { FileDown, MessageCircle, Save } from "lucide-react";
 import { useSelector } from "react-redux";
 import { useMemo } from "react";
 import {
@@ -777,7 +777,7 @@ export function EditorField({ script, scenes, scenecharacters, user }) {
                         defaultValue={selectedElement}
                         onValueChange={(value) => onElementChange(value)}
                     >
-                        <SelectTrigger className="h-8 w-[130px]  text-xs">
+                        <SelectTrigger className="h-8 w-[170px]  text-xs">
                             <SelectValue placeholder="Element Type" />
                         </SelectTrigger>
                         <SelectContent>
@@ -852,148 +852,10 @@ export function EditorField({ script, scenes, scenecharacters, user }) {
                     </Select>
                 </div>
 
-                <div className="flex items-center border-l pl-2">
-                    <TooltipProvider>
-                        <Tooltip>
-                            <TooltipTrigger asChild>
-                                <Button
-                                    variant="ghost"
-                                    size="icon"
-                                    className="h-8 w-8"
-                                >
-                                    <Bold className="h-4 w-4" />
-                                </Button>
-                            </TooltipTrigger>
-                            <TooltipContent>
-                                <p>Bold (Ctrl+B)</p>
-                            </TooltipContent>
-                        </Tooltip>
-                    </TooltipProvider>
+              
 
-                    <TooltipProvider>
-                        <Tooltip>
-                            <TooltipTrigger asChild>
-                                <Button
-                                    variant="ghost"
-                                    size="icon"
-                                    className="h-8 w-8"
-                                >
-                                    <Italic className="h-4 w-4" />
-                                </Button>
-                            </TooltipTrigger>
-                            <TooltipContent>
-                                <p>Italic (Ctrl+I)</p>
-                            </TooltipContent>
-                        </Tooltip>
-                    </TooltipProvider>
-
-                    <TooltipProvider>
-                        <Tooltip>
-                            <TooltipTrigger asChild>
-                                <Button
-                                    variant="ghost"
-                                    size="icon"
-                                    className="h-8 w-8"
-                                >
-                                    <Underline className="h-4 w-4" />
-                                </Button>
-                            </TooltipTrigger>
-                            <TooltipContent>
-                                <p>Underline (Ctrl+U)</p>
-                            </TooltipContent>
-                        </Tooltip>
-                    </TooltipProvider>
-                </div>
-
-                <div className="flex items-center border-l pl-2">
-                    <ToggleGroup type="single" defaultValue="left">
-                        <ToggleGroupItem
-                            value="left"
-                            size="sm"
-                            className="h-8 w-8"
-                        >
-                            <AlignLeft className="h-4 w-4" />
-                        </ToggleGroupItem>
-                        <ToggleGroupItem
-                            value="center"
-                            size="sm"
-                            className="h-8 w-8"
-                        >
-                            <AlignCenter className="h-4 w-4" />
-                        </ToggleGroupItem>
-                    </ToggleGroup>
-                </div>
-
-                <div className="flex items-center border-l pl-2">
-                    <TooltipProvider>
-                        <Tooltip>
-                            <TooltipTrigger asChild>
-                                <Button
-                                    variant="ghost"
-                                    size="icon"
-                                    className="h-8 w-8"
-                                >
-                                    <Heading1 className="h-4 w-4" />
-                                </Button>
-                            </TooltipTrigger>
-                            <TooltipContent>
-                                <p>Heading 1</p>
-                            </TooltipContent>
-                        </Tooltip>
-                    </TooltipProvider>
-
-                    <TooltipProvider>
-                        <Tooltip>
-                            <TooltipTrigger asChild>
-                                <Button
-                                    variant="ghost"
-                                    size="icon"
-                                    className="h-8 w-8"
-                                >
-                                    <Heading2 className="h-4 w-4" />
-                                </Button>
-                            </TooltipTrigger>
-                            <TooltipContent>
-                                <p>Heading 2</p>
-                            </TooltipContent>
-                        </Tooltip>
-                    </TooltipProvider>
-
-                    <TooltipProvider>
-                        <Tooltip>
-                            <TooltipTrigger asChild>
-                                <Button
-                                    variant="ghost"
-                                    size="icon"
-                                    className="h-8 w-8"
-                                >
-                                    <List className="h-4 w-4" />
-                                </Button>
-                            </TooltipTrigger>
-                            <TooltipContent>
-                                <p>Bullet List</p>
-                            </TooltipContent>
-                        </Tooltip>
-                    </TooltipProvider>
-                </div>
 
                 <div className="flex items-center border-l pl-2 ml-auto">
-                    <TooltipProvider>
-                        <Tooltip>
-                            <TooltipTrigger asChild>
-                                <Button
-                                    variant="ghost"
-                                    size="icon"
-                                    className="h-8 w-8"
-                                >
-                                    <MessageSquare className="h-4 w-4" />
-                                </Button>
-                            </TooltipTrigger>
-                            <TooltipContent>
-                                <p>Add Comment</p>
-                            </TooltipContent>
-                        </Tooltip>
-                    </TooltipProvider>
 
                     {!user.invitation && (
                     <TooltipProvider>
@@ -1010,16 +872,8 @@ export function EditorField({ script, scenes, scenecharacters, user }) {
                 </div>
             </div>
 
-            <Tabs defaultValue="write" className="flex-1">
-                <div className="flex items-center justify-between border-b px-4">
-                    <TabsList className="h-9 w-auto">
-                        <TabsTrigger value="write" className="text-xs">
-                           {t("editor_field.editor.write")}
-                        </TabsTrigger>
-                        <TabsTrigger value="preview" className="text-xs">
-                           {t("editor_field.editor.preview")}
-                        </TabsTrigger>
-                    </TabsList>
+                <div className="flex items-center justify-end border-b px-4">
+                   
 
                     <div className="flex items-center gap-1">
                         <Menubar className="border-none">
@@ -1052,6 +906,59 @@ export function EditorField({ script, scenes, scenecharacters, user }) {
                                 </Button>
                             </MenubarMenu>
                             )}
+                                             <MenubarMenu>
+  {/* Button to open Comments Preview */}
+  <MenubarTrigger asChild>
+    <Button
+      variant="ghost"
+      size="sm"
+      className="h-8 gap-1"
+    >
+      <MessageCircle className="h-4 w-4" />
+      <span className="text-xs">{t("editor_field.comment")}</span>
+    </Button>
+  </MenubarTrigger>
+
+  {/* Dropdown Content */}
+  <MenubarContent className="w-64 max-h-72 overflow-y-auto">
+    
+  {scenes.map((scene,index) => {
+    
+  return (
+    scene.comments &&
+    scene.comments.length > 0 && (
+      <div key={scene.id} className="border-b last:border-b-0">
+        {/* Scene Heading */}
+        <div className="bg-muted px-3 py-2">
+          <p className="text-xs font-semibold text-muted-foreground">
+          {"SCENE: "  +scene.sceneHead.text} 
+          </p>
+        </div>
+
+        {/* Comments */}
+        {scene.comments.map((cmt) => (
+            
+          <div key={cmt.id} style={{
+  color: script.user_id === cmt.user.id
+    ? "#000000"
+    : `#${cmt.user.userColor}`
+}}
+ className={`py-2 border-t`}>
+            <p className="text-xs font-semibold ">
+              {cmt.user.first_name}
+            </p>
+            <p className="text-sm">{cmt.comment}</p>
+          </div>
+        ))}
+      </div>
+    )
+  );
+})}
+
+
+
+  </MenubarContent>
+</MenubarMenu>
                             <MenubarMenu>
                                 {" "}
                                 <Button
@@ -1111,8 +1018,7 @@ export function EditorField({ script, scenes, scenecharacters, user }) {
                     </div>
                 </div>
 
-                <TabsContent value="write" className="flex-1 p-0 m-0">
-                    <div
+                <div
                         id="suggestions-box"
                         className="absolute bg-white border rounded-md shadow-md z-50 max-h-40 overflow-auto hidden"
                     ></div>
@@ -1124,25 +1030,8 @@ export function EditorField({ script, scenes, scenecharacters, user }) {
                         id="suggestion-box"
                         className="absolute bg-white border border-gray-300 rounded shadow-md z-50 hidden text-sm max-h-40 overflow-auto"
                     ></div>
-                </TabsContent>
+                
 
-                <TabsContent value="preview" className="flex-1 p-0 m-0">
-                    <div className="h-full overflow-auto p-4">
-                        <div
-                            className="max-w-[600px] mx-auto p-8 bg-white dark:bg-black border rounded-md"
-                            style={{
-                                fontFamily:
-                                    'Nyala, "Abyssinica SIL", sans-serif',
-                            }}
-                        >
-                            <pre
-                                className="whitespace-pre-wrap"
-                                dangerouslySetInnerHTML={{ __html: content }}
-                            ></pre>
-                        </div>
-                    </div>
-                </TabsContent>
-            </Tabs>
         </div>
     );
 }
