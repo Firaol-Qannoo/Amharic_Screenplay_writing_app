@@ -221,7 +221,7 @@ useEffect(() => {
                                 <DropdownMenuTrigger asChild>
                                    <Button variant="ghost" size="icon" className="rounded-full p-0 h-9 w-9 overflow-hidden">
                                     {user.avatar ? (
-                                        <img
+                                        <img  loading="lazy"
                                         src={user.avatar.startsWith('http') ? user.avatar : `/${user.avatar}`}
                                         alt={user.first_name}
                                         className="object-cover object-center h-full w-full rounded-full"
@@ -305,7 +305,7 @@ useEffect(() => {
                                                 {filteredMyScripts.sort((a,b)=>new Date(b.created_at)-new Date(a.created_at)).map((script) => (
                                                     <Card key={script.id} className="overflow-hidden">
                                                     <div className="aspect-video relative">
-                                                        <img
+                                                        <img  loading="lazy"
                                                         src={`/${script.thumbnail}`}
                                                         alt={script.title}
                                                         fill
@@ -320,6 +320,7 @@ useEffect(() => {
                                                             </DropdownMenuTrigger>
                                                             <DropdownMenuContent align="end">
                                                             <InviteCollaboratorDialog scriptId={script.id} />
+                                                            
                                                             <DropdownMenuItem
                                                                 onClick={() => {
                                                                if (window.confirm(t("dashboard.main.deleteConfirmation"))) {
@@ -393,7 +394,7 @@ useEffect(() => {
                                                 {invitedScripts.map((script) => (
                                                     <Card key={script.id} className="overflow-hidden">
                                                     <div className="aspect-video relative">
-                                                        <img
+                                                        <img  loading="lazy"
                                                         src={`/${script.thumbnail}`}
                                                         alt={script.title}
                                                         fill
@@ -451,7 +452,7 @@ useEffect(() => {
                                         {filteredMyScripts.map((script) => (
                                             <Card key={script.id} className="overflow-hidden">
                                             <div className="aspect-video relative">
-                                                <img
+                                                <img  loading="lazy"
                                                 src={`/${script.thumbnail}`}
                                                 alt={script.title}
                                                 fill

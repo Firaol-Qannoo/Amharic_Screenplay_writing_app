@@ -47,7 +47,7 @@ export default function LoginPage() {
         <div className="max-w-md space-y-6">
           <h2 className="text-3xl font-bold leading-tight">{t("login.welcome_title")}</h2>
           <p className="text-lg">{t("login.welcome_description")}</p>
-          <img src="/images/login-illustration.gif" alt="Illustration" className="w-full h-auto mt-8 rounded-lg shadow-lg" />
+          <img  loading="lazy" src="/images/login-illustration.gif" alt="Illustration" className="w-full h-auto mt-8 rounded-lg shadow-lg" />
         </div>
       </div>
 

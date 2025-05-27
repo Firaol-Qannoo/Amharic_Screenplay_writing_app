@@ -141,7 +141,7 @@ export default function Landing() {
               </div>
               <div className="flex items-center justify-center">
                 <div className="relative aspect-video overflow-hidden rounded-xl border bg-muted">
-                  <img src="/assets/editor.png" width={1280} height={720} alt="Screenplay Tool Interface" className="object-cover" />
+                  <img  loading="lazy" src="/assets/editor.png" width={1280} height={720} alt="Screenplay Tool Interface" className="object-cover" />
                   <div className="absolute inset-0 bg-gradient-to-t from-background/80 to-background/20" />
                   <div className="absolute bottom-4 left-4 right-4">
                     <p className="text-sm text-white/90">

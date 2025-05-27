@@ -103,12 +103,14 @@ export function UpdateScript({ script }) {
             <div className="rounded-md border p-2 w-40 h-40 flex items-center justify-center bg-muted">
               {data.thumbnail ? (
                 <img
+                 loading="lazy"
                   src={URL.createObjectURL(data.thumbnail)}
                   alt="New Thumbnail Preview"
                   className="object-cover rounded h-full w-full"
                 />
               ) : script.thumbnail ? (
                 <img
+                 loading="lazy"
                   src={`/${script.thumbnail}`}
                   alt="Current Thumbnail"
                   className="object-cover rounded h-full w-full"

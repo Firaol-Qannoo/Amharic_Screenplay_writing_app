@@ -16,17 +16,19 @@ class Scene extends Model
         'scriptID',
         'scene_num',
         'sceneHead',
+        "comments",
         'sceneDesc',
         'lines',
-        'user', 
+        'user',
     ];
 
     protected $casts = [
         'lines' => 'array',
-        'user' => 'array', 
+        'user' => 'array',
     ];
 
-    public function characters() {
-    return $this->hasMany(Character::class, 'sceneID');
-}
+    public function characters()
+    {
+        return $this->hasMany(Character::class, 'sceneID');
+    }
 }

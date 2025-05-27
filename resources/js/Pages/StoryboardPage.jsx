@@ -330,6 +330,7 @@ const generateAIReference = async () => {
                                 {polling && <span>🔄 {t('storyboard.polling')}</span>}
                                 {generatedImageStatus === "COMPLETED" && generatedImageUrl && (
     <img
+     loading="lazy"
         src={generatedImageUrl.trim()}  // <-- Important again
         alt="AI Generated"
         className="max-w-full h-auto rounded shadow-md"
