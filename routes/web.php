@@ -34,19 +34,19 @@ Route::get('/auth/google', [SocialAuthController::class, 'redirectToGoogle'])->n
 Route::get('/auth/google/callback', [SocialAuthController::class, 'handleGoogleCallback']);
 
 
-    Route::get('/', [DashboardController::class, 'home'])->name('home');
+Route::get('/', [DashboardController::class, 'home'])->name('home');
 
-    Route::get('/about', function () {
-        return Inertia::render('about');
-    });
+Route::get('/about', function () {
+    return Inertia::render('about');
+});
 
-    Route::get('/contact', function () {
-        return Inertia::render('contact');
-    });
+Route::get('/contact', function () {
+    return Inertia::render('contact');
+});
 
-    Route::get('/services', function () {
-        return Inertia::render('services');
-    });
+Route::get('/services', function () {
+    return Inertia::render('services');
+});
 
 Route::get('/signup', function () {
     return Inertia::render('auth/SignUpPage');
@@ -86,12 +86,14 @@ Route::post('/login', [RegisterController::class, 'login'])->name('login');
 Route::get('/editor', [EditorController::class, 'index'])->name('editor');
 Route::get('/editor/{id}', [EditorController::class, 'edit'])->name('editor.edit');
 Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+Route::get('/dashboard', [DashboardController::class, 'admindashboard'])->name('admindashboard');
 Route::delete('/delete-script/{id}', [ScriptsController::class, 'destroy'])->name('delete-script.destroy');
 
 
 Route::middleware(['auth'])->group(function () {
-    // Route::get('/dashboard', function () {
-    //     return Inertia::render('writers/Dashboard/DashboardPage', [ delete-collab
+    // Route::get('/admin/dashboard', function () {
+    //     return Inertia::render('admin/dashboard');
+    // });
     //         'user' => Auth::user(),
     //         'success' => 'Login successfully.',
     //     ]);
@@ -111,27 +113,26 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/storyboard/save', [StoryboardController::class, 'save']);
 });
 
-    Route::post('/forgot-password', [RegisterController::class, 'sendResetOtp']);
-    Route::post('/reset-password', [RegisterController::class, 'resetPassword']);
-    Route::post('/verify-otp', [RegisterController::class, 'verifyOtp']);
-
-   
+Route::post('/forgot-password', [RegisterController::class, 'sendResetOtp']);
+Route::post('/reset-password', [RegisterController::class, 'resetPassword']);
+Route::post('/verify-otp', [RegisterController::class, 'verifyOtp']);
 
 
 
-    Route::post('/verify-signup-otp', [RegisterController::class, 'verifySignupOtp'])->name('verify-signup-otp');
-
-    Route::get('/verify-otp-signup', function () {
-        return Inertia::render('verify_otp_signup'); // Make sure this is the correct Inertia component
-    })->name('verify-otp-signup');
 
 
-    Route::post('/scripts/{scriptID}/scenes', [SceneController::class, 'store'])->name('scenes.store');
-    Route::post('/settings/update', [RegisterController::class, 'update'])->name('settings.update');
-    Route::put('/scripts/{id}', [ScriptsController::class, 'update'])->name('scripts.update');
+Route::post('/verify-signup-otp', [RegisterController::class, 'verifySignupOtp'])->name('verify-signup-otp');
 
-    Route::delete('/delete-collab/{scriptID}/{userID}', [ScriptInvitationController::class, 'deleteCollaborator'])->name('delete-script.deleteCollaborator');
-    Route::put('/update-collaborator-role/{scriptId}/{userId}', [ScriptInvitationController::class, 'updateCollaboratorRole']);
+Route::get('/verify-otp-signup', function () {
+    return Inertia::render('verify_otp_signup'); // Make sure this is the correct Inertia component
+})->name('verify-otp-signup');
 
-    Route::post('/contact-msg', [ContactController::class, 'send'])->name('contact-msg.send');
 
+Route::post('/scripts/{scriptID}/scenes', [SceneController::class, 'store'])->name('scenes.store');
+Route::post('/settings/update', [RegisterController::class, 'update'])->name('settings.update');
+Route::put('/scripts/{id}', [ScriptsController::class, 'update'])->name('scripts.update');
+
+Route::delete('/delete-collab/{scriptID}/{userID}', [ScriptInvitationController::class, 'deleteCollaborator'])->name('delete-script.deleteCollaborator');
+Route::put('/update-collaborator-role/{scriptId}/{userId}', [ScriptInvitationController::class, 'updateCollaboratorRole']);
+
+Route::post('/contact-msg', [ContactController::class, 'send'])->name('contact-msg.send');
