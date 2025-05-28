@@ -42,42 +42,50 @@ Make sure the following tools are installed:
 git clone https://github.com/Firaol-Qannoo/Amharic_Screenplay_writing_app.git
 cd Amharic_Screenplay_writing_app
 
+```
 
+### Project Setup
+## 1. Install backend dependencies:
 
-Project Setup
-Install backend dependencies:
-
+```bash
 composer install
+```
 
 
-Install frontend dependencies:
+## 2. Install frontend dependencies:
 
+```bash
 npm install
+```
 
+## 3. Copy the environment file and generate app key:
 
-Copy the environment file and generate app key:
-
+```bash
 cp .env.example .env
 php artisan key:generate
+```
 
 
-Configure Environment Variables
-Open the .env file and add or update the following values:
+### Configure Environment Variables
+## Open the .env file and add or update the following values:
 
-MongoDB Configuration
+# MongoDB Configuration
 
+```bash
 DB_CONNECTION=mongodb
 DB_HOST=127.0.0.1
 DB_PORT=27017
 DB_DATABASE=amharicScreenplay
 DB_USERNAME=
 DB_PASSWORD=
+```
 
-If your MongoDB instance doesn’t require authentication locally, leave DB_USERNAME and DB_PASSWORD empty.
+> **Important:** If your MongoDB instance doesn’t require authentication locally, leave DB_USERNAME and DB_PASSWORD empty.
 
-Email Configuration
-To enable email sending features (like password resets and notifications), add the following settings:
+## Email Configuration
+# To enable email sending features (like password resets and notifications), add the following settings:
 
+``` bash
 MAIL_MAILER=smtp
 MAIL_HOST=smtp.example.com
 MAIL_PORT=587
@@ -86,24 +94,27 @@ MAIL_PASSWORD=your_email_password
 MAIL_ENCRYPTION=tls
 MAIL_FROM_ADDRESS=your_email@example.com
 MAIL_FROM_NAME="${APP_NAME}"
+```
 
-Note: These email credentials are personal and private. We cannot share them publicly or commit them to the repo. You must get your own credentials from your email provider.
+> **Important:** These email credentials are personal and private. We cannot share them publicly or commit them to the repo. You must get your own credentials from your email provider.
 
-How to Get Email Credentials
-Mailtrap (for testing): Create a free account at mailtrap.io, create an inbox, and use the SMTP details provided.
-Gmail: If you use Gmail with 2FA enabled, generate an App Password for SMTP.
-Other providers (SendGrid, Outlook, etc.): Refer to their documentation for SMTP credentials.
+### How to Get Email Credentials
+## 1. Mailtrap (for testing): Create a free account at mailtrap.io, create an inbox, and use the SMTP details provided.
+## 2.Gmail: If you use Gmail with 2FA enabled, generate an App Password for SMTP.
+## 3. Other providers (SendGrid, Outlook, etc.): Refer to their documentation for SMTP credentials.
 
-Final Steps
-Clear and cache your config:
+### Final Steps
+## Clear and cache your config:
 
+```bash
 php artisan config:clear
 php artisan config:cache
 Run the Laravel development server:
 
 php artisan serve
+```
 
-
-Run the React frontend development server:
-
+## Run the React frontend development server:
+```bash
 npm run dev
+```
