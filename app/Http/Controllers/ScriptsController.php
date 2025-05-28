@@ -86,12 +86,6 @@ class ScriptsController extends Controller
     public function destroy($id)
     {
         $script = Script::findOrFail($id);
-
-        // Delete thumbnail file if it exists
-        // if ($script->thumbnail && file_exists(public_path($script->thumbnail))) {
-        //     unlink(public_path($script->thumbnail));
-        // }
-
         $script->delete();
 
         $locale = auth()->user()->lang_pref ?? 'en';

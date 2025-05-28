@@ -54,7 +54,7 @@ use Illuminate\Support\Facades\App;
     }
 
 
-    // we use try catch block to avoid any inconvinence, if something fails [best/graceful approch of error handling]
+    //  try catch block to avoid any inconvinence, if something fails
     try {
         $otp = rand(100000, 999999);
 

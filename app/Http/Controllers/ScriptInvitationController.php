@@ -38,12 +38,6 @@ class ScriptInvitationController extends Controller
             $script = Script::findOrFail($request->script_id);
             $existingUser = User::where('email', $request->invitee_email)->first();
     
-            //  New: Check via relationship
-            // $alreadyCollaborator = ScriptInvitation::where('script_id', $script->_id)
-            //         ->where('invitee_id', $existingUser->_id)
-            //         ->where('accepted', true)
-            //         ->exists();
-
             $alreadyCollaborator = false;
 
                 if ($existingUser) {
