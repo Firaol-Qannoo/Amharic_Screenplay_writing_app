@@ -37,7 +37,7 @@ class ResetPasswordOtpTest extends TestCase
         $response->assertSessionHasErrors('email');
     }
 
-    /** @test */
+  
     public function it_verifies_correct_otp()
     {
         $user = User::factory()->create();
@@ -54,7 +54,7 @@ class ResetPasswordOtpTest extends TestCase
         );
     }
 
-    /** @test */
+   
     public function it_rejects_incorrect_otp()
     {
         $user = User::factory()->create();

@@ -16,9 +16,8 @@ class SignUpTest extends TestCase
 
     public function test_signup_with_valid_input()
     {
-        // Mock the OTP email sending process
         Mail::fake();
-        Cache::shouldReceive('put')->once(); // Mock Cache::put
+        Cache::shouldReceive('put')->once(); 
 
         $requestData = [
             'fullname' => 'Test User',
@@ -26,16 +25,11 @@ class SignUpTest extends TestCase
             'password' => 'password123',
         ];
 
-        // Send a POST request to the route
         $response = $this->post(route('signup.store'), $requestData);
 
-        // Check that the OTP email was sent
         Mail::assertSent(SignupOtpMail::class);
-
-        // Check that the cache was set (you can add more cache checks here)
         Cache::assertHas('otp_test@example.com');
 
-        // Check if we are being redirected to OTP verification page
         $response->assertInertia(function ($page) {
             return $page->component('verify_otp_signup') && $page->has('email', 'test@example.com');
         });
@@ -43,7 +37,6 @@ class SignUpTest extends TestCase
 
     public function test_signup_with_existing_email()
     {
-        // Create a user with the same email
         User::factory()->create(['email' => 'test@example.com']);
 
         $requestData = [
@@ -61,7 +54,7 @@ class SignUpTest extends TestCase
     public function test_signup_otp_failure()
     {
         Mail::fake();
-        Cache::shouldReceive('put')->once(); // Mock Cache::put
+        Cache::shouldReceive('put')->once(); 
 
         Mail::shouldReceive('send')->andThrow(new \Exception('Mail failed to send'));
 

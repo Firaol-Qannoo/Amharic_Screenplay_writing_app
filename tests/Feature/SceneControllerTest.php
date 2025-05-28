@@ -14,7 +14,6 @@ class SceneControllerTest extends TestCase
     {
         parent::setUp();
 
-        // Clean up MongoDB collections before each test
         DB::connection('mongodb')->getCollection('scenes')->deleteMany([]);
         DB::connection('mongodb')->getCollection('characters')->deleteMany([]);
         DB::connection('mongodb')->getCollection('scripts')->deleteMany([]);
@@ -122,7 +121,6 @@ class SceneControllerTest extends TestCase
     {
         $script = Script::create(['id' => 'script_test_3', 'title' => 'Delete & Replace Script']);
 
-        // Insert initial scene and character with fixed IDs
         Scene::create(['id' => 'old_scene', 'scriptID' => $script->id, 'scene_num' => 1]);
         Character::create(['id' => 'old_char', 'name' => 'Old Character', 'sceneID' => $script->id]);
 

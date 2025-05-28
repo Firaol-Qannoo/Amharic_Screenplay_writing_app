@@ -15,8 +15,8 @@ class RegisterControllerTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        User::truncate(); // Clean users collection before each test
-        Mail::fake();     // Prevent actual email sending during test
+        User::truncate(); // Cleaning users collection before each test
+        Mail::fake();     // Preventing actual email sending during test
         Cache::flush();   // Clean cache
     }
 
@@ -28,23 +28,20 @@ class RegisterControllerTest extends TestCase
             'password' => 'password123',
         ];
 
-        // Step 1: Submit registration
+        
         $response = $this->post(route('register'), $data);
         $response->assertStatus(200);
-        $response->assertSee('verify_otp_signup'); // Ensure OTP page is rendered
+        $response->assertSee('verify_otp_signup'); 
 
-        // Step 2: Check cached OTP data
         $cached = Cache::get('otp_' . $data['email']);
         $this->assertNotNull($cached);
         $this->assertEquals($data['email'], $cached['email']);
 
-        // Step 3: Submit OTP verification
         $verifyResponse = $this->post(route('verify-signup-otp'), [
             'email' => $data['email'],
             'otp' => $cached['otp'],
         ]);
 
-        // Step 4: Assert user is created and redirected to login
         $this->assertDatabaseHas('users', ['email' => $data['email']]);
         $verifyResponse->assertRedirect(route('login'));
     }

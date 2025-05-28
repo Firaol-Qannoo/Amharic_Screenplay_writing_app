@@ -44,7 +44,6 @@ namespace Tests\Feature;
          $response->assertRedirect(route('dashboard'));
      }
  
-     /** @test */
      public function authenticated_user_can_create_script_without_thumbnail()
      {
          $user = User::factory()->create();

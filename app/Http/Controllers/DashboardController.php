@@ -64,6 +64,8 @@ use App\Models\User;
        $invitedScripts = Script::whereIn('_id', $invitations->pluck('script_id'))
         ->with('user') 
         ->get();
+
+        // used for debugging
         // dd($invitedScripts);
          
             return Inertia::render('writers/Dashboard/DashboardPage', [

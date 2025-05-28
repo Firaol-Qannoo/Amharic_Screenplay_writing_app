@@ -15,7 +15,7 @@ class ProductionSceneControllerTest extends TestCase
     /** @test */
     public function it_parses_and_saves_scenes_from_json_and_renders_inertia_view()
     {
-        // Fake data returned by getScriptJson (normally loaded from static JSON)
+
         $scriptJson = [
             'meta' => [
                 'title' => 'Test Script',
@@ -33,14 +33,12 @@ class ProductionSceneControllerTest extends TestCase
             ]
         ];
 
-        // Mock controller with getScriptJson and parseScene overridden
         $controller = $this->getMockBuilder(ProductionScheduleController::class)
             ->onlyMethods(['getScriptJson', 'parseScene'])
             ->getMock();
 
         $controller->method('getScriptJson')->willReturn($scriptJson);
 
-        // Mock parseScene to return simplified data
         $controller->method('parseScene')->willReturnCallback(function ($scene) {
             return [
                 'content' => $scene['content'],
@@ -48,11 +46,9 @@ class ProductionSceneControllerTest extends TestCase
             ];
         });
 
-        // Manually inject routes for testing
         $this->app->instance(ProductionScheduleController::class, $controller);
 
-        // Call index route (simulate GET request to the controller)
-        $response = $this->get('/your-route-for-scenes'); // Replace with actual route
+        $response = $this->get('/your-route-for-scenes'); 
 
         $response->assertStatus(200);
         $response->assertInertia(fn (AssertableInertia $page) =>
