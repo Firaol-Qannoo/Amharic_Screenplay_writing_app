@@ -99,9 +99,9 @@ MAIL_FROM_NAME="${APP_NAME}"
 > **Important:** These email credentials are personal and private. We cannot share them publicly or commit them to the repo. You must get your own credentials from your email provider.
 
 ### How to Get Email Credentials
-# 1. Mailtrap (for testing): Create a free account at mailtrap.io, create an inbox, and use the SMTP details provided.
-# 2.Gmail: If you use Gmail with 2FA enabled, generate an App Password for SMTP.
-# 3. Other providers (SendGrid, Outlook, etc.): Refer to their documentation for SMTP credentials.
+#### 1. Mailtrap (for testing): Create a free account at mailtrap.io, create an inbox, and use the SMTP details provided.
+#### 2.Gmail: If you use Gmail with 2FA enabled, generate an App Password for SMTP.
+#### 3. Other providers (SendGrid, Outlook, etc.): Refer to their documentation for SMTP credentials.
 
 ### Final Steps
 ## Clear and cache your config:
