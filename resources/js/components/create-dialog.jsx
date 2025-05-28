@@ -63,19 +63,20 @@ export function CreateDialog() {
         </DialogHeader>
 
         {/* Type Selector (Film / Theatre) */}
-        <div className="space-y-2">
+        <div className="space-y-2 text-gray-500">
           <Label>{t("create-script.type")}</Label>
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center mt-4 space-x-4">
             <div>
               <input
                 type="radio"
                 id="film"
                 name="type"
+                className="hidden"
                 value="film"
                 checked={data.type === "film"}
                 onChange={() => setData("type", "film")}
               />
-              <Label htmlFor="film" className="ml-2">{t("create-script.film")}</Label>
+              <Label htmlFor="film" className={`${data.type === "film" ? "border-2 bg-gray-100 border-blue-300": ""} px-4 py-2 border-gray-700 rounded-2xl`}>{t("create-script.film")}</Label>
             </div>
             <div>
               <input
@@ -83,10 +84,11 @@ export function CreateDialog() {
                 id="theatre"
                 name="type"
                 value="theatre"
+                className="hidden"
                 checked={data.type === "theatre"}
                 onChange={() => setData("type", "theatre")}
               />
-              <Label htmlFor="theatre" className="ml-2">{t("create-script.theatre")}</Label>
+              <Label htmlFor="theatre" className={`${data.type === "theatre" ? "border-2 bg-gray-100 border-blue-300": ""} px-4 py-2 border-gray-700 rounded-2xl`}>{t("create-script.theatre")}</Label>
             </div>
           </div>
         </div>

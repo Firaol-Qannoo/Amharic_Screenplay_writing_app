@@ -57,8 +57,8 @@ export default function Landing() {
   }
 
   return (
-    <div className="flex min-h-screen flex-col ">
-      <header className="sticky top-0 z-50 w-full border-b px-10 backdrop-blur bg-background/60">
+     <div className="flex min-h-screen  w-[100vw] flex-col ">
+      <header className="sticky top-0 z-50 w-full pl-20 border-b backdrop-blur bg-background/60">
         <div className="container flex h-16 items-center justify-between">
           <div className="flex items-center">
             <span className="text-lg font-bold mr-24">{t("app_title")}</span>
@@ -141,7 +141,7 @@ export default function Landing() {
               </div>
               <div className="flex items-center justify-center">
                 <div className="relative aspect-video overflow-hidden rounded-xl border bg-muted">
-                  <img src="/assets/editor.png" width={1280} height={720} alt="Screenplay Tool Interface" className="object-cover" />
+                  <img  loading="lazy" src="/assets/editor.png" width={1280} height={720} alt="Screenplay Tool Interface" className="object-cover" />
                   <div className="absolute inset-0 bg-gradient-to-t from-background/80 to-background/20" />
                   <div className="absolute bottom-4 left-4 right-4">
                     <p className="text-sm text-white/90">
@@ -154,8 +154,8 @@ export default function Landing() {
           </div>
         </section>
 
-        <section id="features" className="w-full py-12 md:py-24 lg:py-32 bg-muted">
-          <div className="container px-4 md:px-6">
+        <section id="features" className="w-full px-20 py-12 md:py-24 lg:py-32">
+          <div className=" w-full px-4 md:px-6">
             <div className="flex flex-col items-center justify-center space-y-4 text-center">
               <div className="space-y-2">
                 <div className="inline-block rounded-lg bg-primary px-3 py-1 text-sm text-primary-foreground">
@@ -170,19 +170,8 @@ export default function Landing() {
               </div>
             </div>
 
-            <div className="mx-auto grid max-w-5xl grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 pt-8">
-              <Card>
-                <CardHeader className="pb-2">
-                  <Users className="h-6 w-6 mb-2 text-primary" />
-                  <CardTitle>{t("landing.card1_title")}</CardTitle>
-                  <CardDescription>{t("landing.card1_description")}</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-sm text-muted-foreground">
-                    {t("landing.card1_content")}
-                  </p>
-                </CardContent>
-              </Card>
+            <div className="  grid w-full grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 pt-8">
+              
 
               <Card>
                 <CardHeader className="pb-2">
@@ -268,12 +257,12 @@ export default function Landing() {
 
         <section className="w-full py-12 md:py-24 lg:py-32 bg-primary text-primary-foreground">
           <div className="container px-4 md:px-6">
-            <div className="flex flex-col items-center justify-center space-y-4 text-center">
+            <div className="flex flex-col items-start justify-center space-y-4 px-10">
               <div className="space-y-2">
                 <h2 className="text-3xl font-bold tracking-tighter md:text-4xl/tight">
                   {t("landing.cta_title")}
                 </h2>
-                <p className="max-w-[600px] text-primary-foreground/80 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
+                <p className=" text-primary-foreground/80 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
                   {t("landing.cta_description")}
                 </p>
               </div>

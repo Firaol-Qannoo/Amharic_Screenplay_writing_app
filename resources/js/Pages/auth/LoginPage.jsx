@@ -47,7 +47,7 @@ export default function LoginPage() {
         <div className="max-w-md space-y-6">
           <h2 className="text-3xl font-bold leading-tight">{t("login.welcome_title")}</h2>
           <p className="text-lg">{t("login.welcome_description")}</p>
-          <img src="/images/login-illustration.gif" alt="Illustration" className="w-full h-auto mt-8 rounded-lg shadow-lg" />
+          <img  loading="lazy" src="/images/login-illustration.gif" alt="Illustration" className="w-full h-auto mt-8 rounded-lg shadow-lg" />
         </div>
       </div>
 
@@ -69,14 +69,14 @@ export default function LoginPage() {
           <form className="mt-8 space-y-6" onSubmit={handleSubmit(loginHandler)}>
             <div className="space-y-4 rounded-md py-8 px-8 shadow-sm bg-white dark:bg-gray-800">
               {/* Email */}
-              <div>
+              <div className='flex flex-col gap-3'>
                 <Label htmlFor="email-address" className="mb-2 block">{t("login.email")}</Label>
                 <Input {...register("email")} id="email-address" type="email" placeholder={t("login.email")} />
                 <p className="text-red-600 text-sm">{formState.errors.email?.message}</p>
               </div>
 
               {/* Password */}
-              <div>
+              <div className='flex flex-col gap-3'>
                 <Label htmlFor="password" className="mb-2 block">{t("login.password")}</Label>
                 <Input {...register("password")} id="password" type="password" placeholder={t("login.password")} />
                 <p className="text-red-600 text-sm">{formState.errors.password?.message}</p>

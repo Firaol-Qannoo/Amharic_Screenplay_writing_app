@@ -31,7 +31,7 @@ import { useDispatch } from "react-redux"
 
 import { charRelSchema } from "../../utils/validation/charrel"
 import { charSchema } from "../../utils/validation/char"
-import { addRelationship, selectcharacters } from "../../features/Characters"
+import { addRelationship, selectcharacters, updateCharacter } from "../../features/Characters"
 import { relations } from "../../../../public/data/relations"
 import { useTranslation } from "react-i18next";
 

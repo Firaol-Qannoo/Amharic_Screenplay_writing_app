@@ -126,9 +126,7 @@ export default function EditorPage({ script, user, scenecharacters, scenes }) {
               )}
             </button>
                                 <SettingsDialog user={user} />
-                                <Button variant="ghost" size="icon" className="rounded-full">
-                                    <User className="h-5 w-5" />
-                                </Button>
+                               
                             </div>
                         </div>
                     </div>

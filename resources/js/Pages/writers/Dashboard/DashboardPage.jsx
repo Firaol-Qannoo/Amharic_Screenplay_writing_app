@@ -29,7 +29,6 @@ import {
     Trash2,
     User,
 } from "lucide-react";
-import { ScheduleList } from "./schedule-list";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { SettingsDialog } from "@/components/settings-dialog";  
 import { ProfileDialog } from "@/components/profile_card"; 
@@ -44,6 +43,7 @@ import flasher from '@flasher/flasher'
 import { UpdateScript } from "@/components/update-script";
 import { Link } from "@inertiajs/react";
 import { useTranslation } from 'react-i18next';
+import { CreateDialogTemplate } from "@/components/create-dialogue-template";
 
 dayjs.extend(relativeTime);
 
@@ -58,28 +58,7 @@ export function getRelativeDate(dateString) {
     return `${diffInDays} days ago`;
 }
 
-const templateCategories = [
-    {
-        name: "Film",
-        templates: [
-            {
-                id: "f1",
-                name: "film script Template",
-                description: "Gives standard layout of sample script for film.",
-            },
-        ],
-    },
-    {
-        name: "Theatre",
-        templates: [
-            {
-                id: "t1",
-                name: "theatre script Template",
-                description: "Gives standard layout of sample script for theatre.",
-            },
-        ],
-    },
-];
+
 
  function getColorFromName(name) {
   const colors = [
@@ -184,8 +163,8 @@ useEffect(() => {
     return (
         <div className="relative">
             <div className="flex min-h-screen w-[100vw] px-10 flex-col">
-                <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-                    <div className="container flex h-16 items-center justify-between">
+                <header className="sticky top-0 z-50 w-full bg-red-500 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+                    <div className="  w-full flex h-16 items-center justify-between">
                    <div className="flex items-center gap-2">
                     <Link
                         href="/"
@@ -242,7 +221,7 @@ useEffect(() => {
                                 <DropdownMenuTrigger asChild>
                                    <Button variant="ghost" size="icon" className="rounded-full p-0 h-9 w-9 overflow-hidden">
                                     {user.avatar ? (
-                                        <img
+                                        <img  loading="lazy"
                                         src={user.avatar.startsWith('http') ? user.avatar : `/${user.avatar}`}
                                         alt={user.first_name}
                                         className="object-cover object-center h-full w-full rounded-full"
@@ -281,10 +260,7 @@ useEffect(() => {
                                 </h1>
                                 <div className="flex flex-wrap gap-2">
                                     <CreateDialog />
-                                    <Button variant="outline" onClick={() => {}}>
-                                        <LayoutTemplate className="mr-2 h-4 w-4" />
-                                        {t("dashboard.main.templatesButton")}
-                                    </Button>
+                                    <CreateDialogTemplate/>
                                     <Button variant="outline" className="cursor-pointer relative" >
                                         <input type="file" onChange={handleImport} className="absolute top-0 cursor-pointer border-0 opacity-0 z-50 w-full h-full" name="" id="" />
                                         <FileUp className="mr-2 cursor-pointer  h-4 w-4" />
@@ -300,7 +276,7 @@ useEffect(() => {
                                         <TabsList>
                                             <TabsTrigger value="recent">{t("dashboard.main.tabs.recent")}</TabsTrigger>
                                             <TabsTrigger value="all">{t("dashboard.main.tabs.allScripts")}</TabsTrigger>
-                                            <TabsTrigger value="templates">{t("dashboard.main.tabs.templates")}</TabsTrigger>
+                                        
                                             <TabsTrigger value="invite">{t("dashboard.main.tabs.invited")}</TabsTrigger>
                                             </TabsList>
                                             </div>
@@ -326,14 +302,14 @@ useEffect(() => {
                                                 </div>
                                             ) : (
                                                 <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-                                                {filteredMyScripts.map((script) => (
+                                                {filteredMyScripts.sort((a,b)=>new Date(b.created_at)-new Date(a.created_at)).map((script) => (
                                                     <Card key={script.id} className="overflow-hidden">
                                                     <div className="aspect-video relative">
-                                                        <img
+                                                        <img  loading="lazy"
                                                         src={`/${script.thumbnail}`}
                                                         alt={script.title}
                                                         fill
-                                                        className="object-cover object-center h-60 w-full"
+                                                        className="object-cover object-center h-50 w-full"
                                                         />
                                                         <div className="absolute top-2 right-2">
                                                         <DropdownMenu>
@@ -344,6 +320,7 @@ useEffect(() => {
                                                             </DropdownMenuTrigger>
                                                             <DropdownMenuContent align="end">
                                                             <InviteCollaboratorDialog scriptId={script.id} />
+                                                            
                                                             <DropdownMenuItem
                                                                 onClick={() => {
                                                                if (window.confirm(t("dashboard.main.deleteConfirmation"))) {
@@ -381,8 +358,11 @@ useEffect(() => {
                                                         </CardTitle>
                                                         <CardDescription className="line-clamp-2">{script.description}</CardDescription>
                                                     </CardHeader>
-                                                    <CardFooter className="p-4 pt-0 flex justify-between text-sm text-muted-foreground">
-                                                        <div className="flex items-center">
+                                                    <CardFooter className="p-4 pt-0 flex justify-between flex-col w-full text-sm text-muted-foreground">
+                                                     {script.template&& <h1 className="self-end text-nowrap bg-[#262626] py-2 px-2 rounded-2xl text-md text-gray-100 my-4">Template used: <span className="font-bold text-nowrap">{script.template}</span></h1>
+                                                       }
+                                                      <div className="flex items-center justify-between w-full mb-2">
+                                                            <div className="flex items-center">
                                                         <Calendar className="mr-1 h-3 w-3" />
                                                         <span>{getRelativeDate(script.created_at)}</span>
                                                         </div>
@@ -392,6 +372,7 @@ useEffect(() => {
                                                         {script.pages ? `${script.pages} ${t("dashboard.main.pages")}` : `0 ${t("dashboard.main.pages")}`}
                                                         </span>
 
+                                                        </div>
                                                         </div>
                                                     </CardFooter>
                                                     </Card>
@@ -413,7 +394,7 @@ useEffect(() => {
                                                 {invitedScripts.map((script) => (
                                                     <Card key={script.id} className="overflow-hidden">
                                                     <div className="aspect-video relative">
-                                                        <img
+                                                        <img  loading="lazy"
                                                         src={`/${script.thumbnail}`}
                                                         alt={script.title}
                                                         fill
@@ -471,7 +452,7 @@ useEffect(() => {
                                         {filteredMyScripts.map((script) => (
                                             <Card key={script.id} className="overflow-hidden">
                                             <div className="aspect-video relative">
-                                                <img
+                                                <img  loading="lazy"
                                                 src={`/${script.thumbnail}`}
                                                 alt={script.title}
                                                 fill
@@ -537,39 +518,7 @@ useEffect(() => {
                                         </div>
                                     )}
                                 </TabsContent>
-                                    <TabsContent value="templates" className="mt-6">
-                                        <div className="space-y-8">
-                                            {templateCategories.map((category) => (
-                                                <div key={category.name} className="space-y-4">
-                                                    <h3 className="text-lg font-medium">
-                                                        {category.name}
-                                                    </h3>
-                                                    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                                                        {category.templates.map((template) => (
-                                                            <Card
-                                                                key={template.id}
-                                                                className="cursor-pointer hover:bg-muted/50"
-                                                            >
-                                                                <CardHeader>
-                                                                    <CardTitle className="text-base">
-                                                                        {template.name}
-                                                                    </CardTitle>
-                                                                    <CardDescription>
-                                                                        {template.description}
-                                                                    </CardDescription>
-                                                                </CardHeader>
-                                                                <CardFooter>
-                                                                    <Button variant="outline" size="sm">
-                                                                        Use Template
-                                                                    </Button>
-                                                                </CardFooter>
-                                                            </Card>
-                                                        ))}
-                                                    </div>
-                                                </div>
-                                            ))}
-                                        </div>
-                                    </TabsContent>
+                                   
                                 </Tabs>
                             </div>
                             {/* <div className="md:col-span-1">

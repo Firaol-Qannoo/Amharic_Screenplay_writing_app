@@ -99,6 +99,7 @@ export function ProfileDialog({ user }) {
                 {avatarPreview ? (
                 <>
                     <img
+                    loading="lazy"
                     src={avatarPreview}
                     alt="Avatar Preview"
                     className="w-16 h-16 rounded-full object-cover"

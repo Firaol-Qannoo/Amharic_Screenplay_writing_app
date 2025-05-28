@@ -20,42 +20,48 @@ class Script extends Model
         'genre',
         'type',
         'user_id',
+        "template",
         'thumbnail',
         'pages',
-        'collaborators', 
+        'collaborators',
     ];
 
-    public function user()  {
+    public function user()
+    {
         return $this->belongsTo(User::class, 'user_id', '_id');
     }
 
     // Optional: Get collaborator users
-    public function collaboratorUsers() {
+    public function collaboratorUsers()
+    {
         $ids = is_array($this->invitee_id) ? $this->invitee_id : [];
-    
+
         return User::whereIn('_id', $ids)->get();
     }
 
-    public function scenes() {
+    public function scenes()
+    {
         return $this->hasMany(Scene::class, 'scriptID');
     }
 
 
-    
-    public function owner(): BelongsTo {
+
+    public function owner(): BelongsTo
+    {
         return $this->belongsTo(User::class, 'user_id');
     }
 
 
-    public function invitations(): HasMany {
+    public function invitations(): HasMany
+    {
         return $this->hasMany(ScriptInvitation::class, 'script_id');
     }
 
     // All collaborators (invited users)
-    public function collaborators(): BelongsToMany {
-    return $this->belongsToMany(User::class, 'script_invitations', 'script_id', 'invitee_id')
-        ->withPivot('role', 'accepted')
-        ->withTimestamps();
+    public function collaborators(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class, 'script_invitations', 'script_id', 'invitee_id')
+            ->withPivot('role', 'accepted')
+            ->withTimestamps();
     }
-
-    }
+}

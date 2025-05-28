@@ -70,9 +70,8 @@ export function SettingsDialog({ user }) {
           </DialogDescription>
         </DialogHeader>
         <Tabs defaultValue="general">
-          <TabsList className="grid w-full grid-cols-3">
+          <TabsList className="grid w-full grid-cols-2">
             <TabsTrigger value="general">{t("setting_mgt.settings.tabs.general")}</TabsTrigger>
-            <TabsTrigger value="editor">{t("setting_mgt.settings.tabs.editor")}</TabsTrigger>
             <TabsTrigger value="account">{t("setting_mgt.settings.tabs.account")}</TabsTrigger>
           </TabsList>
 
@@ -112,34 +111,7 @@ export function SettingsDialog({ user }) {
             </div> */}
           </TabsContent>
 
-          {/* Editor Tab */}
-          <TabsContent value="editor" className="space-y-4 py-4">
-            <div className="space-y-2">
-              <Label htmlFor="font-size">{t("setting_mgt.settings.font_size")}</Label>
-              <select
-                id="font-size"
-                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-              >
-                <option value="small">{t("setting_mgt.font.size.small")}</option>
-                <option value="medium" selected>
-                 {t("setting_mgt.font.size.medium")}
-                </option>
-                <option value="large">{t("setting_mgt.font.size.large")}</option>
-              </select>
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="font-family">{t("setting_mgt.settings.font_family")}</Label>
-              <select
-                id="font-family"
-                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-              >
-                <option value="nyala">Nyala</option>
-                <option value="abyssinica">Abyssinica SIL</option>
-                <option value="courier">Courier New</option>
-              </select>
-            </div>
-          </TabsContent>
-
+      
           {/* Account Tab */}
           <TabsContent value="account" className="space-y-4 py-4">
             <div className="space-y-2">
